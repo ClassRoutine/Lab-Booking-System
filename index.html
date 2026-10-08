@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lab Booking System</title>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+
+        header {
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            color: white;
+            padding: 22px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            font-size: 30px;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: #dbeafe;
+            font-size: 14px;
+        }
+
+        /* MAIN */
+
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .title h2 {
+            font-size: 25px;
+            color: #111827;
+        }
+
+        .title p {
+            color: #6b7280;
+            margin-top: 6px;
+            font-size: 14px;
+        }
+
+        /* FORM */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 7px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* TIME SLOTS */
+
+        .time-section {
+            margin-top: 25px;
+        }
+
+        .time-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .time-slot {
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 14px;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .time-slot:hover {
+            border-color: #2563eb;
+        }
+
+        .time-slot.selected {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .time-slot.booked {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #b91c1c;
+            cursor: not-allowed;
+        }
+
+        .slot-status {
+            display: block;
+            font-size: 12px;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* BUTTON */
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .submit-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* MESSAGE */
+
+        .message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .message.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .message.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* LOADING */
+
+        .loading {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 650px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .time-slots {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-card {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🧪 Lab Booking System</h1>
+    <p>Book your laboratory session easily</p>
+</header>
+
+
+<main class="container">
+
+    <div class="booking-card">
+
+        <div class="title">
+            <h2>Lab Booking</h2>
+            <p>Please provide the required information below</p>
+        </div>
+
+
+        <form id="bookingForm">
+
+            <div class="form-grid">
+
+                <!-- STUDENT NAME -->
+
+                <div class="form-group">
+                    <label for="studentName">
+                        👤 Student Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="Enter student name"
+                        required
+                    >
+                </div>
+
+
+                <!-- STUDENT ID -->
+
+                <div class="form-group">
+                    <label for="studentId">
+                        🆔 Student ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentId"
+                        placeholder="Enter student ID"
+                        required
+                    >
+                </div>
+
+
+                <!-- SEMESTER -->
+
+                <div class="form-group">
+                    <label for="semester">
+                        🎓 Semester
+                    </label>
+
+                    <select id="semester" required>
+                        <option value="">Select Semester</option>
+                    </select>
+
+                    <div id="semesterLoading" class="loading"></div>
+                </div>
+
+
+                <!-- COURSE TEACHER -->
+
+                <div class="form-group">
+                    <label for="courseTeacher">
+                        👨‍🏫 Course Teacher
+                    </label>
+
+                    <input
+                        type="text"
+                        id="courseTeacher"
+                        placeholder="Enter course teacher name"
+                        required
+                    >
+                </div>
+
+
+                <!-- LAB -->
+
+                <div class="form-group full">
+
+                    <label for="lab">
+                        🧪 Lab Name
+                    </label>
+
+                    <select id="lab" required>
+
+                        <option value="">
+                            Select Lab
+                        </option>
+
+                    </select>
+
+                    <div id="labLoading" class="loading"></div>
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="form-group full">
+
+                    <label for="bookingDate">
+                        📅 Booking Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="bookingDate"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PURPOSE -->
+
+                <div class="form-group full">
+
+                    <label for="purpose">
+                        📝 Booking Purpose
+                    </label>
+
+                    <textarea
+                        id="purpose"
+                        placeholder="Why do you need this lab?"
+                        required
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <!-- TIME -->
+
+            <div class="time-section">
+
+                <div class="time-title">
+                    ⏰ Select Time Slot
+                </div>
+
+                <div
+                    id="timeSlots"
+                    class="time-slots"
+                >
+                    <div class="loading">
+                        Select a Lab and Date first.
+                    </div>
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                id="submitBtn"
+                class="submit-btn"
+            >
+                BOOK LAB NOW
+            </button>
+
+
+            <div
+                id="message"
+                class="message"
+            ></div>
+
+        </form>
+
+    </div>
+
+</main>
+
+
+<footer>
+    © 2026 Lab Booking System
+</footer>
+
+
+<script>
+
+    /* ==========================================
+       SUPABASE CONFIGURATION
+       ========================================== */
+
+    const SUPABASE_URL =
+        "https://wftskmfxlbbhoryajqjm.supabase.co";
+
+    const SUPABASE_KEY =
+        "sb_publishable_i1ay8CjelMyvaJyQrd9pbw_I4NCXFdD";
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+    /* ==========================================
+       ELEMENTS
+       ========================================== */
+
+    const bookingForm =
+        document.getElementById("bookingForm");
+
+    const semesterSelect =
+        document.getElementById("semester");
+
+    const labSelect =
+        document.getElementById("lab");
+
+    const bookingDate =
+        document.getElementById("bookingDate");
+
+    const timeSlotsContainer =
+        document.getElementById("timeSlots");
+
+    const submitBtn =
+        document.getElementById("submitBtn");
+
+    const message =
+        document.getElementById("message");
+
+
+    let selectedSlot = null;
+
+    let timeSlots = [];
+
+
+    /* ==========================================
+       TODAY AS MINIMUM DATE
+       ========================================== */
+
+    const today =
+        new Date().toISOString().split("T")[0];
+
+    bookingDate.min = today;
+
+
+    /* ==========================================
+       LOAD SEMESTERS
+       ========================================== */
+
+    async function loadSemesters() {
+
+        const { data, error } =
+            await supabaseClient
+                .from("semesters")
+                .select("id, name")
+                .order("id");
+
+        if (error) {
+
+            console.error(error);
+
+            return;
+        }
+
+        data.forEach(semester => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = semester.id;
+
+            option.textContent = semester.name;
+
+            semesterSelect.appendChild(option);
+
+        });
+    }
+
+
+    /* ==========================================
+       LOAD LABS
+       ========================================== */
+
+    async function loadLabs() {
+
+        const { data, error } =
+            await supabaseClient
+                .from("labs")
+                .select("id, name")
+                .order("id");
+
+        if (error) {
+
+            console.error(error);
+
+            return;
+        }
+
+        data.forEach(lab => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = lab.id;
+
+            option.textContent = lab.name;
+
+            labSelect.appendChild(option);
+
+        });
+    }
+
+
+    /* ==========================================
+       LOAD TIME SLOTS
+       ========================================== */
+
+    async function loadTimeSlots() {
+
+        const { data, error } =
+            await supabaseClient
+                .from("time_slots")
+                .select(
+                    "id, slot_number, start_time, end_time"
+                )
+                .order("slot_number");
+
+        if (error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to load time slots.",
+                "error"
+            );
+
+            return;
+        }
+
+        timeSlots = data;
+
+    }
+
+
+    /* ==========================================
+       FORMAT TIME
+       ========================================== */
+
+    function formatTime(time) {
+
+        const [hour, minute] =
+            time.split(":");
+
+        const date =
+            new Date();
+
+        date.setHours(
+            Number(hour),
+            Number(minute),
+            0
+        );
+
+        return date.toLocaleTimeString(
+            "en-US",
+            {
+                hour: "numeric",
+                minute: "2-digit"
+            }
+        );
+    }
+
+
+    /* ==========================================
+       LOAD AVAILABLE SLOTS
+       ========================================== */
+
+    async function loadAvailableSlots() {
+
+        selectedSlot = null;
+
+        const labId =
+            labSelect.value;
+
+        const date =
+            bookingDate.value;
+
+
+        if (!labId || !date) {
+
+            timeSlotsContainer.innerHTML =
+                `<div class="loading">
+                    Select a Lab and Date first.
+                </div>`;
+
+            return;
+        }
+
+
+        timeSlotsContainer.innerHTML =
+            `<div class="loading">
+                Checking available slots...
+            </div>`;
+
+
+        const { data, error } =
+            await supabaseClient
+                .rpc(
+                    "get_booked_slots",
+                    {
+                        p_lab_id: Number(labId),
+                        p_booking_date: date
+                    }
+                );
+
+
+        if (error) {
+
+            console.error(error);
+
+            timeSlotsContainer.innerHTML =
+                `<div class="loading">
+                    Unable to check availability.
+                </div>`;
+
+            return;
+        }
+
+
+        timeSlotsContainer.innerHTML = "";
+
+
+        timeSlots.forEach(slot => {
+
+            const isBooked =
+                data.some(booked =>
+
+                    booked.start_time ===
+                    slot.start_time &&
+
+                    booked.end_time ===
+                    slot.end_time
+
+                );
+
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "time-slot" +
+                (isBooked ? " booked" : "");
+
+
+            div.innerHTML = `
+
+                <strong>
+                    ${formatTime(slot.start_time)}
+                    -
+                    ${formatTime(slot.end_time)}
+                </strong>
+
+                <span class="slot-status">
+                    ${isBooked ? "🔴 BOOKED" : "🟢 AVAILABLE"}
+                </span>
+
+            `;
+
+
+            if (!isBooked) {
+
+                div.addEventListener(
+                    "click",
+                    () => {
+
+                        document
+                            .querySelectorAll(".time-slot")
+                            .forEach(item =>
+                                item.classList.remove(
+                                    "selected"
+                                )
+                            );
+
+                        div.classList.add("selected");
+
+                        selectedSlot = slot;
+
+                    }
+                );
+
+            }
+
+
+            timeSlotsContainer.appendChild(div);
+
+        });
+
+    }
+
+
+    /* ==========================================
+       SHOW MESSAGE
+       ========================================== */
+
+    function showMessage(
+        text,
+        type
+    ) {
+
+        message.textContent = text;
+
+        message.className =
+            "message " + type;
+
+        message.style.display = "block";
+
+    }
+
+
+    /* ==========================================
+       LAB / DATE CHANGE
+       ========================================== */
+
+    labSelect.addEventListener(
+        "change",
+        loadAvailableSlots
+    );
+
+    bookingDate.addEventListener(
+        "change",
+        loadAvailableSlots
+    );
+
+
+    /* ==========================================
+       SUBMIT BOOKING
+       ========================================== */
+
+    bookingForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            if (!selectedSlot) {
+
+                showMessage(
+                    "Please select an available time slot.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            submitBtn.disabled = true;
+
+            submitBtn.textContent =
+                "SUBMITTING...";
+
+
+            const bookingData = {
+
+                student_name:
+                    document
+                        .getElementById("studentName")
+                        .value
+                        .trim(),
+
+                student_id:
+                    document
+                        .getElementById("studentId")
+                        .value
+                        .trim(),
+
+                semester_id:
+                    Number(semesterSelect.value),
+
+                course_teacher:
+                    document
+                        .getElementById("courseTeacher")
+                        .value
+                        .trim(),
+
+                lab_id:
+                    Number(labSelect.value),
+
+                booking_date:
+                    bookingDate.value,
+
+                start_time:
+                    selectedSlot.start_time,
+
+                end_time:
+                    selectedSlot.end_time,
+
+                booking_purpose:
+                    document
+                        .getElementById("purpose")
+                        .value
+                        .trim(),
+
+                status:
+                    "Pending"
+
+            };
+
+
+            const { error } =
+                await supabaseClient
+                    .from("bookings")
+                    .insert([bookingData]);
+
+
+            if (error) {
+
+                console.error(error);
+
+
+                if (error.code === "23505") {
+
+                    showMessage(
+                        "❌ Sorry! This time slot was just booked by someone else.",
+                        "error"
+                    );
+
+                } else {
+
+                    showMessage(
+                        "❌ Booking failed. Please try again.",
+                        "error"
+                    );
+
+                }
+
+
+                submitBtn.disabled = false;
+
+                submitBtn.textContent =
+                    "BOOK LAB NOW";
+
+                return;
+            }
+
+
+            showMessage(
+                "✅ Booking submitted successfully! Your booking is now Pending.",
+                "success"
+            );
+
+
+            bookingForm.reset();
+
+            selectedSlot = null;
+
+            timeSlotsContainer.innerHTML =
+                `<div class="loading">
+                    Select a Lab and Date first.
+                </div>`;
+
+
+            submitBtn.disabled = false;
+
+            submitBtn.textContent =
+                "BOOK LAB NOW";
+
+        }
+    );
+
+
+    /* ==========================================
+       INITIAL LOAD
+       ========================================== */
+
+    async function initialize() {
+
+        await loadSemesters();
+
+        await loadLabs();
+
+        await loadTimeSlots();
+
+    }
+
+
+    initialize();
+
+</script>
+
+</body>
+</html>
