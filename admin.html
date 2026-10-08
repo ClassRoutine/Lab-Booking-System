@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard | Lab Booking System</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f6fb;color:#172033}
+header{background:linear-gradient(135deg,#071a3d,#123b83);color:#fff;padding:22px}
+.wrap{max-width:1450px;margin:auto}.head{display:flex;justify-content:space-between;align-items:center;gap:15px}
+h1{margin:5px 0;font-size:25px}.sub{font-size:12px;opacity:.85}.pill{padding:9px 13px;border:1px solid #ffffff40;border-radius:999px;font-size:12px}
+main{max-width:1450px;margin:25px auto;padding:0 16px}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:18px 0}
+.card,.panel{background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 5px 22px #162c5010}
+.card{padding:18px}.label{font-size:11px;color:#718096;font-weight:bold}.num{font-size:28px;font-weight:900;color:#071a3d;margin-top:7px}
+.panel{overflow:hidden}.filters{padding:16px;display:grid;grid-template-columns:1fr 1fr 1fr 1.5fr auto;gap:10px;border-bottom:1px solid #e2e8f0}
+label{display:block;font-size:11px;color:#718096;font-weight:bold;margin-bottom:5px}input,select{width:100%;padding:11px;border:1px solid #d5dce8;border-radius:9px;background:#fff}
+button{border:0;border-radius:9px;padding:10px 13px;font-weight:bold;cursor:pointer}.clear{background:#eef3fb;color:#294e92}
+table{width:100%;border-collapse:collapse;min-width:1100px}th,td{padding:12px;border-bottom:1px solid #edf1f6;text-align:left;font-size:12px}th{background:#f8faff;color:#50617b;font-size:10px}
+.badge{padding:5px 8px;border-radius:999px;font-size:10px;font-weight:900}.pending{background:#fff7ed;color:#b45309}.approved{background:#ecfdf3;color:#15803d}.cancelled{background:#fef2f2;color:#b91c1c}
+.approve{background:#dcfce7;color:#166534}.cancel{background:#fee2e2;color:#991b1b}.disabled{opacity:.4;cursor:not-allowed}
+.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#071a3d,#123b83);padding:20px}.loginbox{width:min(430px,100%);background:#fff;border-radius:20px;padding:32px;box-shadow:0 25px 70px #0004}.loginbox h2{text-align:center;color:#071a3d}.field{margin:15px 0}.primary{width:100%;background:#1455c7;color:#fff}.msg{margin-top:12px;padding:10px;border-radius:8px;text-align:center;font-size:12px;font-weight:bold;background:#fee2e2;color:#991b1b}
+@media(max-width:1000px){.cards{grid-template-columns:repeat(3,1fr)}.filters{grid-template-columns:1fr 1fr 1fr}.filters div:last-child{grid-column:1/-1}}
+@media(max-width:650px){.cards{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr}.head{align-items:flex-start}.user{display:flex;flex-direction:column;align-items:flex-end}}
+</style></head><body>
+<div id="login" class="login"><div class="loginbox">
+<h2>VARENDRA UNIVERSITY</h2><p style="text-align:center;color:#718096">CSE • Lab Booking Admin</p>
+<form id="lf"><div class="field"><label>Supabase Auth Email / Username</label><input id="u" required></div>
+<div class="field"><label>Password</label><input id="p" type="password" required></div>
+<button id="lb" class="primary">LOGIN TO DASHBOARD</button><div id="lm"></div></form></div></div>
+<div id="app" style="display:none">
+<header><div class="wrap head"><div><div class="sub">VARENDRA UNIVERSITY • DEPARTMENT OF CSE</div><h1>Laboratory Booking Dashboard</h1><div class="sub">All laboratory reservations</div></div><div class="user"><div id="who" class="pill"></div><button id="lo" style="margin-top:8px;background:#ffffff18;color:#fff;border:1px solid #ffffff55">Logout</button></div></div></header>
+<main><h2>Booking Overview</h2><p id="notice" style="color:#718096;font-size:13px"></p>
+<div class="cards"><div class="card"><div class="label">TODAY</div><div class="num" id="s1">0</div></div><div class="card"><div class="label">PENDING</div><div class="num" id="s2">0</div></div><div class="card"><div class="label">APPROVED</div><div class="num" id="s3">0</div></div><div class="card"><div class="label">UPCOMING</div><div class="num" id="s4">0</div></div><div class="card"><div class="label">SHOWN</div><div class="num" id="s5">0</div></div></div>
+<div class="panel"><div class="filters"><div><label>Date</label><input id="df" type="date"></div><div><label>Lab</label><select id="lfilt"><option value="">All Labs</option></select></div><div><label>Status</label><select id="sf"><option value="">All Status</option><option>Pending</option><option>Approved</option><option>Cancelled</option></select></div><div><label>Search</label><input id="q" placeholder="Student / ID / Teacher"></div><div><label>&nbsp;</label><button id="clear" class="clear">Clear</button></div></div>
+<div style="overflow:auto"><table><thead><tr><th>Date</th><th>Time</th><th>Lab</th><th>Student</th><th>ID</th><th>Semester</th><th>Teacher</th><th>Purpose</th><th>Status</th><th>Action</th></tr></thead><tbody id="tb"></tbody></table></div></div>
+</main><footer style="text-align:center;color:#718096;font-size:12px;padding:20px">Designed &amp; Developed by <strong>Md. Tareq Ben Musha</strong> © 2026</footer></div>
+<script>
+const URL="https://wftskmfxlbbhoryajqjm.supabase.co",KEY="sb_publishable_i1ay8CjelMyvaJyQrd9pbw_I4NCXFdD";
+const sb=window.supabase.createClient(URL,KEY);let me,rows=[];
+const $=x=>document.getElementById(x), esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const today=()=>{let d=new Date(),o=d.getTimezoneOffset();return new Date(d-o*60000).toISOString().slice(0,10)};
+function tm(t){if(!t)return"";let [h,m]=t.split(":");h=+h;let a=h>=12?"PM":"AM";h=h%12||12;return h+":"+m+" "+a}
+async function profile(){let {data:{user}}=await sb.auth.getUser();let r=await sb.from("admin_users").select("*").eq("auth_user_id",user.id).eq("is_active",true).single();if(r.error)throw r.error;me=r.data}
+async function labs(){let r=await sb.from("labs").select("*").order("id");if(r.error)throw r.error;$("lfilt").innerHTML='<option value="">All Labs</option>'+r.data.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join("")}
+async function bookings(){let r=await sb.from("bookings").select("*, labs(name), semesters(name)").order("booking_date").order("start_time");if(r.error)throw r.error;rows=r.data||[];render()}
+function filtered(){let d=$("df").value,l=$("lfilt").value,s=$("sf").value,q=$("q").value.toLowerCase().trim();return rows.filter(b=>(!d||b.booking_date==d)&&(!l||String(b.lab_id)==l)&&(!s||b.status==s)&&(!q||[b.student_name,b.student_id,b.course_teacher,b.booking_purpose,b.labs?.name,b.semesters?.name].join(" ").toLowerCase().includes(q)))}
+function render(){let r=filtered(),t=today();$("s1").textContent=rows.filter(x=>x.booking_date==t).length;$("s2").textContent=rows.filter(x=>x.status=="Pending").length;$("s3").textContent=rows.filter(x=>x.status=="Approved").length;let base=$("df").value||t;$("s4").textContent=rows.filter(x=>x.booking_date>=base&&x.status!="Cancelled").length;$("s5").textContent=r.length;
+$("tb").innerHTML=r.map(b=>{let ok=me.role=="super_admin"||(me.role=="lab_incharge"&&+me.lab_id===+b.lab_id),ap=b.status!="Pending"||!ok,ca=b.status=="Cancelled"||!ok;return `<tr><td>${esc(b.booking_date)}</td><td>${tm(b.start_time)} – ${tm(b.end_time)}</td><td>${esc(b.labs?.name||"Lab "+b.lab_id)}</td><td><b>${esc(b.student_name)}</b></td><td>${esc(b.student_id)}</td><td>${esc(b.semesters?.name||b.semester_id)}</td><td>${esc(b.course_teacher)}</td><td>${esc(b.booking_purpose||"—")}</td><td><span class="badge ${String(b.status).toLowerCase()}">${esc(b.status)}</span></td><td><button class="approve ${ap?"disabled":""}" ${ap?"disabled":""} onclick="act('approve',${b.id})">✓ Approve</button> <button class="cancel ${ca?"disabled":""}" ${ca?"disabled":""} onclick="act('cancel',${b.id})">Cancel</button></td></tr>`}).join("")}
+async function act(a,id){if(!confirm(a=="approve"?"Approve this booking?":"Cancel this booking?"))return;let r=await sb.rpc(a=="approve"?"approve_booking":"cancel_booking",{p_booking_id:id});if(r.error)return alert(r.error.message);await bookings()}
+$("lf").onsubmit=async e=>{e.preventDefault();$("lb").disabled=true;try{let r=await sb.auth.signInWithPassword({email:$("u").value.trim(),password:$("p").value});if(r.error)throw r.error;await open()}catch(e){$("lm").className="msg";$("lm").textContent=e.message||"Login failed"}finally{$("lb").disabled=false}}
+async function open(){await profile();await labs();await bookings();$("login").style.display="none";$("app").style.display="block";$("who").textContent=me.display_name+" • "+(me.role=="super_admin"?"Super Admin":"Lab "+me.lab_id+" In-charge");$("notice").textContent=me.role=="super_admin"?"Super Admin: full approval/cancellation access.":"You can view all 8 labs; approval/cancellation is limited to your assigned lab.";$("df").value=today();render()}
+["df","lfilt","sf"].forEach(x=>$(x).onchange=render);$("q").oninput=render;$("clear").onclick=()=>{$("df").value="";$("lfilt").value="";$("sf").value="";$("q").value="";render()};$("lo").onclick=async()=>{await sb.auth.signOut();location.reload()};
+(async()=>{let r=await sb.auth.getSession();if(r.data.session)try{await open()}catch(e){await sb.auth.signOut()}})();
+</script></body></html>
