@@ -1,3 +1,126 @@
+Perfect. Monjur Rahman-এর Auth UUID পাওয়া গেছে:
+
+bcdde2a6-4e5f-4583-ad93-eb81173d6fe3
+
+Supabase SQL Editor-এ নিচের পুরো SQL-টা চালাও:
+
+INSERT INTO public.admin_users
+(
+    auth_user_id,
+    username,
+    display_name,
+    role,
+    lab_id,
+    is_active
+)
+VALUES
+(
+    'bcdde2a6-4e5f-4583-ad93-eb81173d6fe3',
+    'monjur2006',
+    'Monjur Rahman',
+    'lab_incharge',
+    (
+        SELECT id
+        FROM public.labs
+        WHERE name = 'Software Engineering Lab'
+        LIMIT 1
+    ),
+    true
+)
+ON CONFLICT (auth_user_id)
+DO UPDATE SET
+    username = EXCLUDED.username,
+    display_name = EXCLUDED.display_name,
+    role = EXCLUDED.role,
+    lab_id = EXCLUDED.lab_id,
+    is_active = true;
+
+তারপর verify করার জন্য:
+
+SELECT
+    au.auth_user_id,
+    au.username,
+    au.display_name,
+    au.role,
+    au.lab_id,
+    au.is_active,
+    l.name AS lab_name
+FROM public.admin_users au
+LEFT JOIN public.labs l
+    ON l.id = au.lab_id
+WHERE au.username = 'monjur2006';
+
+Expected result:
+
+Username       : monjur2006
+Display Name   : Monjur Rahman
+Role           : lab_incharge
+Lab            : Software Engineering Lab
+Active         : true
+Monjur Login
+Email    : mrahman.cse77@gmail.com
+Username : monjur2006
+Password : monjur2006
+
+আর তোমার Admin Dashboard-এর ADMIN_LOGIN_EMAILS-এ অবশ্যই এটা থাকতে হবে:
+
+const ADMIN_LOGIN_EMAILS = {
+    tareq2001: "osthirshaikat1133@gmail.com",
+    mahmud2004: "rifat.vu@gmail.com",
+    monjur2006: "mrahman.cse77@gmail.com"
+};
+
+এটা করলে “This account is not registered as an active Lab Booking administrator.” error আর Monjur-এর ক্ষেত্রে আসার কথা নয়—যদি Auth account-এর email/password সঠিক থাকে।
+
+Today 4:59 AM
+This username is not configured for a real Supabase email yet.   etai dekhay akhn o
+
+হ্যাঁ, সমস্যাটা আমি ধরেছি। তোমার যে Dashboard ফাইলটা চলছে, সেটাতে monjur2006 এখনো email mapping-এর মধ্যে ছিল না। তাই Supabase পর্যন্ত login request-ই যাচ্ছিল না।
+
+আমি ফাইলটা ঠিক করে দিয়েছি। এখন এতে আছে:
+
+tareq2001  → osthirshaikat1133@gmail.com
+mahmud2004 → rifat.vu@gmail.com
+monjur2006 → mrahman.cse77@gmail.com
+এখন এই নতুন Dashboard ফাইলটা ব্যবহার করো
+
+Download — Admin Dashboard MONJUR FIXED
+
+তারপর:
+
+Username: monjur2006
+Password: monjur2006
+
+পুরোনো admin.html/Dashboard ফাইল দিয়ে login করার চেষ্টা করো না। নতুন admin_dashboard_MONJUR_FIXED.html ফাইলটাই খুলে test করো।
+
+আর যদি এরপর “This account is not registered as an active Lab Booking administrator” দেখায়, তাহলে সেটা আর email-mapping সমস্যা হবে না—তখন admin_users database row-এর সমস্যা হবে। সেই ক্ষেত্রে আমি পরের ধাপটা ঠিক করে দেব।
+
+admin_dashboard_MONJUR_FIXED.html
+HTML
+Today 5:06 AM
+dashboard ta mobile and pc both responsive banay daw
+
+অবশ্যই। Dashboard-টা PC + Laptop + Tablet + Mobile—সব screen size-এর জন্য responsive করে দিলাম।
+
+কী কী ঠিক করেছি
+📱 Mobile-এ সুন্দর single-column layout
+💻 PC/Laptop-এ full-width dashboard
+📊 Stats cards responsive
+🔎 Filter section mobile-এ একটার নিচে একটা
+📋 Booking table mobile-এ horizontal scroll করবে, তাই কোনো column কেটে যাবে না
+👤 Profile section mobile-friendly
+🔐 Login page mobile responsive
+🚪 Logout button ছোট screen-এও ঠিকভাবে থাকবে
+📝 Remarks textarea mobile-friendly
+Touch scrolling-এর জন্য smooth horizontal table scrolling
+ছোট ফোনের জন্যও আলাদা breakpoint দেওয়া হয়েছে
+Final Responsive Dashboard
+
+Download Admin Dashboard — Responsive FINAL
+
+এই ফাইলটাই এখন ব্যবহার করো।
+তোমার monjur2006 login mapping-টাও আগের fixed version-এর সঙ্গে রাখা হয়েছে।
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,6 +222,18 @@ textarea{border:1px solid #ccd6e4;border-radius:8px;padding:8px;min-width:190px;
 })();
 </script>
 
+
+<style>
+/* Responsive desktop + mobile dashboard */
+html,body{width:100%;overflow-x:hidden}
+.top{flex-wrap:wrap}.top>div:first-child{min-width:0}.top h1{line-height:1.25}.wrap{padding-left:clamp(10px,2vw,24px);padding-right:clamp(10px,2vw,24px)}
+.profile>div{min-width:0}.profile strong{word-break:break-word}
+.filters{align-items:center}.filters input,.filters select{min-width:0}
+.table-card{overflow:hidden}.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+@media(max-width:900px){.top{padding:16px 14px}.top h1{font-size:18px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}.table th,.table td{font-size:12px;padding:11px 9px}}
+@media(max-width:600px){.login-page{padding:14px}.login-card{padding:25px 18px;border-radius:16px}.login-card h1{font-size:23px}.top{display:flex;align-items:flex-start;gap:10px}.top>div:first-child{flex:1}.logout{padding:8px 11px;font-size:12px}.wrap{margin:14px auto;padding:0 9px}.profile{padding:13px 14px;margin-bottom:12px;display:block}.profile>div+div{margin-top:8px}.stats{gap:9px;margin-bottom:12px}.stat{padding:13px;border-radius:11px}.stat b{font-size:22px}.stat span{font-size:11px}.filters{grid-template-columns:1fr;gap:8px;padding:11px;margin-bottom:12px}.filters input,.filters select{padding:10px;font-size:13px}.table-card{border-radius:12px;margin-top:12px}.table-title{padding:13px;font-size:13px;line-height:1.45}.table-scroll{display:block;max-width:100%}.table,.table-card table{min-width:1500px}.table th,.table td{font-size:11px;padding:10px 8px}.table th{position:sticky;top:0}.action{padding:7px 8px;font-size:10px}.table td:nth-child(10){min-width:220px}textarea{min-width:180px;font-size:11px}footer{padding:18px 10px;font-size:11px}}
+@media(max-width:380px){.stats{grid-template-columns:1fr}.top h1{font-size:16px}.top small{font-size:10px}.logout{font-size:11px;padding:7px 9px}}
+</style>
 </head>
 <body>
 <section id="loginPage" class="login-page"><div class="login-card">
