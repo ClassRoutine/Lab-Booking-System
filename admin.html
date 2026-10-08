@@ -81,8 +81,20 @@ textarea{border:1px solid #ccd6e4;border-radius:8px;padding:8px;min-width:190px;
     "Digital System & Computer Architecture Lab":"Digital System & Computer Architecture Lab (DSCAL-130)",
     "Microprocessor & Interfacing Lab":"Microprocessor & Interfacing Lab (MIL-131)"
   };
+
   window.formatLabDisplay = function(name){
-    return LAB_DISPLAY[name] || name || "";
+    if(!name) return "";
+    const s = String(name).trim();
+
+    // Already formatted: don't append twice.
+    if(/\([A-Z]+-\d+\)\s*$/.test(s)) return s;
+
+    // Exact database-name match.
+    if(LAB_DISPLAY[s]) return LAB_DISPLAY[s];
+
+    // Normalize common spacing/casing variations.
+    const key = Object.keys(LAB_DISPLAY).find(k => k.toLowerCase() === s.toLowerCase());
+    return key ? LAB_DISPLAY[key] : s;
   };
 })();
 </script>
