@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Super Admin Control Center</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#eef3f9;
+    color:#172033;
+    min-height:100vh
+}
+
+header{
+    background:linear-gradient(135deg,#06183a,#0d3e89,#155fc4);
+    color:white;
+    padding:25px 22px;
+    box-shadow:0 5px 25px rgba(0,0,0,.2)
+}
+
+.header{
+    max-width:1450px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px
+}
+
+.brand small{
+    font-weight:800;
+    letter-spacing:1.5px
+}
+
+.brand h1{
+    font-size:28px;
+    margin:5px 0
+}
+
+.brand p{
+    font-size:13px;
+    opacity:.85
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap
+}
+
+.badge{
+    padding:10px 14px;
+    border-radius:10px;
+    background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.25);
+    font-size:13px;
+    font-weight:bold
+}
+
+.logout{
+    border:0;
+    padding:10px 15px;
+    border-radius:9px;
+    background:white;
+    color:#174483;
+    font-weight:bold;
+    cursor:pointer
+}
+
+main{
+    max-width:1450px;
+    margin:28px auto 50px;
+    padding:0 20px
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:22px
+}
+
+.stat{
+    background:white;
+    border:1px solid #dce4ef;
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 5px 20px rgba(20,50,90,.06)
+}
+
+.stat-title{
+    font-size:12px;
+    color:#718096;
+    font-weight:bold;
+    text-transform:uppercase
+}
+
+.stat-number{
+    color:#123f82;
+    font-size:28px;
+    font-weight:900;
+    margin-top:8px
+}
+
+.panel{
+    background:white;
+    border:1px solid #dce4ef;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 7px 28px rgba(20,50,90,.07)
+}
+
+.panel-head{
+    padding:22px;
+    border-bottom:1px solid #e4eaf2;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap
+}
+
+.panel-head h2{
+    color:#0c3675;
+    font-size:21px
+}
+
+.panel-head p{
+    color:#758198;
+    font-size:13px;
+    margin-top:5px
+}
+
+.refresh{
+    border:0;
+    background:#eaf2ff;
+    color:#1555a6;
+    font-weight:bold;
+    padding:10px 15px;
+    border-radius:9px;
+    cursor:pointer
+}
+
+.note{
+    margin:18px 22px;
+    padding:13px 15px;
+    background:#f3f7ff;
+    border:1px solid #dce8fc;
+    border-radius:10px;
+    color:#48617f;
+    font-size:12px;
+    line-height:1.6
+}
+
+.table-wrap{
+    overflow:auto
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1200px
+}
+
+th{
+    background:#f5f8fc;
+    color:#53637b;
+    font-size:12px;
+    text-transform:uppercase;
+    padding:14px 10px;
+    border-bottom:1px solid #dfe6ef;
+    text-align:center;
+    white-space:nowrap
+}
+
+td{
+    padding:14px 10px;
+    border-bottom:1px solid #e9eef5;
+    text-align:center;
+    vertical-align:middle;
+    font-size:13px
+}
+
+tr:hover td{
+    background:#fbfdff
+}
+
+.name-cell{
+    text-align:left;
+    min-width:190px
+}
+
+.name{
+    font-weight:900;
+    color:#173b72
+}
+
+input,
+select{
+    width:100%;
+    border:1px solid #ccd7e5;
+    border-radius:8px;
+    padding:9px;
+    outline:none;
+    font-size:12px;
+    background:white
+}
+
+input:focus,
+select:focus{
+    border-color:#2770d8;
+    box-shadow:0 0 0 3px rgba(39,112,216,.1)
+}
+
+.lab-box{
+    text-align:left;
+    min-width:260px
+}
+
+.lab-item{
+    display:flex;
+    gap:7px;
+    margin:6px 0;
+    line-height:1.3
+}
+
+.lab-item input{
+    width:auto;
+    margin-top:2px
+}
+
+.permission{
+    min-width:180px
+}
+
+.status{
+    white-space:nowrap;
+    font-weight:bold
+}
+
+.save{
+    border:0;
+    background:linear-gradient(135deg,#1458bd,#2874df);
+    color:white;
+    padding:10px 16px;
+    border-radius:9px;
+    font-weight:900;
+    cursor:pointer
+}
+
+.save:disabled{
+    opacity:.5;
+    cursor:not-allowed
+}
+
+.loading{
+    text-align:center;
+    padding:40px;
+    color:#758198;
+    font-weight:bold
+}
+
+.message{
+    display:none;
+    padding:14px;
+    margin-bottom:18px;
+    border-radius:10px;
+    font-weight:bold;
+    font-size:13px
+}
+
+.success{
+    display:block;
+    background:#e8f8ee;
+    color:#16713e;
+    border:1px solid #bde8ce
+}
+
+.error{
+    display:block;
+    background:#fff0f0;
+    color:#a32e2e;
+    border:1px solid #f1caca
+}
+
+.login-screen{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:linear-gradient(135deg,#06183a,#0d3e89)
+}
+
+.login-card{
+    width:min(430px,100%);
+    background:white;
+    border-radius:20px;
+    padding:32px;
+    box-shadow:0 20px 70px rgba(0,0,0,.25)
+}
+
+.login-card h1{
+    text-align:center;
+    color:#0c3675;
+    margin-bottom:8px
+}
+
+.login-card p{
+    text-align:center;
+    color:#758198;
+    font-size:13px;
+    margin-bottom:25px
+}
+
+.login-group{
+    margin-bottom:15px
+}
+
+.login-group label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    color:#40506a;
+    margin-bottom:7px
+}
+
+.login-btn{
+    width:100%;
+    border:0;
+    background:linear-gradient(135deg,#1458bd,#2874df);
+    color:white;
+    padding:13px;
+    border-radius:10px;
+    font-weight:900;
+    cursor:pointer
+}
+
+.hidden{
+    display:none!important
+}
+
+footer{
+    text-align:center;
+    color:#7c8799;
+    font-size:12px;
+    padding:25px
+}
+
+footer strong{
+    color:#315a9c
+}
+
+@media(max-width:900px){
+
+    .stats{
+        grid-template-columns:repeat(2,1fr)
+    }
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start
+    }
+}
+
+@media(max-width:550px){
+
+    main{
+        padding:0 10px
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr
+    }
+
+    .stat{
+        padding:15px
+    }
+
+    .stat-number{
+        font-size:22px
+    }
+
+    .brand h1{
+        font-size:22px
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="loginScreen" class="login-screen">
+
+    <div class="login-card">
+
+        <h1>👑 Super Admin</h1>
+
+        <p>
+            Varendra University<br>
+            Department of Computer Science & Engineering
+        </p>
+
+        <div id="loginMessage"></div>
+
+        <div class="login-group">
+
+            <label>USERNAME</label>
+
+            <input
+                id="username"
+                type="text"
+                value="tareq2001"
+                autocomplete="username"
+            >
+
+        </div>
+
+        <div class="login-group">
+
+            <label>PASSWORD</label>
+
+            <input
+                id="password"
+                type="password"
+                placeholder="Enter password"
+                autocomplete="current-password"
+            >
+
+        </div>
+
+        <button
+            class="login-btn"
+            id="loginBtn"
+        >
+            LOGIN AS SUPER ADMIN
+        </button>
+
+    </div>
+
+</div>
+
+
+<div id="app" class="hidden">
+
+<header>
+
+    <div class="header">
+
+        <div class="brand">
+
+            <small>VARENDRA UNIVERSITY</small>
+
+            <h1>
+                Super Admin Control Center
+            </h1>
+
+            <p>
+                Department of Computer Science & Engineering
+            </p>
+
+        </div>
+
+        <div class="header-right">
+
+            <div class="badge">
+                👑 Md.Tareq Ben Musha · Super Admin
+            </div>
+
+            <button
+                class="logout"
+                id="logoutBtn"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <div id="message"></div>
+
+    <section class="stats">
+
+        <div class="stat">
+            <div class="stat-title">
+                Total In-Charge
+            </div>
+
+            <div
+                class="stat-number"
+                id="total"
+            >
+                0
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">
+                Active Accounts
+            </div>
+
+            <div
+                class="stat-number"
+                id="active"
+            >
+                0
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">
+                Booking Managers
+            </div>
+
+            <div
+                class="stat-number"
+                id="managers"
+            >
+                0
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">
+                View Only
+            </div>
+
+            <div
+                class="stat-number"
+                id="viewOnly"
+            >
+                0
+            </div>
+        </div>
+
+    </section>
+
+
+    <section class="panel">
+
+        <div class="panel-head">
+
+            <div>
+
+                <h2>
+                    👥 Lab In-Charge Management
+                </h2>
+
+                <p>
+                    Manage laboratories, permissions,
+                    usernames, passwords and account status.
+                </p>
+
+            </div>
+
+            <button
+                class="refresh"
+                id="refreshBtn"
+            >
+                ↻ Refresh
+            </button>
+
+        </div>
+
+
+        <div class="note">
+
+            <strong>View Only:</strong>
+            Can see all bookings and edit remarks.
+
+            <br>
+
+            <strong>View + Approve + Cancel:</strong>
+            Can additionally approve or cancel Pending bookings.
+
+            <br>
+
+            <strong>Super Admin:</strong>
+            Always has full control.
+
+        </div>
+
+
+        <div
+            id="loading"
+            class="loading"
+        >
+            Loading administrators...
+        </div>
+
+
+        <div
+            id="tableWrap"
+            class="table-wrap hidden"
+        >
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            In-Charge
+                        </th>
+
+                        <th>
+                            Username
+                        </th>
+
+                        <th>
+                            Assigned Laboratories
+                        </th>
+
+                        <th>
+                            Booking Permission
+                        </th>
+
+                        <th>
+                            Account Status
+                        </th>
+
+                        <th>
+                            New Password
+                        </th>
+
+                        <th>
+                            Save
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tbody"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <strong>
+        Department of Computer Science & Engineering
+    </strong>
+
+    <br>
+
+    Varendra University
+
+    <br><br>
+
+    Designed & Developed by Md. Tareq Ben Musha
+
+</footer>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+    "https://wftskmfxlbbhoryajqjm.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_i1ay8CjelMyvaJyQrd9pbw_I4NCXFdD";
+
+const sb =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+        {
+            auth:{
+                persistSession:true,
+                autoRefreshToken:true
+            }
+        }
+    );
+
+
+const ADMIN_EMAILS = {
+
+    tareq2001:
+        "osthirshaikat1133@gmail.com",
+
+    mahmud2004:
+        "rifat.vu@gmail.com",
+
+    monjur2006:
+        "mrahman.cse77@gmail.com"
+
+};
+
+
+const LAB_NAMES = {
+
+    "Database Management System Lab":
+        "Database Management System Lab (DMSL-103)",
+
+    "Computer Networks Lab":
+        "Computer Networks Lab (CNL-104)",
+
+    "Data Structure & Algorithm Lab":
+        "Data Structure & Algorithm Lab (DSAL-106)",
+
+    "Electrical & Electronics Lab":
+        "Electrical & Electronics Lab (EEL-127)",
+
+    "Basic Computing Lab":
+        "Basic Computing Lab (BCL-128)",
+
+    "Software Engineering Lab":
+        "Software Engineering Lab (SEL-129)",
+
+    "Digital System & Computer Architecture Lab":
+        "Digital System & Computer Architecture Lab (DSCAL-130)",
+
+    "Microprocessor & Interfacing Lab":
+        "Microprocessor & Interfacing Lab (MIL-131)"
+
+};
+
+
+let labs = [];
+let admins = [];
+
+
+function loginMessage(
+    text,
+    type
+){
+
+    const el =
+        document.getElementById(
+            "loginMessage"
+        );
+
+    el.textContent = text;
+
+    el.className =
+        "message " + type;
+}
+
+
+function message(
+    text,
+    type
+){
+
+    const el =
+        document.getElementById(
+            "message"
+        );
+
+    el.textContent = text;
+
+    el.className =
+        "message " + type;
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+function labName(
+    name
+){
+
+    return LAB_NAMES[name] || name;
+}
+
+
+/* ================= LOGIN ================= */
+
+async function login(){
+
+    const username =
+        document
+            .getElementById("username")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const password =
+        document
+            .getElementById("password")
+            .value;
+
+    if(!username || !password){
+
+        loginMessage(
+            "Enter username and password.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const email =
+        ADMIN_EMAILS[username];
+
+    if(!email){
+
+        loginMessage(
+            "This account is not configured in the Super Admin page.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            "loginBtn"
+        );
+
+    button.disabled = true;
+
+    button.textContent =
+        "LOGGING IN...";
+
+
+    const {
+        error
+    } =
+        await sb.auth.signInWithPassword({
+
+            email,
+            password
+
+        });
+
+
+    if(error){
+
+        loginMessage(
+            error.message,
+            "error"
+        );
+
+        button.disabled = false;
+
+        button.textContent =
+            "LOGIN AS SUPER ADMIN";
+
+        return;
+    }
+
+
+    const {
+        data
+    } =
+        await sb.auth.getUser();
+
+
+    const user =
+        data?.user;
+
+
+    if(!user){
+
+        await sb.auth.signOut();
+
+        loginMessage(
+            "Unable to verify account.",
+            "error"
+        );
+
+        button.disabled = false;
+
+        button.textContent =
+            "LOGIN AS SUPER ADMIN";
+
+        return;
+    }
+
+
+    const {
+        data:profile
+    } =
+        await sb
+            .from("admin_users")
+            .select("*")
+            .eq(
+                "auth_user_id",
+                user.id
+            )
+            .maybeSingle();
+
+
+    if(
+        !profile ||
+        profile.role !== "super_admin" ||
+        !profile.is_active
+    ){
+
+        await sb.auth.signOut();
+
+        loginMessage(
+            "Super Admin access denied.",
+            "error"
+        );
+
+        button.disabled = false;
+
+        button.textContent =
+            "LOGIN AS SUPER ADMIN";
+
+        return;
+    }
+
+
+    document
+        .getElementById("loginScreen")
+        .classList
+        .add("hidden");
+
+
+    document
+        .getElementById("app")
+        .classList
+        .remove("hidden");
+
+
+    loadData();
+}
+
+
+document
+    .getElementById("loginBtn")
+    .onclick = login;
+
+
+document
+    .getElementById("password")
+    .addEventListener(
+        "keydown",
+        e=>{
+            if(e.key==="Enter"){
+                login();
+            }
+        }
+    );
+
+
+/* ================= LOAD DATA ================= */
+
+async function loadData(){
+
+    document
+        .getElementById("loading")
+        .classList
+        .remove("hidden");
+
+    document
+        .getElementById("tableWrap")
+        .classList
+        .add("hidden");
+
+
+    const labResult =
+        await sb
+            .from("labs")
+            .select("id,name")
+            .order("id");
+
+
+    if(labResult.error){
+
+        message(
+            labResult.error.message,
+            "error"
+        );
+
+        return;
+    }
+
+
+    labs =
+        labResult.data || [];
+
+
+    const adminResult =
+        await sb
+            .from("admin_users")
+            .select(
+                "id,auth_user_id,username,display_name,role,lab_id,is_active,can_manage_bookings"
+            )
+            .eq(
+                "role",
+                "lab_incharge"
+            )
+            .order("username");
+
+
+    if(adminResult.error){
+
+        message(
+            adminResult.error.message,
+            "error"
+        );
+
+        return;
+    }
+
+
+    admins =
+        adminResult.data || [];
+
+
+    const accessResult =
+        await sb
+            .from("admin_lab_access")
+            .select(
+                "admin_user_id,lab_id"
+            );
+
+
+    if(accessResult.error){
+
+        message(
+            accessResult.error.message,
+            "error"
+        );
+
+        return;
+    }
+
+
+    const map = {};
+
+
+    (
+        accessResult.data || []
+    ).forEach(row=>{
+
+        if(!map[row.admin_user_id]){
+            map[row.admin_user_id] = [];
+        }
+
+        map[row.admin_user_id]
+            .push(
+                Number(row.lab_id)
+            );
+
+    });
+
+
+    admins =
+        admins.map(admin=>({
+
+            ...admin,
+
+            labIds:
+                map[admin.id] ||
+                (
+                    admin.lab_id
+                    ? [Number(admin.lab_id)]
+                    : []
+                )
+
+        }));
+
+
+    renderStats();
+
+    renderTable();
+
+
+    document
+        .getElementById("loading")
+        .classList
+        .add("hidden");
+
+    document
+        .getElementById("tableWrap")
+        .classList
+        .remove("hidden");
+}
+
+
+/* ================= STATS ================= */
+
+function renderStats(){
+
+    document
+        .getElementById("total")
+        .textContent =
+            admins.length;
+
+
+    document
+        .getElementById("active")
+        .textContent =
+            admins.filter(
+                a=>a.is_active
+            ).length;
+
+
+    document
+        .getElementById("managers")
+        .textContent =
+            admins.filter(
+                a=>a.can_manage_bookings
+            ).length;
+
+
+    document
+        .getElementById("viewOnly")
+        .textContent =
+            admins.filter(
+                a=>!a.can_manage_bookings
+            ).length;
+}
+
+
+/* ================= TABLE ================= */
+
+function renderTable(){
+
+    const tbody =
+        document.getElementById(
+            "tbody"
+        );
+
+    tbody.innerHTML = "";
+
+
+    admins.forEach(admin=>{
+
+        const tr =
+            document.createElement("tr");
+
+
+        /* NAME */
+
+        const name =
+            document.createElement("td");
+
+        name.className =
+            "name-cell";
+
+        name.innerHTML =
+            `<div class="name">
+                ${escapeHtml(
+                    admin.display_name
+                )}
+            </div>`;
+
+
+
+        /* USERNAME */
+
+        const username =
+            document.createElement("td");
+
+        username.innerHTML =
+            `<input
+                id="u-${admin.id}"
+                value="${escapeAttr(
+                    admin.username
+                )}"
+            >`;
+
+
+
+        /* LABS */
+
+        const labsTd =
+            document.createElement("td");
+
+        labsTd.className =
+            "lab-box";
+
+
+        labs.forEach(lab=>{
+
+            const label =
+                document.createElement("label");
+
+            label.className =
+                "lab-item";
+
+
+            const checkbox =
+                document.createElement("input");
+
+            checkbox.type =
+                "checkbox";
+
+            checkbox.className =
+                `lab-${admin.id}`;
+
+            checkbox.value =
+                lab.id;
+
+            checkbox.checked =
+                admin.labIds.includes(
+                    Number(lab.id)
+                );
+
+
+            const text =
+                document.createElement("span");
+
+            text.textContent =
+                labName(lab.name);
+
+
+            label.appendChild(
+                checkbox
+            );
+
+            label.appendChild(
+                text
+            );
+
+            labsTd.appendChild(
+                label
+            );
+
+        });
+
+
+
+        /* PERMISSION */
+
+        const permission =
+            document.createElement("td");
+
+        permission.className =
+            "permission";
+
+
+        permission.innerHTML = `
+
+            <select id="p-${admin.id}">
+
+                <option
+                    value="view"
+                    ${
+                        !admin.can_manage_bookings
+                        ? "selected"
+                        : ""
+                    }
+                >
+                    👁 View Only
+                </option>
+
+                <option
+                    value="manage"
+                    ${
+                        admin.can_manage_bookings
+                        ? "selected"
+                        : ""
+                    }
+                >
+                    ✅ View + Approve + Cancel
+                </option>
+
+            </select>
+
+        `;
+
+
+
+        /* STATUS */
+
+        const status =
+            document.createElement("td");
+
+        status.className =
+            "status";
+
+
+        status.innerHTML = `
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    id="a-${admin.id}"
+                    ${
+                        admin.is_active
+                        ? "checked"
+                        : ""
+                    }
+                >
+
+                ${
+                    admin.is_active
+                    ? "🟢 ACTIVE"
+                    : "🔴 INACTIVE"
+                }
+
+            </label>
+
+        `;
+
+
+
+        /* PASSWORD */
+
+        const password =
+            document.createElement("td");
+
+        password.innerHTML = `
+
+            <input
+                type="password"
+                id="pw-${admin.id}"
+                placeholder="New password"
+                autocomplete="new-password"
+            >
+
+        `;
+
+
+
+        /* SAVE */
+
+        const save =
+            document.createElement("td");
+
+        save.innerHTML = `
+
+            <button
+                class="save"
+                id="s-${admin.id}"
+            >
+                SAVE
+            </button>
+
+        `;
+
+
+        save
+            .querySelector("button")
+            .onclick =
+                ()=>saveAdmin(admin);
+
+
+        tr.appendChild(name);
+        tr.appendChild(username);
+        tr.appendChild(labsTd);
+        tr.appendChild(permission);
+        tr.appendChild(status);
+        tr.appendChild(password);
+        tr.appendChild(save);
+
+
+        tbody.appendChild(tr);
+
+    });
+}
+
+
+/* ================= SAVE ================= */
+
+async function saveAdmin(admin){
+
+    const button =
+        document.getElementById(
+            `s-${admin.id}`
+        );
+
+    const username =
+        document.getElementById(
+            `u-${admin.id}`
+        ).value
+         .trim()
+         .toLowerCase();
+
+
+    const permission =
+        document.getElementById(
+            `p-${admin.id}`
+        ).value;
+
+
+    const active =
+        document.getElementById(
+            `a-${admin.id}`
+        ).checked;
+
+
+    const password =
+        document.getElementById(
+            `pw-${admin.id}`
+        ).value;
+
+
+    const labIds =
+        Array.from(
+            document.querySelectorAll(
+                `.lab-${admin.id}:checked`
+            )
+        ).map(
+            x=>Number(x.value)
+        );
+
+
+    if(!username){
+
+        message(
+            "Username cannot be empty.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(labIds.length===0){
+
+        message(
+            "At least one laboratory must be assigned.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(
+        password &&
+        password.length < 6
+    ){
+
+        message(
+            "Password must be at least 6 characters.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(
+        !confirm(
+            `Save changes for ${admin.display_name}?`
+        )
+    ){
+        return;
+    }
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "SAVING...";
+
+
+    try{
+
+        const {
+            data
+        } =
+            await sb.auth.getSession();
+
+
+        const session =
+            data?.session;
+
+
+        if(!session){
+
+            throw new Error(
+                "Session expired. Please login again."
+            );
+
+        }
+
+
+        const payload = {
+
+            admin_user_id:
+                admin.id,
+
+            username:
+                username,
+
+            display_name:
+                admin.display_name,
+
+            is_active:
+                active,
+
+            can_manage_bookings:
+                permission === "manage",
+
+            lab_ids:
+                labIds
+
+        };
+
+
+        if(password){
+            payload.password =
+                password;
+        }
+
+
+        const response =
+            await fetch(
+
+                `${SUPABASE_URL}/functions/v1/manage-admin`,
+
+                {
+
+                    method:"POST",
+
+                    headers:{
+
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            `Bearer ${session.access_token}`,
+
+                        "apikey":
+                            SUPABASE_KEY
+
+                    },
+
+                    body:
+                        JSON.stringify(payload)
+
+                }
+
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if(!response.ok){
+
+            throw new Error(
+                result.error ||
+                "Update failed."
+            );
+
+        }
+
+
+        message(
+            `${admin.display_name} updated successfully.`,
+            "success"
+        );
+
+
+        await loadData();
+
+
+    }catch(error){
+
+        message(
+            error.message,
+            "error"
+        );
+
+    }finally{
+
+        button.disabled = false;
+
+        button.textContent =
+            "SAVE";
+    }
+}
+
+
+/* ================= LOGOUT ================= */
+
+document
+    .getElementById("logoutBtn")
+    .onclick =
+        async ()=>{
+
+            await sb.auth.signOut();
+
+            location.reload();
+
+        };
+
+
+/* ================= REFRESH ================= */
+
+document
+    .getElementById("refreshBtn")
+    .onclick =
+        loadData;
+
+
+/* ================= HELPERS ================= */
+
+function escapeHtml(value){
+
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+
+function escapeAttr(value){
+
+    return escapeHtml(value);
+}
+
+
+/* ================= SESSION RESTORE ================= */
+
+(async function(){
+
+    const {
+        data
+    } =
+        await sb.auth.getSession();
+
+
+    if(!data.session){
+        return;
+    }
+
+
+    const {
+        data:userData
+    } =
+        await sb.auth.getUser();
+
+
+    if(!userData?.user){
+        return;
+    }
+
+
+    const {
+        data:profile
+    } =
+        await sb
+            .from("admin_users")
+            .select("*")
+            .eq(
+                "auth_user_id",
+                userData.user.id
+            )
+            .maybeSingle();
+
+
+    if(
+        profile &&
+        profile.role === "super_admin" &&
+        profile.is_active
+    ){
+
+        document
+            .getElementById("loginScreen")
+            .classList
+            .add("hidden");
+
+
+        document
+            .getElementById("app")
+            .classList
+            .remove("hidden");
+
+
+        loadData();
+
+    }
+
+})();
+
+</script>
+
+</body>
+</html>
