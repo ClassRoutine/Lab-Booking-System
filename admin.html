@@ -30,6 +30,35 @@ tbody tr:last-child td{border-bottom:0}
 .status{display:inline-flex;align-items:center;justify-content:center;min-width:82px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
 .action{border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;color:#fff}
 textarea{border:1px solid #ccd6e4;border-radius:8px;padding:8px;min-width:190px;min-height:58px;resize:vertical;font-size:12px;background:#fff}
+
+/* ===== CSE CYBER-TECH PREMIUM THEME ===== */
+:root{--cse-blue:#0b3d91;--cse-cyan:#18c8ff;--cse-purple:#7c5cff;--cse-line:#dbe5f2}
+body{background:radial-gradient(circle at 15% 0%,rgba(24,200,255,.08),transparent 30%),radial-gradient(circle at 90% 10%,rgba(124,92,255,.07),transparent 28%),#f5f8fd}
+.top{position:relative;overflow:hidden;background:linear-gradient(135deg,#04132d 0%,#0a2c68 55%,#0a4b86 100%);border-bottom:1px solid rgba(24,200,255,.35);box-shadow:0 8px 30px rgba(4,19,45,.22)}
+.top:before{content:"01  10  1010  <CSE/>  DB  NET  CPU  0011  LAB  {}";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;white-space:nowrap;font:700 12px/1 monospace;letter-spacing:7px;color:rgba(24,200,255,.07);pointer-events:none;transform:rotate(-4deg) scale(1.15)}
+.top:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--cse-cyan),var(--cse-purple),transparent)}
+.top>div{position:relative;z-index:1}
+.top h1:before{content:"⌘";display:inline-grid;place-items:center;width:34px;height:34px;margin-right:10px;border:1px solid rgba(24,200,255,.5);border-radius:9px;color:var(--cse-cyan);font-size:18px;vertical-align:middle;background:rgba(24,200,255,.08)}
+.logout{backdrop-filter:blur(8px);transition:.2s;border-color:rgba(24,200,255,.28)}
+.logout:hover{transform:translateY(-1px);background:rgba(24,200,255,.14);border-color:rgba(24,200,255,.65)}
+.profile,.stat,.filters,.table-card{box-shadow:0 10px 30px rgba(15,35,70,.06);border-color:var(--cse-line)}
+.profile{position:relative;overflow:hidden}.profile:before{content:"</>";position:absolute;right:18px;top:7px;font:800 42px monospace;color:rgba(11,61,145,.055)}
+.profile strong,.table-title{color:var(--cse-blue)}
+.stat{position:relative;overflow:hidden;transition:.22s}.stat:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(15,35,70,.1)}
+.stat b{background:linear-gradient(90deg,var(--cse-blue),#1389c8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.filters input:focus,.filters select:focus{border-color:#36aee8;box-shadow:0 0 0 3px rgba(24,200,255,.1);outline:none}
+.table-card{box-shadow:0 14px 38px rgba(15,35,70,.09)}
+.table-title{background:linear-gradient(90deg,#f7fbff,#eef6ff);border-bottom:1px solid #d7e4f3}.table-title:before{content:"▣";color:var(--cse-cyan);margin-right:8px}
+.table thead th{background:linear-gradient(180deg,#eaf3fc,#e3edf8);color:#17345f}.table tbody tr{transition:.15s}.table tbody tr:hover td{background:#eef8ff}
+.action{transition:.18s}.action:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 5px 12px rgba(15,35,70,.12)}
+footer{position:relative;margin-top:28px;padding:28px 16px 34px!important;color:#64748b;background:linear-gradient(180deg,#edf4fb,#e5eef8);border-top:1px solid #d5e1ef}
+footer:before{content:"VARENDRA UNIVERSITY  •  DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING  •  LAB BOOKING SYSTEM";display:block;color:#173d83;font-size:11px;font-weight:800;letter-spacing:.9px;margin-bottom:7px}
+footer:after{content:"● SYSTEM ONLINE  •  © 2026";display:block;margin-top:7px;color:#0b7a4b;font-size:10px;font-weight:700;letter-spacing:.5px}
+.login-page{background:radial-gradient(circle at 15% 15%,rgba(24,200,255,.13),transparent 24%),radial-gradient(circle at 85% 80%,rgba(124,92,255,.15),transparent 28%),linear-gradient(135deg,#031128,#0a2c68 60%,#0b4b86)}
+.login-card{position:relative;overflow:hidden;border:1px solid rgba(24,200,255,.18);box-shadow:0 25px 80px rgba(0,0,0,.32)}
+.login-card:before{content:"</>  1010  CSE  DB  NET  CPU  0011";position:absolute;left:-30px;right:-30px;top:12px;white-space:nowrap;font:700 11px monospace;letter-spacing:5px;color:rgba(11,61,145,.07);transform:rotate(-5deg)}
+.login-btn{background:linear-gradient(135deg,#0b55bd,#0a8ec9);box-shadow:0 8px 20px rgba(11,85,189,.22);transition:.2s}.login-btn:hover{transform:translateY(-1px);box-shadow:0 11px 25px rgba(11,85,189,.3)}
+@media(max-width:520px){.top h1:before{width:27px;height:27px;margin-right:6px;font-size:14px}.top{padding:13px 10px}.top h1{font-size:15px}footer:before{font-size:8px;letter-spacing:.35px}}
 </style>
 
 <style id="center-all-table-content">
