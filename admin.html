@@ -68,6 +68,37 @@ textarea{border:1px solid #ccd6e4;border-radius:8px;padding:8px;min-width:190px;
 }
 </style>
 
+
+<script id="lab-display-format">
+(function(){
+  const LAB_DISPLAY = {
+    "Database Management System Lab":"Database Management System Lab (DMSL-103)",
+    "Computer Networks Lab":"Computer Networks Lab (CNL-104)",
+    "Data Structure & Algorithm Lab":"Data Structure & Algorithm Lab (DSAL-106)",
+    "Electrical & Electronics Lab":"Electrical & Electronics Lab (EEL-127)",
+    "Basic Computing Lab":"Basic Computing Lab (BCL-128)",
+    "Software Engineering Lab":"Software Engineering Lab (SEL-129)",
+    "Digital System & Computer Architecture Lab":"Digital System & Computer Architecture Lab (DSCAL-130)",
+    "Microprocessor & Interfacing Lab":"Microprocessor & Interfacing Lab (MIL-131)"
+  };
+
+  window.formatLabDisplay = function(name){
+    if(!name) return "";
+    const s = String(name).trim();
+
+    // Already formatted: don't append twice.
+    if(/\([A-Z]+-\d+\)\s*$/.test(s)) return s;
+
+    // Exact database-name match.
+    if(LAB_DISPLAY[s]) return LAB_DISPLAY[s];
+
+    // Normalize common spacing/casing variations.
+    const key = Object.keys(LAB_DISPLAY).find(k => k.toLowerCase() === s.toLowerCase());
+    return key ? LAB_DISPLAY[key] : s;
+  };
+})();
+</script>
+
 </head>
 <body>
 <section id="loginPage" class="login-page"><div class="login-card">
@@ -91,7 +122,8 @@ const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSe
 const loginPage=document.getElementById("loginPage"),dashboard=document.getElementById("dashboard"),loginForm=document.getElementById("loginForm"),username=document.getElementById("username"),password=document.getElementById("password"),loginBtn=document.getElementById("loginBtn"),loginError=document.getElementById("loginError");
 let admin=null,bookings=[];
 const ADMIN_LOGIN_EMAILS={
-  tareq2001:"osthirshaikat1133@gmail.com"
+  tareq2001:"osthirshaikat1133@gmail.com",
+  mahmud2004:"rifat.vu@gmail.com"
 };
 password.addEventListener("click",()=>password.focus());
 password.addEventListener("keydown",e=>e.stopPropagation());
@@ -99,7 +131,7 @@ function showError(m){loginError.textContent=m;loginError.classList.remove("hidd
 async function doLogin(){clearError();const u=username.value.trim().toLowerCase(),p=password.value;if(!u||!p){showError("Please enter username and password.");return}loginBtn.disabled=true;loginBtn.textContent="LOGGING IN...";try{const loginEmail=ADMIN_LOGIN_EMAILS[u];if(!loginEmail)throw new Error("This username is not configured for a real Supabase email yet.");const {data,error}=await sb.auth.signInWithPassword({email:loginEmail,password:p});if(error)throw error;const {data:profile,error:pe}=await sb.from("admin_users").select("*").eq("auth_user_id",data.user.id).eq("is_active",true).single();if(pe||!profile){await sb.auth.signOut();throw new Error("This account is not registered as an active Lab Booking administrator.")}admin=profile;loginPage.classList.add("hidden");dashboard.classList.remove("hidden");document.getElementById("adminName").textContent=admin.display_name||admin.username;document.getElementById("adminRole").textContent=admin.role==="super_admin"?"Super Admin":"Lab In-charge";document.getElementById("permissionText").textContent=admin.role==="super_admin"?"Manage every laboratory":"View and manage all laboratory bookings";document.getElementById("welcome").textContent="Signed in as "+admin.username;await loadLabs();await loadBookings()}catch(err){showError(err.message||"Login failed.")}finally{loginBtn.disabled=false;loginBtn.textContent="LOGIN"}}
 loginBtn.addEventListener("click",doLogin);
 loginForm.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();doLogin()}});
-async function loadLabs(){const {data,error}=await sb.from("labs").select("id,name").order("id");if(error){console.error(error);return}const s=document.getElementById("labFilter");s.innerHTML='<option value="">All Labs</option>';(data||[]).forEach(x=>{const o=document.createElement("option");o.value=x.id;o.textContent=x.name;s.appendChild(o)})}
+async function loadLabs(){const {data,error}=await sb.from("labs").select("id,name").order("id");if(error){console.error(error);return}const s=document.getElementById("labFilter");s.innerHTML='<option value="">All Labs</option>';(data||[]).forEach(x=>{const o=document.createElement("option");o.value=x.id;o.textContent=formatLabDisplay(x.name);s.appendChild(o)})}
 async function loadBookings(){const {data,error}=await sb.from("bookings").select("*,labs(id,name),semesters(name)").order("booking_date",{ascending:true}).order("start_time",{ascending:true});if(error){document.getElementById("bookingRows").innerHTML='<tr><td colspan="11" class="empty">Unable to load bookings: '+esc(error.message)+'</td></tr>';return}bookings=data||[];render()}
 
 function formatDateOnly(v){
