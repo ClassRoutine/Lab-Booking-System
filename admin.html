@@ -123,13 +123,12 @@ const loginPage=document.getElementById("loginPage"),dashboard=document.getEleme
 let admin=null,bookings=[];
 const ADMIN_LOGIN_EMAILS={
   tareq2001:"osthirshaikat1133@gmail.com",
-  mahmud2004:"rifat.vu@gmail.com",
-  monjur2006:"mrahman.cse77@gmail.com"
+  mahmud2004:"rifat.vu@gmail.com"
 };
 password.addEventListener("click",()=>password.focus());
 password.addEventListener("keydown",e=>e.stopPropagation());
 function showError(m){loginError.textContent=m;loginError.classList.remove("hidden")}function clearError(){loginError.textContent="";loginError.classList.add("hidden")}function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-async function doLogin(){clearError();const u=username.value.trim().toLowerCase(),p=password.value;if(!u||!p){showError("Please enter username and password.");return}loginBtn.disabled=true;loginBtn.textContent="LOGGING IN...";try{const loginEmail=ADMIN_LOGIN_EMAILS[u];if(!loginEmail)throw new Error("This username is not configured for a real Supabase email yet.");const {data,error}=await sb.auth.signInWithPassword({email:loginEmail,password:p});if(error)throw error;const {data:profile,error:pe}=await sb.from("admin_users").select("*").eq("auth_user_id",data.user.id).eq("is_active",true).single();if(pe||!profile){await sb.auth.signOut();throw new Error("This account is not registered as an active Lab Booking administrator.")}admin=profile;loginPage.classList.add("hidden");dashboard.classList.remove("hidden");document.getElementById("adminName").textContent=admin.display_name||admin.username;document.getElementById("adminRole").textContent=admin.role==="super_admin"?"Super Admin":"Lab In-charge";document.getElementById("permissionText").textContent=admin.role==="super_admin"?"Manage every laboratory":"View and manage all laboratory bookings";document.getElementById("welcome").textContent="Signed in as "+admin.username;await loadLabs();await loadBookings()}catch(err){showError(err.message||"Login failed.")}finally{loginBtn.disabled=false;loginBtn.textContent="LOGIN"}}
+async function doLogin(){clearError();const u=username.value.trim().toLowerCase(),p=password.value;if(!u||!p){showError("Please enter username and password.");return}loginBtn.disabled=true;loginBtn.textContent="LOGGING IN...";try{const loginEmail=ADMIN_LOGIN_EMAILS[u];if(!loginEmail)throw new Error("This username is not configured for a real Supabase email yet.");const {data,error}=await sb.auth.signInWithPassword({email:loginEmail,password:p});if(error)throw error;const {data:profile,error:pe}=await sb.rpc("get_my_active_admin_profile");if(pe){console.error("Admin profile RPC failed:",pe);await sb.auth.signOut();throw new Error("Admin profile lookup failed: "+pe.message+" (code: "+(pe.code||"unknown")+"). Please run admin_profile_fix.sql in Supabase SQL Editor.")}if(!profile){await sb.auth.signOut();throw new Error("Supabase login succeeded, but no active admin profile matches this Auth account. Check admin_users.auth_user_id and is_active=true.")}admin=profile;loginPage.classList.add("hidden");dashboard.classList.remove("hidden");document.getElementById("adminName").textContent=admin.display_name||admin.username;document.getElementById("adminRole").textContent=admin.role==="super_admin"?"Super Admin":"Lab In-charge";document.getElementById("permissionText").textContent=admin.role==="super_admin"?"Manage every laboratory":"View and manage all laboratory bookings";document.getElementById("welcome").textContent="Signed in as "+admin.username;await loadLabs();await loadBookings()}catch(err){showError(err.message||"Login failed.")}finally{loginBtn.disabled=false;loginBtn.textContent="LOGIN"}}
 loginBtn.addEventListener("click",doLogin);
 loginForm.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();doLogin()}});
 async function loadLabs(){const {data,error}=await sb.from("labs").select("id,name").order("id");if(error){console.error(error);return}const s=document.getElementById("labFilter");s.innerHTML='<option value="">All Labs</option>';(data||[]).forEach(x=>{const o=document.createElement("option");o.value=x.id;o.textContent=formatLabDisplay(x.name);s.appendChild(o)})}
@@ -208,8 +207,9 @@ async function saveRemark(id){const el=document.getElementById("remark-"+id);if(
 async function restoreSession(){
   const {data:{session}}=await sb.auth.getSession();
   if(!session||!session.user){return;}
-  const {data:profile,error}=await sb.from("admin_users").select("*").eq("auth_user_id",session.user.id).eq("is_active",true).single();
-  if(error||!profile){await sb.auth.signOut();return;}
+  const {data:profile,error}=await sb.rpc("get_my_active_admin_profile");
+  if(error){console.error("Session admin profile lookup failed:",error);return;}
+  if(!profile){await sb.auth.signOut();return;}
   admin=profile;
   loginPage.classList.add("hidden");
   dashboard.classList.remove("hidden");
