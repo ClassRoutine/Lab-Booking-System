@@ -2,230 +2,1601 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin Dashboard | Lab Booking System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lab Booking System | Department of CSE | Varendra University</title>
+
+<link rel="icon" href="data:,">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}button,input,select{font:inherit}input{pointer-events:auto;user-select:text;-webkit-user-select:text}.hidden{display:none!important}
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#071a3d,#1d4e9e);padding:20px}.login-card{width:min(420px,100%);background:#fff;border-radius:20px;padding:34px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
-.brand{text-align:center;color:#173d83;font-weight:800;letter-spacing:1px;font-size:14px}.login-card h1{text-align:center;margin:8px 0 5px;font-size:27px;color:#122b5c}.login-card p{text-align:center;color:#718096;margin:0 0 26px;font-size:13px}.field{margin:15px 0;position:relative;z-index:2}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}
-.field input{display:block;position:relative;z-index:3;width:100%;padding:13px 14px;border:1px solid #cfd8e6;border-radius:10px;outline:none;background:#fff!important;color:#172033!important;caret-color:#172033!important;-webkit-text-fill-color:#172033!important}.field input::placeholder{color:#8a94a6!important;opacity:1}.field input:focus{border-color:#2868d8;box-shadow:0 0 0 3px rgba(40,104,216,.12)}
-.login-btn{width:100%;border:0;border-radius:10px;padding:14px;background:#2864d0;color:#fff;font-weight:800;cursor:pointer;margin-top:8px}.login-btn:disabled{opacity:.6;cursor:not-allowed}.error{margin-top:14px;background:#fee2e2;color:#991b1b;border:1px solid #fecaca;padding:11px;border-radius:9px;font-size:13px;text-align:center}
-.dashboard{min-height:100vh}.top{background:linear-gradient(135deg,#071a3d,#17458f);color:#fff;padding:20px 26px;display:flex;justify-content:space-between;align-items:center;gap:15px}.top h1{font-size:21px;margin:0}.top small{opacity:.8}.logout{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:9px;padding:9px 14px;cursor:pointer}.wrap{width:100%;max-width:none;margin:22px auto;padding:0 22px}
-.profile{background:#fff;border:1px solid #e1e7f0;border-radius:14px;padding:15px 18px;margin-bottom:18px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.profile strong{color:#173d83}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stat{background:#fff;border:1px solid #e1e7f0;border-radius:14px;padding:18px}.stat b{display:block;font-size:26px;color:#173d83}.stat span{font-size:12px;color:#718096}
-.filters{background:#fff;border:1px solid #e1e7f0;border-radius:14px;padding:15px;display:grid;grid-template-columns:1.1fr 1fr 1fr 2fr;gap:10px;margin-bottom:18px}.filters input,.filters select{width:100%;padding:11px;border:1px solid #d2dae7;border-radius:9px;background:#fff}.table-card{background:#fff;border:1px solid #e1e7f0;border-radius:14px;overflow:auto}.table-title{padding:16px;font-weight:800;border-bottom:1px solid #e8edf4;color:#173d83}.table{width:100%;border-collapse:collapse;min-width:1500px;table-layout:auto}.table th,.table td{padding:14px 12px;border-bottom:1px solid #edf1f6;text-align:left;font-size:14px;vertical-align:middle;line-height:1.35}.table th{white-space:nowrap}.table td:nth-child(5),.table td:nth-child(6){white-space:nowrap}.table td:nth-child(10){min-width:220px}.table td:nth-child(9){min-width:150px}.table th{background:#f8fafc;color:#526174;position:sticky;top:0;z-index:2}.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.pending{background:#fff7d6;color:#8a6200}.approved{background:#dcfce7;color:#166534}.cancelled{background:#fee2e2;color:#991b1b}.completed{background:#dcfce7;color:#166534;border:1px solid #86efac}.action{border:0;border-radius:7px;padding:7px 9px;color:#fff;font-size:11px;font-weight:800;cursor:pointer;margin:2px}.approve{background:#16834a}.cancel{background:#c73535}.empty{text-align:center;padding:35px;color:#718096}footer{text-align:center;color:#718096;font-size:12px;padding:25px}
-@media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.top{padding:16px}.wrap{padding:0 10px}.table th,.table td{font-size:13px;padding:12px 10px}}@media(max-width:520px){.stats,.filters{grid-template-columns:1fr}}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-/* Clear column-separated table layout */
-.table th,.table td{border-right:1px solid #e3e9f2}.table th:last-child,.table td:last-child{border-right:0}.table th{background:#eaf0f7;color:#17345f;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.35px;padding:14px 12px;border-bottom:2px solid #cfd9e6}.table td{padding:13px 12px}.table th:nth-child(1),.table td:nth-child(1){min-width:170px}.table th:nth-child(2),.table td:nth-child(2){min-width:120px}.table th:nth-child(3),.table td:nth-child(3){min-width:115px}.table th:nth-child(4),.table td:nth-child(4){min-width:230px}.table th:nth-child(5),.table td:nth-child(5){min-width:110px}.table th:nth-child(6),.table td:nth-child(6){min-width:155px}.table th:nth-child(7),.table td:nth-child(7){min-width:170px}.table th:nth-child(8),.table td:nth-child(8){min-width:180px}.table th:nth-child(9),.table td:nth-child(9){min-width:125px}.table th:nth-child(10),.table td:nth-child(10){min-width:240px}.table th:nth-child(11),.table td:nth-child(11){min-width:150px}
-/* Premium table layout */
-.table-card{background:#fff;border:1px solid #dbe3ee;border-radius:16px;box-shadow:0 8px 28px rgba(15,35,70,.07);overflow:hidden;margin-top:18px}
-.table-scroll{overflow-x:auto;width:100%}
-table{width:100%;border-collapse:separate;border-spacing:0;min-width:1500px;background:#fff}
-thead th{background:#eef3f9;color:#17345f;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.35px;padding:13px 12px;border-bottom:2px solid #d7e0ec;white-space:nowrap;text-align:left;position:sticky;top:0;z-index:1}
-tbody td{padding:12px;border-bottom:1px solid #e8edf4;color:#26364d;font-size:13px;vertical-align:middle;background:#fff}
-tbody tr:nth-child(even) td{background:#fbfcfe}
-tbody tr:hover td{background:#f2f7ff}
-tbody tr:last-child td{border-bottom:0}
-.status{display:inline-flex;align-items:center;justify-content:center;min-width:82px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
-.action{border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;color:#fff}
-textarea{border:1px solid #ccd6e4;border-radius:8px;padding:8px;min-width:190px;min-height:58px;resize:vertical;font-size:12px;background:#fff}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f6fb;
+    color: #172033;
+    min-height: 100vh;
+}
+
+/* ================= HEADER ================= */
+
+header {
+    background: linear-gradient(135deg, #071a3d, #123b83);
+    color: white;
+    padding: 30px 20px 32px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+}
+
+.header-center {
+    max-width: 1100px;
+    margin: auto;
+    text-align: center;
+}
+
+.university {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 7px;
+    opacity: 0.95;
+}
+
+.department {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+.system-title {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.subtitle {
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 7px;
+    opacity: 0.9;
+}
+
+/* ================= MAIN ================= */
+
+main {
+    max-width: 850px;
+    margin: 35px auto 60px;
+    padding: 0 18px;
+}
+
+.booking-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 8px 35px rgba(22, 44, 80, 0.10);
+    border: 1px solid #e2e8f0;
+}
+
+.form-heading {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.form-heading h2 {
+    color: #102d63;
+    font-size: 27px;
+    margin-bottom: 7px;
+}
+
+.form-heading p {
+    color: #718096;
+    font-size: 14px;
+}
+
+/* ================= FORM ================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #24334d;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid #d5dce8;
+    border-radius: 9px;
+    padding: 12px 13px;
+    font-size: 14px;
+    background: #ffffff;
+    color: #1f2937;
+    outline: none;
+    transition: 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #2764d8;
+    box-shadow: 0 0 0 3px rgba(39, 100, 216, 0.10);
+}
+
+textarea {
+    min-height: 105px;
+    resize: vertical;
+}
+
+/* ================= TIME SLOT ================= */
+
+.slot-section {
+    margin-top: 27px;
+}
+
+.slot-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #24334d;
+    margin-bottom: 8px;
+}
+
+.slot-info {
+    font-size: 13px;
+    color: #718096;
+    margin-bottom: 12px;
+}
+
+.slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 11px;
+}
+
+.slot {
+    border: 1px solid #d9e0eb;
+    border-radius: 10px;
+    padding: 13px;
+    background: #fafcff;
+    transition: all 0.2s ease;
+}
+
+.slot.available {
+    border-left: 5px solid #16a34a;
+    cursor: pointer;
+}
+
+.slot.available:hover {
+    border-color: #2764d8;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(39, 100, 216, 0.08);
+}
+
+.slot.booked {
+    border-left: 5px solid #dc2626;
+    background: #fff5f5;
+    color: #991b1b;
+    cursor: not-allowed;
+    opacity: 0.75;
+}
+
+.slot.selected {
+    border-color: #2764d8;
+    background: #edf4ff;
+    box-shadow: 0 0 0 2px rgba(39, 100, 216, 0.12);
+}
+
+.slot-time {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.slot-status {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ================= BUTTON ================= */
+
+.submit-btn {
+    width: 100%;
+    margin-top: 27px;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    background: linear-gradient(135deg, #1455c7, #286ce0);
+    color: white;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 18px rgba(20, 85, 199, 0.25);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ================= MESSAGE ================= */
+
+#message {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 9px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+}
+
+#message.success {
+    display: block;
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+#message.error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* ================= FOOTER ================= */
+
+footer {
+    text-align: center;
+    padding: 28px 15px;
+    color: #718096;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+footer strong {
+    color: #294e92;
+}
+
+/* ================= ADMIN LINK ================= */
+.admin-link{display:inline-block;margin-top:18px;padding:9px 16px;border:1px solid rgba(255,255,255,.35);border-radius:999px;color:#fff;text-decoration:none;font-size:13px;font-weight:700;background:rgba(255,255,255,.10);transition:.2s}
+.admin-link:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+/* ================= MOBILE ================= */
+
+@media (max-width: 650px) {
+
+    header {
+        padding: 25px 15px 27px;
+    }
+
+    .university {
+        font-size: 13px;
+    }
+
+    .department {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+    .system-title {
+        font-size: 24px;
+    }
+
+    .subtitle {
+        font-size: 13px;
+    }
+
+    main {
+        margin-top: 22px;
+        padding: 0 12px;
+    }
+
+    .booking-card {
+        padding: 24px 17px;
+        border-radius: 15px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+
+    .slots {
+        grid-template-columns: 1fr;
+    }
+
+    .form-heading h2 {
+        font-size: 23px;
+    }
+}
+
+/* ================= CUSTOM TIME SLOT ================= */
+
+.custom-slot-panel {
+    margin-top: 14px;
+    padding: 18px;
+    border: 1px solid #cbd8ee;
+    border-radius: 12px;
+    background: #f7faff;
+}
+
+.custom-slot-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #173d83;
+    margin-bottom: 6px;
+}
+
+.custom-slot-help {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+
+.custom-time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.custom-time-grid .form-group {
+    min-width: 0;
+}
+
+.custom-slot-preview {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #eaf2ff;
+    color: #173d83;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.custom-slot-error {
+    margin-top: 10px;
+    color: #991b1b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+@media (max-width: 650px) {
+    .custom-time-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Booking mode tabs */
+.booking-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 26px}
+.booking-tab{border:1px solid #d8e1f0;background:#f4f7fc;color:#17345f;border-radius:11px;padding:14px 8px;font-weight:800;font-size:14px;cursor:pointer;transition:.2s}
+.booking-tab:hover{border-color:#286ce0;transform:translateY(-1px)}
+.booking-tab.active{background:linear-gradient(135deg,#1455c7,#286ce0);color:#fff;border-color:#286ce0;box-shadow:0 5px 14px rgba(39,100,216,.18)}
+.mode-note{padding:12px 14px;background:#eef5ff;border:1px solid #d6e5ff;color:#234578;border-radius:10px;font-size:13px;margin-bottom:20px;line-height:1.5}
+.teacher-fields{display:none}
+.teacher-fields.show{display:contents}
+@media(max-width:520px){.booking-tabs{gap:6px}.booking-tab{font-size:12px;padding:12px 4px}}
+
 </style>
+</head>
 
-<style id="center-all-table-content">
-/* Center-align every booking-table column and keep each cell visually separated */
-.table-card table th,
-.table-card table td {
-  text-align: center !important;
-  vertical-align: middle !important;
-}
-.table-card table th {
-  white-space: nowrap;
-}
-.table-card table td {
-  border-left: 1px solid #e5eaf1;
-  border-right: 1px solid #e5eaf1;
-}
-.table-card table th {
-  border-left: 1px solid rgba(255,255,255,.18);
-  border-right: 1px solid rgba(255,255,255,.18);
-}
-.table-card table td input,
-.table-card table td textarea,
-.table-card table td select,
-.table-card table td button {
-  margin-left: auto;
-  margin-right: auto;
-}
-.table-card table td .remarks-box,
-.table-card table td textarea {
-  text-align: center !important;
-}
-.table-card table td .actions,
-.table-card table td .action-group {
-  justify-content: center !important;
-  align-items: center !important;
-}
-</style>
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div class="header-center">
+
+        <div class="university">
+            VARENDRA UNIVERSITY
+        </div>
+
+        <div class="department">
+            Department of Computer Science &amp; Engineering
+        </div>
+
+        <div class="system-title">
+            Lab Booking System
+        </div>
+
+        <div class="subtitle">
+            Book your laboratory session easily
+        </div>
+
+    </div>
+
+</header>
 
 
-<script id="lab-display-format">
-(function(){
-  const LAB_DISPLAY = {
-    "Database Management System Lab":"Database Management System Lab (DMSL-103)",
-    "Computer Networks Lab":"Computer Networks Lab (CNL-104)",
-    "Data Structure & Algorithm Lab":"Data Structure & Algorithm Lab (DSAL-106)",
-    "Electrical & Electronics Lab":"Electrical & Electronics Lab (EEL-127)",
-    "Basic Computing Lab":"Basic Computing Lab (BCL-128)",
-    "Software Engineering Lab":"Software Engineering Lab (SEL-129)",
-    "Digital System & Computer Architecture Lab":"Digital System & Computer Architecture Lab (DSCAL-130)",
-    "Microprocessor & Interfacing Lab":"Microprocessor & Interfacing Lab (MIL-131)"
-  };
+<!-- ================= MAIN ================= -->
 
-  window.formatLabDisplay = function(name){
-    if(!name) return "";
+<main>
+
+    <div class="booking-card">
+
+        <div class="booking-tabs" role="tablist" aria-label="Booking options">
+            <button type="button" class="booking-tab active" id="studentTab" role="tab" aria-selected="true">🎓 Student Booking</button>
+            <button type="button" class="booking-tab" id="teacherTab" role="tab" aria-selected="false">👨‍🏫 Teacher Booking</button>
+            <button type="button" class="booking-tab" id="officersTab" role="tab" aria-selected="false">🔐 Officers Login</button>
+        </div>
+        <div class="mode-note" id="modeNote">Students: fill in your student details, choose a lab and time, then submit your booking.</div>
+
+        <div class="form-heading">
+
+            <h2>Laboratory Booking</h2>
+
+            <p>
+                Please provide the required information below
+            </p>
+
+        </div>
+
+
+        <form id="bookingForm">
+
+            <div class="form-grid">
+
+                <!-- STUDENT NAME -->
+
+                <div class="form-group student-only">
+
+                    <label for="studentName">
+                        👤 Student Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="Enter student name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- STUDENT ID -->
+
+                <div class="form-group student-only">
+
+                    <label for="studentId">
+                        🪪 Student ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentId"
+                        placeholder="Enter student ID"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- TEACHER-ONLY DETAILS -->
+                <div class="form-group teacher-fields" id="teacherNameGroup">
+                    <label for="teacherName">👨‍🏫 Teacher Name</label>
+                    <input type="text" id="teacherName" placeholder="Enter teacher name">
+                </div>
+                <div class="form-group teacher-fields" id="designationGroup">
+                    <label for="designation">💼 Designation</label>
+                    <input type="text" id="designation" placeholder="e.g. Lecturer, Assistant Professor">
+                </div>
+                <div class="form-group teacher-fields" id="mobileGroup">
+                    <label for="mobileNumber">📱 Mobile Number</label>
+                    <input type="tel" id="mobileNumber" placeholder="Enter mobile number" inputmode="tel">
+                </div>
+                <div class="form-group teacher-fields" id="sectionGroup">
+                    <label for="studentSection">🏷️ Student Section</label>
+                    <input type="text" id="studentSection" placeholder="e.g. A, B, C">
+                </div>
+
+                <!-- SEMESTER (shared by student and teacher bookings) -->
+
+                <div class="form-group">
+
+                    <label for="semester">
+                        🎓 Semester
+                    </label>
+
+                    <select id="semester" required>
+
+                        <option value="">
+                            Select Semester
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- COURSE TEACHER -->
+
+                <div class="form-group student-only">
+
+                    <label for="courseTeacher">
+                        👨‍🏫 Course Teacher
+                    </label>
+
+                    <input
+                        type="text"
+                        id="courseTeacher"
+                        placeholder="Enter course teacher name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- LAB -->
+
+                <div class="form-group full">
+
+                    <label for="lab">
+                        🧪 Lab Name
+                    </label>
+
+                    <select id="lab" required>
+
+                        <option value="">
+                            Select Lab
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BOOKING DATE -->
+
+                <div class="form-group full">
+
+                    <label for="bookingDate">
+                        📅 Booking Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="bookingDate"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- BOOKING PURPOSE -->
+
+                <div class="form-group full">
+
+                    <label for="bookingPurpose">
+                        📝 Booking Purpose
+                    </label>
+
+                    <textarea
+                        id="bookingPurpose"
+                        placeholder="Why do you need this lab?"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= TIME SLOTS ================= -->
+
+            <div class="slot-section">
+
+                <div class="slot-title">
+                    ⏰ Select Time Slot
+                </div>
+
+                <div
+                    class="slot-info"
+                    id="slotInfo"
+                >
+                    Select a Lab and Date first.
+                </div>
+
+                <div
+                    class="slots"
+                    id="slotsContainer"
+                ></div>
+
+                <div class="custom-slot-panel">
+                    <div class="custom-slot-title">🕘 Custom Time Slot</div>
+                    <div class="custom-slot-help">
+                        Need a longer or different session? Choose your own start and end time.
+                        Booking time must be between <strong>09:00 AM and 05:00 PM</strong>.
+                    </div>
+
+                    <div class="custom-time-grid">
+                        <div class="form-group">
+                            <label for="customStartTime">Start Time</label>
+                            <input type="time" id="customStartTime" min="09:00" max="17:00">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="customEndTime">End Time</label>
+                            <input type="time" id="customEndTime" min="09:00" max="17:00">
+                        </div>
+                    </div>
+
+                    <div id="customSlotPreview" class="custom-slot-preview">
+                        Example: 09:00 AM – 01:00 PM
+                    </div>
+
+                    <div id="customSlotError" class="custom-slot-error"></div>
+
+                    <button
+                        type="button"
+                        id="selectCustomSlotBtn"
+                        class="submit-btn"
+                        style="margin-top:12px"
+                    >
+                        SELECT CUSTOM TIME
+                    </button>
+                </div>
+
+            </div>
+
+
+            <!-- ================= SUBMIT ================= -->
+
+            <button
+                type="submit"
+                class="submit-btn"
+                id="submitBtn"
+            >
+                BOOK LAB NOW
+            </button>
+
+        </form>
+
+
+        <!-- MESSAGE -->
+
+        <div id="message"></div>
+
+    </div>
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <strong>
+        Department of Computer Science &amp; Engineering
+    </strong>
+
+    <br>
+
+    Varendra University
+
+    <br><br>
+
+    Designed & Developed by Md. Tareq Ben Musha © 2026
+
+    <br><br>
+
+    <strong>
+       
+    </strong>
+
+</footer>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE CONFIGURATION
+   ========================================================= */
+
+const SUPABASE_URL =
+    "https://wftskmfxlbbhoryajqjm.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_i1ay8CjelMyvaJyQrd9pbw_I4NCXFdD";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const bookingForm =
+    document.getElementById("bookingForm");
+
+const studentName =
+    document.getElementById("studentName");
+
+const studentId =
+    document.getElementById("studentId");
+
+const semester =
+    document.getElementById("semester");
+
+const courseTeacher =
+    document.getElementById("courseTeacher");
+
+const lab =
+    document.getElementById("lab");
+
+const bookingDate =
+    document.getElementById("bookingDate");
+
+const bookingPurpose =
+    document.getElementById("bookingPurpose");
+
+const slotsContainer =
+    document.getElementById("slotsContainer");
+
+const slotInfo =
+    document.getElementById("slotInfo");
+
+const submitBtn =
+    document.getElementById("submitBtn");
+
+const message =
+    document.getElementById("message");
+
+const customStartTime =
+    document.getElementById("customStartTime");
+
+const customEndTime =
+    document.getElementById("customEndTime");
+
+const customSlotPreview =
+    document.getElementById("customSlotPreview");
+
+const customSlotError =
+    document.getElementById("customSlotError");
+
+const selectCustomSlotBtn =
+    document.getElementById("selectCustomSlotBtn");
+
+
+let selectedSlot = null;
+let timeSlots = [];
+let bookingMode = "student";
+
+const studentTab = document.getElementById("studentTab");
+const teacherTab = document.getElementById("teacherTab");
+const officersTab = document.getElementById("officersTab");
+const modeNote = document.getElementById("modeNote");
+const teacherName = document.getElementById("teacherName");
+const designation = document.getElementById("designation");
+const mobileNumber = document.getElementById("mobileNumber");
+const studentSection = document.getElementById("studentSection");
+
+function setBookingMode(mode) {
+    if (mode === "officers") {
+        window.location.href = "admin.html";
+        return;
+    }
+    bookingMode = mode;
+    const isTeacher = mode === "teacher";
+    studentTab.classList.toggle("active", !isTeacher);
+    teacherTab.classList.toggle("active", isTeacher);
+    studentTab.setAttribute("aria-selected", String(!isTeacher));
+    teacherTab.setAttribute("aria-selected", String(isTeacher));
+    document.querySelectorAll(".student-only").forEach(el => {
+        el.style.display = isTeacher ? "none" : "flex";
+        const input = el.querySelector("input,select,textarea");
+        if (input) input.required = !isTeacher;
+    });
+    document.querySelectorAll(".teacher-fields").forEach(el => {
+        el.classList.toggle("show", isTeacher);
+        const input = el.querySelector("input");
+        if (input) input.required = isTeacher;
+    });
+    modeNote.textContent = isTeacher
+        ? "Teachers: enter your name, designation and mobile number, then select the student semester/section, lab, date and time. Your booking will appear in the existing Officers Dashboard."
+        : "Students: fill in your student details, choose a lab and time, then submit your booking.";
+    document.querySelector(".form-heading h2").textContent = isTeacher ? "Teacher Laboratory Booking" : "Student Laboratory Booking";
+    document.querySelector(".form-heading p").textContent = isTeacher ? "Please provide teacher and session details below" : "Please provide the required information below";
+    submitBtn.textContent = isTeacher ? "SUBMIT TEACHER BOOKING" : "BOOK LAB NOW";
+    message.className = "";
+    message.textContent = "";
+}
+studentTab.addEventListener("click", () => setBookingMode("student"));
+teacherTab.addEventListener("click", () => setBookingMode("teacher"));
+officersTab.addEventListener("click", () => setBookingMode("officers"));
+
+
+/* =========================================================
+   MINIMUM BOOKING DATE
+   ========================================================= */
+
+const today =
+    new Date().toISOString().split("T")[0];
+
+bookingDate.min = today;
+
+
+/* =========================================================
+   SHOW MESSAGE
+   ========================================================= */
+
+function showMessage(text, type) {
+
+    message.textContent = text;
+
+    message.className = "";
+
+    message.classList.add(type);
+
+}
+
+
+/* =========================================================
+   LOAD SEMESTERS
+   ========================================================= */
+
+async function loadSemesters() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("semesters")
+        .select("*")
+        .order("id");
+
+
+    if (error) {
+
+        console.error(
+            "Semester loading error:",
+            error
+        );
+
+        showMessage(
+            "Unable to load semesters.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    semester.innerHTML =
+        '<option value="">Select Semester</option>';
+
+
+    data.forEach(item => {
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            item.id;
+
+        option.textContent =
+            item.name;
+
+        semester.appendChild(option);
+
+    });
+
+}
+
+
+/* =========================================================
+   LOAD LABS
+   ========================================================= */
+
+
+const LAB_DISPLAY = {
+    "Database Management System Lab": "Database Management System Lab (DMSL-103)",
+    "Computer Networks Lab": "Computer Networks Lab (CNL-104)",
+    "Data Structure & Algorithm Lab": "Data Structure & Algorithm Lab (DSAL-106)",
+    "Electrical & Electronics Lab": "Electrical & Electronics Lab (EEL-127)",
+    "Basic Computing Lab": "Basic Computing Lab (BCL-128)",
+    "Software Engineering Lab": "Software Engineering Lab (SEL-129)",
+    "Digital System & Computer Architecture Lab": "Digital System & Computer Architecture Lab (DSCAL-130)",
+    "Microprocessor & Interfacing Lab": "Microprocessor & Interfacing Lab (MIL-131)"
+};
+
+function formatLabDisplay(name) {
+    if (!name) return "";
     const s = String(name).trim();
-
-    // Already formatted: don't append twice.
-    if(/\([A-Z]+-\d+\)\s*$/.test(s)) return s;
-
-    // Exact database-name match.
-    if(LAB_DISPLAY[s]) return LAB_DISPLAY[s];
-
-    // Normalize common spacing/casing variations.
-    const key = Object.keys(LAB_DISPLAY).find(k => k.toLowerCase() === s.toLowerCase());
+    if (/\([A-Z]+-\d+\)\s*$/.test(s)) return s;
+    if (LAB_DISPLAY[s]) return LAB_DISPLAY[s];
+    const key = Object.keys(LAB_DISPLAY).find(
+        k => k.toLowerCase() === s.toLowerCase()
+    );
     return key ? LAB_DISPLAY[key] : s;
-  };
-})();
+}
+
+async function loadLabs() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("labs")
+        .select("*")
+        .order("id");
+
+
+    if (error) {
+
+        console.error(
+            "Lab loading error:",
+            error
+        );
+
+        showMessage(
+            "Unable to load laboratory list.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    lab.innerHTML =
+        '<option value="">Select Lab</option>';
+
+
+    data.forEach(item => {
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            item.id;
+
+        option.textContent =
+            item.name;
+
+        lab.appendChild(option);
+
+    });
+
+}
+
+
+/* =========================================================
+   LOAD TIME SLOTS
+   ========================================================= */
+
+async function loadTimeSlots() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("time_slots")
+        .select("*")
+        .order("slot_number");
+
+
+    if (error) {
+
+        console.error(
+            "Time slot loading error:",
+            error
+        );
+
+        showMessage(
+            "Unable to load time slots.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    timeSlots = data || [];
+
+}
+
+
+/* =========================================================
+   FORMAT TIME
+   ========================================================= */
+
+function formatTime(time) {
+
+    const parts =
+        time.split(":");
+
+    let hour =
+        parseInt(parts[0]);
+
+    const minute =
+        parts[1];
+
+    const ampm =
+        hour >= 12 ? "PM" : "AM";
+
+    hour =
+        hour % 12 || 12;
+
+    return `${hour}:${minute} ${ampm}`;
+
+}
+
+
+/* =========================================================
+   TIME HELPERS
+   ========================================================= */
+
+function minutesFromTime(time) {
+    if (!time) return null;
+
+    const parts = String(time).split(":");
+    if (parts.length < 2) return null;
+
+    const hour = Number(parts[0]);
+    const minute = Number(parts[1]);
+
+    if (!Number.isFinite(hour) || !Number.isFinite(minute)) {
+        return null;
+    }
+
+    return (hour * 60) + minute;
+}
+
+function formatTime(time) {
+    const parts = String(time).split(":");
+    let hour = parseInt(parts[0], 10);
+    const minute = parts[1];
+
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+
+    return `${String(hour).padStart(2, "0")}:${minute} ${ampm}`;
+}
+
+function intervalsOverlap(startA, endA, startB, endB) {
+    const aStart = minutesFromTime(startA);
+    const aEnd = minutesFromTime(endA);
+    const bStart = minutesFromTime(startB);
+    const bEnd = minutesFromTime(endB);
+
+    if ([aStart, aEnd, bStart, bEnd].some(v => v === null)) {
+        return false;
+    }
+
+    return aStart < bEnd && aEnd > bStart;
+}
+
+function clearCustomSlotError() {
+    customSlotError.textContent = "";
+}
+
+function validateCustomTime(showError = true) {
+    const start = customStartTime.value;
+    const end = customEndTime.value;
+
+    clearCustomSlotError();
+
+    if (!start || !end) {
+        if (showError) {
+            customSlotError.textContent = "Please select both start and end time.";
+        }
+        return false;
+    }
+
+    const startMinutes = minutesFromTime(start);
+    const endMinutes = minutesFromTime(end);
+
+    if (startMinutes < 9 * 60 || endMinutes > 17 * 60) {
+        if (showError) {
+            customSlotError.textContent =
+                "Custom booking must be between 09:00 AM and 05:00 PM.";
+        }
+        return false;
+    }
+
+    if (startMinutes >= endMinutes) {
+        if (showError) {
+            customSlotError.textContent =
+                "End time must be later than start time.";
+        }
+        return false;
+    }
+
+    return true;
+}
+
+function updateCustomPreview() {
+    const start = customStartTime.value;
+    const end = customEndTime.value;
+
+    if (start && end) {
+        customSlotPreview.textContent =
+            `${formatTime(start)} – ${formatTime(end)}`;
+    } else {
+        customSlotPreview.textContent =
+            "Example: 09:00 AM – 01:00 PM";
+    }
+
+    if (start && end) {
+        validateCustomTime(false);
+    } else {
+        clearCustomSlotError();
+    }
+}
+
+/* =========================================================
+   LOAD BOOKED INTERVALS
+   ========================================================= */
+
+async function loadBookedSlots() {
+
+    selectedSlot = null;
+    slotsContainer.innerHTML = "";
+    clearCustomSlotError();
+
+    if (!lab.value || !bookingDate.value) {
+
+        slotInfo.textContent =
+            "Select a Lab and Date first.";
+
+        return;
+    }
+
+    slotInfo.textContent =
+        "Checking slot availability...";
+
+    const {
+        data,
+        error
+    } = await supabaseClient.rpc(
+        "get_booked_slots",
+        {
+            p_lab_id:
+                Number(lab.value),
+
+            p_booking_date:
+                bookingDate.value
+        }
+    );
+
+    if (error) {
+
+        console.error(
+            "Availability error:",
+            error
+        );
+
+        slotInfo.textContent =
+            "Unable to check availability.";
+
+        return;
+    }
+
+    const bookedSlots =
+        data || [];
+
+    timeSlots.forEach(slot => {
+
+        const isBooked =
+            bookedSlots.some(
+                booked =>
+                    intervalsOverlap(
+                        slot.start_time,
+                        slot.end_time,
+                        booked.start_time,
+                        booked.end_time
+                    )
+            );
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "slot " +
+            (
+                isBooked
+                    ? "booked"
+                    : "available"
+            );
+
+        div.innerHTML = `
+
+            <span class="slot-time">
+                ${formatTime(slot.start_time)}
+                –
+                ${formatTime(slot.end_time)}
+            </span>
+
+            <span class="slot-status">
+                ${
+                    isBooked
+                        ? "🔴 BOOKED / OVERLAPPED"
+                        : "🟢 AVAILABLE"
+                }
+            </span>
+
+        `;
+
+        if (!isBooked) {
+
+            div.addEventListener(
+                "click",
+                function() {
+
+                    document
+                        .querySelectorAll(".slot")
+                        .forEach(
+                            s =>
+                                s.classList
+                                 .remove("selected")
+                        );
+
+                    div.classList.add(
+                        "selected"
+                    );
+
+                    clearCustomSlotError();
+
+                    selectedSlot = {
+                        start_time: slot.start_time,
+                        end_time: slot.end_time,
+                        is_custom: false
+                    };
+
+                }
+            );
+
+        }
+
+        slotsContainer.appendChild(div);
+
+    });
+
+    slotInfo.textContent =
+        "🟢 Available slots can be selected. 🔴 Booked or overlapping slots are unavailable.";
+}
+
+/* =========================================================
+   CUSTOM SLOT SELECTION
+   ========================================================= */
+
+async function selectCustomSlot() {
+
+    clearCustomSlotError();
+
+    if (!lab.value || !bookingDate.value) {
+        customSlotError.textContent =
+            "Please select a Lab and Booking Date first.";
+        return;
+    }
+
+    if (!validateCustomTime(true)) {
+        return;
+    }
+
+    const start = customStartTime.value;
+    const end = customEndTime.value;
+
+    selectCustomSlotBtn.disabled = true;
+    selectCustomSlotBtn.textContent = "CHECKING...";
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient.rpc(
+            "check_custom_slot_available",
+            {
+                p_lab_id: Number(lab.value),
+                p_booking_date: bookingDate.value,
+                p_start_time: start,
+                p_end_time: end
+            }
+        );
+
+        if (error) {
+            console.error(error);
+            customSlotError.textContent =
+                "Unable to check custom slot availability.";
+            return;
+        }
+
+        if (data !== true) {
+            customSlotError.textContent =
+                "🔴 This custom time overlaps with an existing booking. Please choose another time.";
+            await loadBookedSlots();
+            return;
+        }
+
+        document
+            .querySelectorAll(".slot")
+            .forEach(
+                s => s.classList.remove("selected")
+            );
+
+        selectedSlot = {
+            start_time: start,
+            end_time: end,
+            is_custom: true
+        };
+
+        customSlotPreview.textContent =
+            `✅ Selected Custom Time: ${formatTime(start)} – ${formatTime(end)}`;
+
+        slotInfo.textContent =
+            "✅ Custom time selected. You can now submit the booking.";
+
+    } finally {
+
+        selectCustomSlotBtn.disabled = false;
+        selectCustomSlotBtn.textContent =
+            "SELECT CUSTOM TIME";
+    }
+}
+
+customStartTime.addEventListener(
+    "input",
+    updateCustomPreview
+);
+
+customEndTime.addEventListener(
+    "input",
+    updateCustomPreview
+);
+
+selectCustomSlotBtn.addEventListener(
+    "click",
+    selectCustomSlot
+);
+
+/* =========================================================
+   LAB / DATE EVENTS
+   ========================================================= */
+
+lab.addEventListener(
+    "change",
+    loadBookedSlots
+);
+
+bookingDate.addEventListener(
+    "change",
+    loadBookedSlots
+);
+
+
+/* =========================================================
+   SUBMIT BOOKING
+   ========================================================= */
+
+bookingForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        if (!selectedSlot) {
+
+            showMessage(
+                "Please select an available time slot or create a custom time slot.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (bookingMode === "student" && (!studentName.value.trim() || !studentId.value.trim() || !courseTeacher.value.trim())) {
+            showMessage("Please complete Student Name, Student ID and Course Teacher.", "error");
+            return;
+        }
+        if (bookingMode === "teacher" && (!teacherName.value.trim() || !designation.value.trim() || !mobileNumber.value.trim() || !studentSection.value.trim())) {
+            showMessage("Please complete Teacher Name, Designation, Mobile Number and Student Section.", "error");
+            return;
+        }
+        if (!semester.value) {
+            showMessage("Please select the students' semester.", "error");
+            return;
+        }
+
+        if (!lab.value) {
+
+            showMessage(
+                "Please select a laboratory.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (selectedSlot.is_custom && !validateCustomTime(true)) {
+            return;
+        }
+
+        submitBtn.disabled =
+            true;
+
+        submitBtn.textContent =
+            "SUBMITTING...";
+
+        try {
+
+            const {
+                data,
+                error
+            } = await supabaseClient.rpc(
+                "create_lab_booking",
+                {
+                    p_student_name:
+                        bookingMode === "teacher" ? teacherName.value.trim() : studentName.value.trim(),
+
+                    p_student_id:
+                        bookingMode === "teacher" ? mobileNumber.value.trim() : studentId.value.trim(),
+
+                    p_semester_id:
+                        Number(semester.value),
+
+                    p_course_teacher:
+                        bookingMode === "teacher" ? designation.value.trim() : courseTeacher.value.trim(),
+
+                    p_lab_id:
+                        Number(lab.value),
+
+                    p_booking_date:
+                        bookingDate.value,
+
+                    p_start_time:
+                        selectedSlot.start_time,
+
+                    p_end_time:
+                        selectedSlot.end_time,
+
+                    p_booking_purpose:
+                        bookingPurpose.value.trim(),
+
+                    p_booking_type:
+                        bookingMode,
+
+                    p_teacher_name:
+                        bookingMode === "teacher" ? teacherName.value.trim() : null,
+
+                    p_designation:
+                        bookingMode === "teacher" ? designation.value.trim() : null,
+
+                    p_mobile_number:
+                        bookingMode === "teacher" ? mobileNumber.value.trim() : null,
+
+                    p_student_section:
+                        bookingMode === "teacher" ? studentSection.value.trim() : null
+                }
+            );
+
+            if (error) {
+
+                console.error(
+                    "Booking error:",
+                    error
+                );
+
+                const msg =
+                    String(error.message || "");
+
+                if (
+                    msg.toLowerCase().includes("overlap") ||
+                    msg.toLowerCase().includes("already booked") ||
+                    msg.toLowerCase().includes("not available")
+                ) {
+
+                    showMessage(
+                        "🔴 This time overlaps with another booking. Please select another time.",
+                        "error"
+                    );
+
+                    await loadBookedSlots();
+
+                } else {
+
+                    showMessage(
+                        "❌ Booking failed. " + msg,
+                        "error"
+                    );
+
+                }
+
+                return;
+            }
+
+            showMessage(
+                "✅ Booking submitted successfully! Your booking is now Pending.",
+                "success"
+            );
+
+            bookingForm.reset();
+            teacherName.value = "";
+            designation.value = "";
+            mobileNumber.value = "";
+            studentSection.value = "";
+
+            slotsContainer.innerHTML = "";
+
+            slotInfo.textContent =
+                "Select a Lab and Date first.";
+
+            selectedSlot =
+                null;
+
+            customSlotPreview.textContent =
+                "Example: 09:00 AM – 01:00 PM";
+
+            clearCustomSlotError();
+
+        } finally {
+
+            submitBtn.disabled =
+                false;
+
+            submitBtn.textContent =
+                "BOOK LAB NOW";
+        }
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+async function initialize() {
+
+    await Promise.all([
+        loadSemesters(),
+        loadLabs(),
+        loadTimeSlots()
+    ]);
+
+}
+
+
+initialize();
+
 </script>
 
-</head>
-<body>
-<section id="loginPage" class="login-page"><div class="login-card">
-<div class="brand">VARENDRA UNIVERSITY</div><h1>Lab Booking Admin</h1><p>Secure administrator access</p>
-<form id="loginForm" autocomplete="on">
-<div class="field"><label for="username">Username</label><input id="username" name="username" type="text" placeholder="Enter username" autocomplete="username" spellcheck="false" required></div>
-<div class="field"><label for="password">Password</label><input id="password" name="password" type="password" placeholder="Enter password" autocomplete="current-password" required></div>
-<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#526174;margin:10px 0 4px;cursor:pointer"><input id="rememberMe" type="checkbox" checked style="width:auto"> Remember me</label>
-<button id="loginBtn" class="login-btn" type="button">LOGIN</button><div id="loginError" class="error hidden"></div>
-</form></div></section>
-<section id="dashboard" class="dashboard hidden"><header class="top"><div><h1>Lab Booking Dashboard</h1><small id="welcome"></small></div><div style="display:flex;gap:8px;align-items:center"><button id="refreshBtn" class="logout" type="button">↻ Refresh</button><button id="logoutBtn" class="logout" type="button">Logout</button></div></header>
-<main class="wrap"><div class="profile"><div><strong id="adminName">—</strong><br><small id="adminRole">—</small></div><div><small>Permission: <b id="permissionText">—</b></small></div></div>
-<div class="stats"><div class="stat"><b id="totalCount">0</b><span>Total shown</span></div><div class="stat"><b id="pendingCount">0</b><span>Pending</span></div><div class="stat"><b id="approvedCount">0</b><span>Approved</span></div><div class="stat"><b id="todayCount">0</b><span>Today</span></div></div>
-<div class="filters"><input id="dateFilter" type="date"><select id="labFilter"><option value="">All Labs</option></select><select id="statusFilter"><option value="">All Status</option><option>Pending</option><option>Approved</option><option>Cancelled</option><option>Completed</option></select><input id="searchFilter" type="search" placeholder="Search student, ID, teacher, lab or remarks"></div>
-<div class="table-card"><div class="table-title">All Laboratory Bookings <span style="font-size:11px;color:#718096;font-weight:500">• All active admins can approve/cancel any booking</span></div><table class="table"><thead><tr><th>Student Name</th><th>Student ID</th><th>Semester</th><th>Lab Name</th><th>Date</th><th>Time</th><th>Course Teacher</th><th>Purpose</th><th>Status</th><th>Remarks</th><th>Action</th></tr></thead><tbody id="bookingRows"></tbody></table></div></main>
-<footer>Designed &amp; Developed by Md. Tareq Ben Musha</footer></section>
-<script>
-const SUPABASE_URL="https://wftskmfxlbbhoryajqjm.supabase.co";
-const SUPABASE_KEY="sb_publishable_i1ay8CjelMyvaJyQrd9pbw_I4NCXFdD";
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-const loginPage=document.getElementById("loginPage"),dashboard=document.getElementById("dashboard"),loginForm=document.getElementById("loginForm"),username=document.getElementById("username"),password=document.getElementById("password"),loginBtn=document.getElementById("loginBtn"),loginError=document.getElementById("loginError");
-let admin=null,bookings=[];
-const ADMIN_LOGIN_EMAILS={
-  tareq2001:"osthirshaikat1133@gmail.com",
-  mahmud2004:"rifat.vu@gmail.com"
-};
-password.addEventListener("click",()=>password.focus());
-password.addEventListener("keydown",e=>e.stopPropagation());
-function showError(m){loginError.textContent=m;loginError.classList.remove("hidden")}function clearError(){loginError.textContent="";loginError.classList.add("hidden")}function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-async function doLogin(){clearError();const u=username.value.trim().toLowerCase(),p=password.value;if(!u||!p){showError("Please enter username and password.");return}loginBtn.disabled=true;loginBtn.textContent="LOGGING IN...";try{const loginEmail=ADMIN_LOGIN_EMAILS[u];if(!loginEmail)throw new Error("This username is not configured for a real Supabase email yet.");const {data,error}=await sb.auth.signInWithPassword({email:loginEmail,password:p});if(error)throw error;const {data:profile,error:pe}=await sb.rpc("get_my_active_admin_profile");if(pe){console.error("Admin profile RPC failed:",pe);await sb.auth.signOut();throw new Error("Admin profile lookup failed: "+pe.message+" (code: "+(pe.code||"unknown")+"). Please run admin_profile_fix.sql in Supabase SQL Editor.")}if(!profile){await sb.auth.signOut();throw new Error("Supabase login succeeded, but no active admin profile matches this Auth account. Check admin_users.auth_user_id and is_active=true.")}admin=profile;loginPage.classList.add("hidden");dashboard.classList.remove("hidden");document.getElementById("adminName").textContent=admin.display_name||admin.username;document.getElementById("adminRole").textContent=admin.role==="super_admin"?"Super Admin":"Lab In-charge";document.getElementById("permissionText").textContent=admin.role==="super_admin"?"Manage every laboratory":"View and manage all laboratory bookings";document.getElementById("welcome").textContent="Signed in as "+admin.username;await loadLabs();await loadBookings()}catch(err){showError(err.message||"Login failed.")}finally{loginBtn.disabled=false;loginBtn.textContent="LOGIN"}}
-loginBtn.addEventListener("click",doLogin);
-loginForm.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();doLogin()}});
-async function loadLabs(){const {data,error}=await sb.from("labs").select("id,name").order("id");if(error){console.error(error);return}const s=document.getElementById("labFilter");s.innerHTML='<option value="">All Labs</option>';(data||[]).forEach(x=>{const o=document.createElement("option");o.value=x.id;o.textContent=formatLabDisplay(x.name);s.appendChild(o)})}
-async function loadBookings(){const {data,error}=await sb.from("bookings").select("*,labs(id,name),semesters(name)").order("booking_date",{ascending:true}).order("start_time",{ascending:true});if(error){document.getElementById("bookingRows").innerHTML='<tr><td colspan="11" class="empty">Unable to load bookings: '+esc(error.message)+'</td></tr>';return}bookings=data||[];render()}
-
-function formatDateOnly(v){
-  if(!v)return "";
-  const s=String(v);
-  const m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if(m)return m[3]+"/"+m[2]+"/"+m[1];
-  const d=new Date(v);
-  if(Number.isNaN(d.getTime()))return s;
-  return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear();
-}
-
-function formatTime(t){if(!t)return "";const m=String(t).match(/^(\d{1,2}):(\d{2})/);if(!m)return String(t);let h=Number(m[1]),mi=m[2],ap=h>=12?"PM":"AM";h=h%12||12;return String(h).padStart(2,"0")+":"+mi+" "+ap}
-function formatDateTime(v){if(!v)return "";const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return d.toLocaleString("en-GB",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:true})}
-
-let currentPage=1;
-const PAGE_SIZE=10;
-
-function renderPagination(total){
-  let box=document.getElementById("paginationBox");
-  if(!box){
-    box=document.createElement("div");
-    box.id="paginationBox";
-    box.style.cssText="display:flex;justify-content:center;align-items:center;gap:8px;padding:16px;flex-wrap:wrap";
-    document.querySelector(".table-card").appendChild(box);
-  }
-  const pages=Math.max(1,Math.ceil(total/PAGE_SIZE));
-  if(currentPage>pages) currentPage=pages;
-  box.innerHTML="";
-  if(pages<=1){return;}
-  const prev=document.createElement("button");
-  prev.textContent="‹ Previous";
-  prev.disabled=currentPage===1;
-  prev.className="action";
-  prev.style.cssText="background:#526174;font-size:13px;padding:8px 12px";
-  prev.onclick=()=>{currentPage--;render();};
-  box.appendChild(prev);
-
-  for(let i=1;i<=pages;i++){
-    if(pages>7 && i>2 && i<pages-1 && Math.abs(i-currentPage)>1){
-      if(i===3 || i===pages-2){
-        const dots=document.createElement("span"); dots.textContent="…"; dots.style.padding="0 4px"; box.appendChild(dots);
-      }
-      continue;
-    }
-    const btn=document.createElement("button");
-    btn.textContent=String(i);
-    btn.className="action";
-    btn.style.cssText="font-size:13px;padding:8px 11px;background:"+(i===currentPage?"#2864d0":"#526174");
-    btn.onclick=()=>{currentPage=i;render();};
-    box.appendChild(btn);
-  }
-
-  const next=document.createElement("button");
-  next.textContent="Next ›";
-  next.disabled=currentPage===pages;
-  next.className="action";
-  next.style.cssText="background:#526174;font-size:13px;padding:8px 12px";
-  next.onclick=()=>{currentPage++;render();};
-  box.appendChild(next);
-}
-
-function render(){const df=document.getElementById("dateFilter").value,lf=document.getElementById("labFilter").value,sf=document.getElementById("statusFilter").value,q=document.getElementById("searchFilter").value.toLowerCase().trim();const now=new Date();const arr=bookings.filter(b=>{const hay=[b.student_name,b.student_id,b.course_teacher,b.booking_purpose,b.remarks,b.labs?.name].join(" ").toLowerCase();return(!df||b.booking_date===df)&&(!lf||String(b.lab_id)===lf)&&(!sf||((b.status==="Approved"&&b.booking_date&&b.start_time&&new Date(String(b.booking_date)+"T"+String(b.start_time))<now)?"Completed":b.status)===sf)&&(!q||hay.includes(q))});document.getElementById("totalCount").textContent=arr.length;document.getElementById("pendingCount").textContent=arr.filter(x=>x.status==="Pending").length;document.getElementById("approvedCount").textContent=arr.filter(x=>x.status==="Approved").length;document.getElementById("todayCount").textContent=arr.filter(x=>x.booking_date===new Date().toISOString().slice(0,10)).length;const rows=document.getElementById("bookingRows");if(!arr.length){renderPagination(0);rows.innerHTML='<tr><td colspan="11" class="empty">No bookings found.</td></tr>';return}const start=(currentPage-1)*PAGE_SIZE;const pageArr=arr.slice(start,start+PAGE_SIZE);renderPagination(arr.length);rows.innerHTML=pageArr.map(b=>{const startDateTime=b.booking_date&&b.start_time?new Date(String(b.booking_date)+"T"+String(b.start_time)):null;
-const isCompleted=b.status==="Approved"&&startDateTime&&!Number.isNaN(startDateTime.getTime())&&startDateTime<now;
-const displayStatus=isCompleted?"Completed":(b.status||"Pending");
-const can=b.status==="Pending",st=displayStatus.toLowerCase();
-const approvedBy=b.approved_by_name||b.approved_by_display_name||"";const cancelledBy=b.cancelled_by_name||b.cancelled_by_display_name||"";const audit= b.status==="Approved"&&approvedBy?`<div style="margin-top:5px;font-size:11px;color:#526174">Approved by <b>${esc(approvedBy)}</b>${b.approved_at?`<br>${esc(formatDateTime(b.approved_at))}`:""}</div>`:b.status==="Cancelled"&&cancelledBy?`<div style="margin-top:5px;font-size:11px;color:#526174">Cancelled by <b>${esc(cancelledBy)}</b>${b.cancelled_at?`<br>${esc(formatDateTime(b.cancelled_at))}`:""}</div>`:"";return `<tr><td><b>${esc(b.student_name)}</b></td><td>${esc(b.student_id)}</td><td>${esc(b.semesters?.name||b.semester_id)}</td><td>${esc(b.labs?.name||"")}</td><td>${esc(formatDateOnly(b.booking_date))}</td><td>${esc(formatTime(b.start_time))} – ${esc(formatTime(b.end_time))}</td><td>${esc(b.course_teacher)}</td><td>${esc(b.booking_purpose)}</td><td><span class="badge ${st}">${esc(displayStatus)}</span>${audit}</td><td><textarea id="remark-${b.id}" placeholder="Write a remark..." style="width:220px;min-height:72px;padding:10px;border:1px solid #d2dae7;border-radius:8px;resize:vertical;font:inherit;font-size:13px">${esc(b.remarks||"")}</textarea><button class="action" style="background:#526174" onclick="saveRemark(${b.id})">SAVE</button></td><td>${can?`<button class="action approve" onclick="changeStatus(${b.id},'approve')">APPROVE</button><button class="action cancel" onclick="changeStatus(${b.id},'cancel')">CANCEL</button>`:`<span style="color:#718096;font-size:11px">No action</span>`}</td></tr>`}).join("")}
-
-async function changeStatus(id,action){if(!confirm(action==="approve"?"Approve this booking?":"Cancel this booking?"))return;const {error}=await sb.rpc(action==="approve"?"approve_booking":"cancel_booking",{p_booking_id:id});if(error)alert(error.message);else await loadBookings()}
-async function saveRemark(id){const el=document.getElementById("remark-"+id);if(!el)return;const {error}=await sb.rpc("update_booking_remarks",{p_booking_id:id,p_remarks:el.value.trim()});if(error){alert(error.message);return}const b=bookings.find(x=>String(x.id)===String(id));if(b)b.remarks=el.value.trim();alert("Remark saved successfully.");render()}
-["dateFilter","labFilter","statusFilter","searchFilter"].forEach(id=>document.getElementById(id).addEventListener("input",()=>{currentPage=1;render()}));document.getElementById("refreshBtn").addEventListener("click",async()=>{await loadBookings()});document.getElementById("logoutBtn").addEventListener("click",async()=>{await sb.auth.signOut();location.reload()});
-
-async function restoreSession(){
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session||!session.user){return;}
-  const {data:profile,error}=await sb.rpc("get_my_active_admin_profile");
-  if(error){console.error("Session admin profile lookup failed:",error);return;}
-  if(!profile){await sb.auth.signOut();return;}
-  admin=profile;
-  loginPage.classList.add("hidden");
-  dashboard.classList.remove("hidden");
-  document.getElementById("adminName").textContent=admin.display_name||admin.username;
-  document.getElementById("adminRole").textContent=admin.role==="super_admin"?"Super Admin":"Lab In-charge";
-  document.getElementById("permissionText").textContent=admin.role==="super_admin"?"Manage every laboratory":"View and manage all laboratory bookings";
-  document.getElementById("welcome").textContent="Signed in as "+admin.username;
-  await loadLabs();
-  await loadBookings();
-}
-sb.auth.onAuthStateChange((event,session)=>{
-  if(event==="SIGNED_OUT"){
-    loginPage.classList.remove("hidden");
-    dashboard.classList.add("hidden");
-  }
-});
-window.addEventListener("DOMContentLoaded",restoreSession);
-
-</script></body></html>
+</body>
+</html>
