@@ -124,6 +124,23 @@ textarea{border:1px solid #ccd6e4;border-radius:8px;padding:8px;min-width:190px;
 })();
 </script>
 
+
+<style id="readable-table-text-final">
+/* Make booking details bolder and easier to read while preserving Remarks/SAVE and APPROVE/CANCEL sizing. */
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)),
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)) b,
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)) small {
+  font-size:12px !important; font-weight:700 !important; line-height:1.3 !important;
+}
+.table-card table thead th { font-size:11px !important; font-weight:800 !important; line-height:1.25 !important; }
+/* Keep remarks textarea and its SAVE button, and APPROVE/CANCEL buttons at their current compact size. */
+.table-card table tbody td:nth-child(11) textarea { font-size:10px !important; font-weight:400 !important; }
+.table-card table tbody td:nth-child(11) .action,
+.table-card table tbody td:nth-child(12) .action { font-size:10px !important; font-weight:800 !important; }
+.table-card table tbody td:nth-child(10) .badge,
+.table-card table tbody td:first-child .booking-type-badge { font-size:10px !important; font-weight:800 !important; }
+</style>
+
 </head>
 <body>
 <section id="loginPage" class="login-page"><div class="login-card">
