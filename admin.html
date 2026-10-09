@@ -480,4 +480,34 @@ window.addEventListener("DOMContentLoaded",restoreSession);
  .table-card .table tbody td:nth-child(10) > div, .table-card .table tbody td:nth-child(10) > div b { font-size: 11px !important; }
 }
 </style>
+
+<style id="force-center-name-lab-course-purpose">
+/* Explicitly center the four columns the previous generic rule missed. */
+.table-card .table thead th:nth-child(2),
+.table-card .table tbody td:nth-child(2),
+.table-card .table thead th:nth-child(5),
+.table-card .table tbody td:nth-child(5),
+.table-card .table thead th:nth-child(8),
+.table-card .table tbody td:nth-child(8),
+.table-card .table thead th:nth-child(9),
+.table-card .table tbody td:nth-child(9) {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+.table-card .table tbody td:nth-child(2) *,
+.table-card .table tbody td:nth-child(5) *,
+.table-card .table tbody td:nth-child(8) *,
+.table-card .table tbody td:nth-child(9) * {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+}
+.table-card .table tbody td:nth-child(2) b,
+.table-card .table tbody td:nth-child(2) small { display: block !important; }
+.table-card .table tbody td:nth-child(5),
+.table-card .table tbody td:nth-child(8),
+.table-card .table tbody td:nth-child(9) { white-space: normal !important; line-height: 1.4 !important; }
+</style>
 </body></html>
