@@ -289,6 +289,10 @@ footer strong {
 /* ================= ADMIN LINK ================= */
 .admin-link{display:inline-block;margin-top:18px;padding:9px 16px;border:1px solid rgba(255,255,255,.35);border-radius:999px;color:#fff;text-decoration:none;font-size:13px;font-weight:700;background:rgba(255,255,255,.10);transition:.2s}
 .admin-link:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.admin-login-strip{display:flex;justify-content:center;align-items:center;padding:12px 16px;background:#f4f7fc;border-bottom:1px solid #dce5f2}
+.admin-login-strip a{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:9px;background:#173f91;color:#fff;text-decoration:none;font-size:14px;font-weight:800;box-shadow:0 4px 12px rgba(23,63,145,.16);transition:transform .2s,background .2s}
+.admin-login-strip a:hover{background:#102e6d;transform:translateY(-1px)}
+@media(max-width:520px){.admin-login-strip{padding:10px}.admin-login-strip a{width:100%;max-width:360px}}
 /* ================= MOBILE ================= */
 
 @media (max-width: 650px) {
@@ -406,8 +410,11 @@ footer strong {
 .booking-tab:hover{border-color:#286ce0;transform:translateY(-1px)}
 .booking-tab.active{background:linear-gradient(135deg,#1455c7,#286ce0);color:#fff;border-color:#286ce0;box-shadow:0 5px 14px rgba(39,100,216,.18)}
 .mode-note{padding:12px 14px;background:#eef5ff;border:1px solid #d6e5ff;color:#234578;border-radius:10px;font-size:13px;margin-bottom:20px;line-height:1.5}
-.teacher-fields{display:none}
-.teacher-fields.show{display:contents}
+.teacher-fields,.officer-fields{display:none}
+.teacher-fields.show,.officer-fields.show{display:contents}
+.admin-login-panel{display:none;margin:0 0 22px;padding:18px;border:1px solid #d6e5ff;border-radius:12px;background:#f7faff;text-align:center}
+.admin-login-panel.show{display:block}
+.admin-login-panel a{display:inline-block;margin-top:10px;padding:12px 18px;border-radius:9px;background:#173f91;color:#fff;text-decoration:none;font-weight:800}
 @media(max-width:520px){.booking-tabs{gap:6px}.booking-tab{font-size:12px;padding:12px 4px}}
 
 </style>
@@ -441,6 +448,10 @@ footer strong {
 
 </header>
 
+<!-- ADMINISTRATION LOGIN: SEPARATE FROM THE THREE BOOKING TABS -->
+<div class="admin-login-strip">
+    <a href="admin.html" aria-label="Administration Login">🔐 Administration Login</a>
+</div>
 
 <!-- ================= MAIN ================= -->
 
@@ -451,7 +462,7 @@ footer strong {
         <div class="booking-tabs" role="tablist" aria-label="Booking options">
             <button type="button" class="booking-tab active" id="studentTab" role="tab" aria-selected="true">🎓 Student Booking</button>
             <button type="button" class="booking-tab" id="teacherTab" role="tab" aria-selected="false">👨‍🏫 Teacher Booking</button>
-            <button type="button" class="booking-tab" id="officersTab" role="tab" aria-selected="false">🔐 Officers Login</button>
+            <button type="button" class="booking-tab" id="officersTab" role="tab" aria-selected="false">🏢 Officers Booking</button>
         </div>
         <div class="mode-note" id="modeNote">Students: fill in your student details, choose a lab and time, then submit your booking.</div>
 
@@ -524,6 +535,20 @@ footer strong {
                     <input type="text" id="studentSection" placeholder="e.g. A, B, C">
                 </div>
 
+                <!-- OFFICERS-ONLY DETAILS -->
+                <div class="form-group officer-fields" id="officersNameGroup">
+                    <label for="officersName">🏢 Officers Name</label>
+                    <input type="text" id="officersName" placeholder="Enter officers name">
+                </div>
+                <div class="form-group officer-fields" id="officersDesignationGroup">
+                    <label for="officersDesignation">💼 Designation</label>
+                    <input type="text" id="officersDesignation" placeholder="Enter designation">
+                </div>
+                <div class="form-group officer-fields" id="officersSectionGroup">
+                    <label for="officersSection">🏷️ Student Section</label>
+                    <input type="text" id="officersSection" placeholder="e.g. A, B, C">
+                </div>
+
                 <!-- SEMESTER (shared by student and teacher bookings) -->
 
                 <div class="form-group">
@@ -560,6 +585,11 @@ footer strong {
 
                 </div>
 
+
+                <div class="form-group officer-fields" id="officersCourseTeacherGroup">
+                    <label for="officersCourseTeacher">👨‍🏫 Course Teacher</label>
+                    <input type="text" id="officersCourseTeacher" placeholder="Enter course teacher name">
+                </div>
 
                 <!-- LAB -->
 
@@ -610,6 +640,11 @@ footer strong {
                         placeholder="Why do you need this lab?"
                     ></textarea>
 
+                </div>
+
+                <div class="form-group full officer-fields" id="officersRemarksGroup">
+                    <label for="officersRemarks">📝 Remarks</label>
+                    <textarea id="officersRemarks" placeholder="Enter remarks"></textarea>
                 </div>
 
             </div>
@@ -808,34 +843,45 @@ const teacherName = document.getElementById("teacherName");
 const designation = document.getElementById("designation");
 const mobileNumber = document.getElementById("mobileNumber");
 const studentSection = document.getElementById("studentSection");
+const officersName = document.getElementById("officersName");
+const officersDesignation = document.getElementById("officersDesignation");
+const studentSectionOfficer = document.getElementById("officersSection");
+const officersCourseTeacher = document.getElementById("officersCourseTeacher");
+const officersRemarks = document.getElementById("officersRemarks");
 
 function setBookingMode(mode) {
-    if (mode === "officers") {
-        window.location.href = "admin.html";
-        return;
-    }
     bookingMode = mode;
+    const isStudent = mode === "student";
     const isTeacher = mode === "teacher";
-    studentTab.classList.toggle("active", !isTeacher);
-    teacherTab.classList.toggle("active", isTeacher);
-    studentTab.setAttribute("aria-selected", String(!isTeacher));
-    teacherTab.setAttribute("aria-selected", String(isTeacher));
+    const isOfficer = mode === "officers";
+    [studentTab, teacherTab, officersTab].forEach((tab, i) => {
+        const active = [isStudent, isTeacher, isOfficer][i];
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-selected", String(active));
+    });
     document.querySelectorAll(".student-only").forEach(el => {
-        el.style.display = isTeacher ? "none" : "flex";
+        el.style.display = isStudent ? "flex" : "none";
         const input = el.querySelector("input,select,textarea");
-        if (input) input.required = !isTeacher;
+        if (input) input.required = isStudent;
     });
     document.querySelectorAll(".teacher-fields").forEach(el => {
         el.classList.toggle("show", isTeacher);
-        const input = el.querySelector("input");
+        const input = el.querySelector("input,select,textarea");
         if (input) input.required = isTeacher;
     });
-    modeNote.textContent = isTeacher
-        ? "Teachers: enter your name, designation and mobile number, then select the student semester/section, lab, date and time. Your booking will appear in the existing Officers Dashboard."
-        : "Students: fill in your student details, choose a lab and time, then submit your booking.";
-    document.querySelector(".form-heading h2").textContent = isTeacher ? "Teacher Laboratory Booking" : "Student Laboratory Booking";
-    document.querySelector(".form-heading p").textContent = isTeacher ? "Please provide teacher and session details below" : "Please provide the required information below";
-    submitBtn.textContent = isTeacher ? "SUBMIT TEACHER BOOKING" : "BOOK LAB NOW";
+    document.querySelectorAll(".officer-fields").forEach(el => {
+        el.classList.toggle("show", isOfficer);
+        const input = el.querySelector("input,select,textarea");
+        if (input) input.required = isOfficer && !el.classList.contains("full");
+    });
+    modeNote.textContent = isStudent
+        ? "Students: fill in your student details, choose a lab and time, then submit your booking."
+        : isTeacher
+        ? "Teachers: enter teacher details, student semester/section, course teacher, lab, date and time."
+        : "Officers: submit a lab booking below, or use the Administration Login button above the booking tabs to open the dashboard.";
+    document.querySelector(".form-heading h2").textContent = isStudent ? "Student Laboratory Booking" : isTeacher ? "Teacher Laboratory Booking" : "Officers Laboratory Booking";
+    document.querySelector(".form-heading p").textContent = isOfficer ? "Provide officer and session details below" : isTeacher ? "Please provide teacher and session details below" : "Please provide the required information below";
+    submitBtn.textContent = isStudent ? "BOOK LAB NOW" : isTeacher ? "SUBMIT TEACHER BOOKING" : "SUBMIT OFFICERS BOOKING";
     message.className = "";
     message.textContent = "";
 }
@@ -1431,6 +1477,10 @@ bookingForm.addEventListener(
             showMessage("Please complete Teacher Name, Designation, Mobile Number and Student Section.", "error");
             return;
         }
+        if (bookingMode === "officers" && (!officersName.value.trim() || !officersDesignation.value.trim() || !studentSectionOfficer.value.trim() || !officersCourseTeacher.value.trim())) {
+            showMessage("Please complete Officers Name, Designation, Student Section and Course Teacher.", "error");
+            return;
+        }
         if (!semester.value) {
             showMessage("Please select the students' semester.", "error");
             return;
@@ -1465,16 +1515,16 @@ bookingForm.addEventListener(
                 "create_lab_booking",
                 {
                     p_student_name:
-                        bookingMode === "teacher" ? teacherName.value.trim() : studentName.value.trim(),
+                        bookingMode === "teacher" ? teacherName.value.trim() : bookingMode === "officers" ? officersName.value.trim() : studentName.value.trim(),
 
                     p_student_id:
-                        bookingMode === "teacher" ? mobileNumber.value.trim() : studentId.value.trim(),
+                        bookingMode === "teacher" ? mobileNumber.value.trim() : bookingMode === "officers" ? "OFFICER" : studentId.value.trim(),
 
                     p_semester_id:
                         Number(semester.value),
 
                     p_course_teacher:
-                        bookingMode === "teacher" ? designation.value.trim() : courseTeacher.value.trim(),
+                        bookingMode === "teacher" ? designation.value.trim() : bookingMode === "officers" ? officersCourseTeacher.value.trim() : courseTeacher.value.trim(),
 
                     p_lab_id:
                         Number(lab.value),
@@ -1498,13 +1548,17 @@ bookingForm.addEventListener(
                         bookingMode === "teacher" ? teacherName.value.trim() : null,
 
                     p_designation:
-                        bookingMode === "teacher" ? designation.value.trim() : null,
+                        bookingMode === "teacher" ? designation.value.trim() : bookingMode === "officers" ? officersDesignation.value.trim() : null,
 
                     p_mobile_number:
                         bookingMode === "teacher" ? mobileNumber.value.trim() : null,
 
                     p_student_section:
-                        bookingMode === "teacher" ? studentSection.value.trim() : null
+                        bookingMode === "teacher" ? studentSection.value.trim() : bookingMode === "officers" ? studentSectionOfficer.value.trim() : null,
+                    p_officers_name:
+                        bookingMode === "officers" ? officersName.value.trim() : null,
+                    p_remarks:
+                        bookingMode === "officers" ? officersRemarks.value.trim() : null
                 }
             );
 
