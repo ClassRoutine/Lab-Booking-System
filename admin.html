@@ -55,6 +55,12 @@ textarea{border:1px solid #ccd6e4;border-radius:8px;padding:8px;min-width:190px;
 .booking-type-badge{white-space:normal!important;padding:4px!important;font-size:10px!important;}
 @media(max-width:900px){.wrap{padding:0 6px!important}.table th,.table td,thead th,tbody td{padding:4px 2px!important;font-size:10px!important}.top{padding:12px}.table-title{padding:10px;font-size:13px}}
 @media(max-width:560px){.table th,.table td,thead th,tbody td{font-size:10px!important;padding:3px 1px!important}.table td textarea{min-height:48px!important;font-size:10px!important}.booking-type-badge{font-size:10px!important}}
+
+/* Final readability adjustment: booking details 16px bold; keep Remarks and Action controls unchanged. */
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)) { font-size:16px !important; font-weight:700 !important; line-height:1.3 !important; }
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)) .badge { font-size:11px !important; font-weight:800 !important; }
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)) .booking-type-badge { font-size:10px !important; font-weight:800 !important; }
+.table-card table tbody td:nth-child(10) div { font-size:11px !important; font-weight:400 !important; }
 </style>
 
 <style id="center-all-table-content">
