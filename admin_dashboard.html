@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard | Lab Booking System</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}button,input,select{font:inherit}input{pointer-events:auto;user-select:text;-webkit-user-select:text}.hidden{display:none!important}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#071a3d,#1d4e9e);padding:20px}.login-card{width:min(420px,100%);background:#fff;border-radius:20px;padding:34px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
+.brand{text-align:center;color:#173d83;font-weight:800;letter-spacing:1px;font-size:14px}.login-card h1{text-align:center;margin:8px 0 5px;font-size:27px;color:#122b5c}.login-card p{text-align:center;color:#718096;margin:0 0 26px;font-size:13px}.field{margin:15px 0;position:relative;z-index:2}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}
+.field input{display:block;position:relative;z-index:3;width:100%;padding:13px 14px;border:1px solid #cfd8e6;border-radius:10px;outline:none;background:#fff!important;color:#172033!important;caret-color:#172033!important;-webkit-text-fill-color:#172033!important}.field input::placeholder{color:#8a94a6!important;opacity:1}.field input:focus{border-color:#2868d8;box-shadow:0 0 0 3px rgba(40,104,216,.12)}
+.login-btn{width:100%;border:0;border-radius:10px;padding:14px;background:#2864d0;color:#fff;font-weight:800;cursor:pointer;margin-top:8px}.login-btn:disabled{opacity:.6;cursor:not-allowed}.error{margin-top:14px;background:#fee2e2;color:#991b1b;border:1px solid #fecaca;padding:11px;border-radius:9px;font-size:13px;text-align:center}
+.dashboard{min-height:100vh}.top{background:linear-gradient(135deg,#071a3d,#17458f);color:#fff;padding:20px 26px;display:flex;justify-content:space-between;align-items:center;gap:15px}.top h1{font-size:21px;margin:0}.top small{opacity:.8}.logout{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:9px;padding:9px 14px;cursor:pointer}.wrap{width:100%;max-width:none;margin:22px auto;padding:0 22px}
+.profile{background:#fff;border:1px solid #e1e7f0;border-radius:14px;padding:15px 18px;margin-bottom:18px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.profile strong{color:#173d83}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stat{background:#fff;border:1px solid #e1e7f0;border-radius:14px;padding:18px}.stat b{display:block;font-size:26px;color:#173d83}.stat span{font-size:12px;color:#718096}
+.filters{background:#fff;border:1px solid #e1e7f0;border-radius:14px;padding:15px;display:grid;grid-template-columns:1.1fr 1fr 1fr 2fr;gap:10px;margin-bottom:18px}.filters input,.filters select{width:100%;padding:11px;border:1px solid #d2dae7;border-radius:9px;background:#fff}.table-card{background:#fff;border:1px solid #e1e7f0;border-radius:14px;overflow:auto}.table-title{padding:16px;font-weight:800;border-bottom:1px solid #e8edf4;color:#173d83}.table{width:100%;border-collapse:collapse;min-width:1500px;table-layout:auto}.table th,.table td{padding:14px 12px;border-bottom:1px solid #edf1f6;text-align:left;font-size:14px;vertical-align:middle;line-height:1.35}.table th{white-space:nowrap}.table td:nth-child(5),.table td:nth-child(6){white-space:nowrap}.table td:nth-child(10){min-width:220px}.table td:nth-child(9){min-width:150px}.table th{background:#f8fafc;color:#526174;position:sticky;top:0;z-index:2}.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.pending{background:#fff7d6;color:#8a6200}.approved{background:#dcfce7;color:#166534}.cancelled{background:#fee2e2;color:#991b1b}.completed{background:#dcfce7;color:#166534;border:1px solid #86efac}.action{border:0;border-radius:7px;padding:7px 9px;color:#fff;font-size:11px;font-weight:800;cursor:pointer;margin:2px}.approve{background:#16834a}.cancel{background:#c73535}.empty{text-align:center;padding:35px;color:#718096}footer{text-align:center;color:#718096;font-size:12px;padding:25px}
+@media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.top{padding:16px}.wrap{padding:0 10px}.table th,.table td{font-size:13px;padding:12px 10px}}@media(max-width:520px){.stats,.filters{grid-template-columns:1fr}}
+
+/* Clear column-separated table layout */
+.table th,.table td{border-right:1px solid #e3e9f2}.table th:last-child,.table td:last-child{border-right:0}.table th{background:#eaf0f7;color:#17345f;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.35px;padding:14px 12px;border-bottom:2px solid #cfd9e6}.table td{padding:13px 12px}.table th:nth-child(1),.table td:nth-child(1){min-width:170px}.table th:nth-child(2),.table td:nth-child(2){min-width:120px}.table th:nth-child(3),.table td:nth-child(3){min-width:115px}.table th:nth-child(4),.table td:nth-child(4){min-width:230px}.table th:nth-child(5),.table td:nth-child(5){min-width:110px}.table th:nth-child(6),.table td:nth-child(6){min-width:155px}.table th:nth-child(7),.table td:nth-child(7){min-width:170px}.table th:nth-child(8),.table td:nth-child(8){min-width:180px}.table th:nth-child(9),.table td:nth-child(9){min-width:125px}.table th:nth-child(10),.table td:nth-child(10){min-width:240px}.table th:nth-child(11),.table td:nth-child(11){min-width:150px}
+/* Premium table layout */
+.table-card{background:#fff;border:1px solid #dbe3ee;border-radius:16px;box-shadow:0 8px 28px rgba(15,35,70,.07);overflow:hidden;margin-top:18px}
+.table-scroll{overflow-x:auto;width:100%}
+table{width:100%;border-collapse:separate;border-spacing:0;min-width:1500px;background:#fff}
+thead th{background:#eef3f9;color:#17345f;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.35px;padding:13px 12px;border-bottom:2px solid #d7e0ec;white-space:nowrap;text-align:left;position:sticky;top:0;z-index:1}
+tbody td{padding:12px;border-bottom:1px solid #e8edf4;color:#26364d;font-size:13px;vertical-align:middle;background:#fff}
+tbody tr:nth-child(even) td{background:#fbfcfe}
+tbody tr:hover td{background:#f2f7ff}
+tbody tr:last-child td{border-bottom:0}
+.status{display:inline-flex;align-items:center;justify-content:center;min-width:82px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
+.action{border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;color:#fff}
+textarea{border:1px solid #ccd6e4;border-radius:8px;padding:8px;min-width:190px;min-height:58px;resize:vertical;font-size:12px;background:#fff}
+/* Distinct booking types: student=blue, teacher=green, officers=amber */
+.booking-row.student-booking td{background:#eff6ff!important;border-bottom-color:#cfe0ff!important}
+.booking-row.teacher-booking td{background:#ecfdf3!important;border-bottom-color:#bbf7d0!important}
+.booking-row.officers-booking td{background:#fff7e6!important;border-bottom-color:#f5dfae!important}
+.booking-row:hover td{filter:brightness(.975)}
+.booking-type-badge{display:inline-flex;align-items:center;justify-content:center;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;border:1px solid transparent}
+.booking-type-student{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe}
+.booking-type-teacher{background:#dcfce7;color:#166534;border-color:#86efac}
+.booking-type-officers{background:#fef3c7;color:#92400e;border-color:#fde68a}
+.booking-legend{display:flex;gap:9px;flex-wrap:wrap;padding:0 16px 14px;font-size:12px;color:#526174}
+.booking-legend span{display:inline-flex;align-items:center;gap:6px}
+.booking-legend i{display:inline-block;width:11px;height:11px;border-radius:3px}
+.booking-legend .legend-student{background:#bfdbfe}.booking-legend .legend-teacher{background:#86efac}.booking-legend .legend-officers{background:#fcd34d}
+/* Fit the complete booking table within the screen: no horizontal side-scroll */
+.table-card{overflow:hidden!important;max-width:100%;}
+.table-scroll{overflow-x:hidden!important;width:100%;}
+.table-card table,.table,table{width:100%!important;min-width:0!important;table-layout:fixed!important;border-collapse:collapse!important;}
+.table th,.table td,thead th,tbody td{padding:6px 4px!important;font-size:10px!important;line-height:1.25;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;}
+.table th:nth-child(n),.table td:nth-child(n){min-width:0!important;width:auto;}
+.table td:nth-child(11),.table td:nth-child(12){min-width:0!important;width:auto;}
+.table td textarea,.table-card table td textarea{width:100%!important;min-width:0!important;max-width:100%!important;min-height:54px;padding:5px!important;font-size:10px!important;}
+.table td .action,.table-card table td .action{display:block;width:100%;margin:3px 0!important;padding:6px 2px!important;font-size:10px!important;white-space:normal!important;}
+.booking-type-badge{white-space:normal!important;padding:4px!important;font-size:10px!important;}
+@media(max-width:900px){.wrap{padding:0 6px!important}.table th,.table td,thead th,tbody td{padding:4px 2px!important;font-size:10px!important}.top{padding:12px}.table-title{padding:10px;font-size:13px}}
+@media(max-width:560px){.table th,.table td,thead th,tbody td{font-size:10px!important;padding:3px 1px!important}.table td textarea{min-height:48px!important;font-size:10px!important}.booking-type-badge{font-size:10px!important}}
+
+/* Final readability adjustment: booking details 16px bold; keep Remarks and Action controls unchanged. */
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)) { font-size:16px !important; font-weight:700 !important; line-height:1.3 !important; }
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)) .badge { font-size:11px !important; font-weight:800 !important; }
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)) .booking-type-badge { font-size:10px !important; font-weight:800 !important; }
+.table-card table tbody td:nth-child(10) div { font-size:11px !important; font-weight:400 !important; }
+</style>
+
+<style id="center-all-table-content">
+/* Center-align every booking-table column and keep each cell visually separated */
+.table-card table th,
+.table-card table td {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+.table-card table th {
+  white-space: nowrap;
+}
+.table-card table td {
+  border-left: 1px solid #e5eaf1;
+  border-right: 1px solid #e5eaf1;
+}
+.table-card table th {
+  border-left: 1px solid rgba(255,255,255,.18);
+  border-right: 1px solid rgba(255,255,255,.18);
+}
+.table-card table td input,
+.table-card table td textarea,
+.table-card table td select,
+.table-card table td button {
+  margin-left: auto;
+  margin-right: auto;
+}
+.table-card table td .remarks-box,
+.table-card table td textarea {
+  text-align: center !important;
+}
+.table-card table td .actions,
+.table-card table td .action-group {
+  justify-content: center !important;
+  align-items: center !important;
+}
+</style>
+
+
+<script id="lab-display-format">
+(function(){
+  const LAB_DISPLAY = {
+    "Database Management System Lab":"Database Management System Lab (DMSL-103)",
+    "Computer Networks Lab":"Computer Networks Lab (CNL-104)",
+    "Data Structure & Algorithm Lab":"Data Structure & Algorithm Lab (DSAL-106)",
+    "Electrical & Electronics Lab":"Electrical & Electronics Lab (EEL-127)",
+    "Basic Computing Lab":"Basic Computing Lab (BCL-128)",
+    "Software Engineering Lab":"Software Engineering Lab (SEL-129)",
+    "Digital System & Computer Architecture Lab":"Digital System & Computer Architecture Lab (DSCAL-130)",
+    "Microprocessor & Interfacing Lab":"Microprocessor & Interfacing Lab (MIL-131)"
+  };
+
+  window.formatLabDisplay = function(name){
+    if(!name) return "";
+    const s = String(name).trim();
+
+    // Already formatted: don't append twice.
+    if(/\([A-Z]+-\d+\)\s*$/.test(s)) return s;
+
+    // Exact database-name match.
+    if(LAB_DISPLAY[s]) return LAB_DISPLAY[s];
+
+    // Normalize common spacing/casing variations.
+    const key = Object.keys(LAB_DISPLAY).find(k => k.toLowerCase() === s.toLowerCase());
+    return key ? LAB_DISPLAY[key] : s;
+  };
+})();
+</script>
+
+
+<style id="readable-table-text-final">
+/* Final fix: booking details are genuinely 16px and bold; preserve Remarks/SAVE and APPROVE/CANCEL sizing. */
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)),
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)) b,
+.table-card table tbody td:not(:nth-child(11)):not(:nth-child(12)) small {
+  font-size:16px !important; font-weight:700 !important; line-height:1.3 !important;
+}
+.table-card table thead th { font-size:11px !important; font-weight:800 !important; line-height:1.25 !important; }
+/* Keep remarks textarea and its SAVE button, and APPROVE/CANCEL buttons at their current compact size. */
+.table-card table tbody td:nth-child(11) textarea { font-size:10px !important; font-weight:400 !important; }
+.table-card table tbody td:nth-child(11) .action,
+.table-card table tbody td:nth-child(12) .action { font-size:10px !important; font-weight:800 !important; }
+.table-card table tbody td:nth-child(10) .badge,
+.table-card table tbody td:first-child .booking-type-badge { font-size:10px !important; font-weight:800 !important; }
+</style>
+
+</head>
+<body>
+<section id="loginPage" class="login-page"><div class="login-card">
+<div class="brand">VARENDRA UNIVERSITY</div><h1>Lab Booking Admin</h1><p>Secure administrator access</p>
+<form id="loginForm" autocomplete="on">
+<div class="field"><label for="username">Username</label><input id="username" name="username" type="text" placeholder="Enter username" autocomplete="username" spellcheck="false" required></div>
+<div class="field"><label for="password">Password</label><input id="password" name="password" type="password" placeholder="Enter password" autocomplete="current-password" required></div>
+<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#526174;margin:10px 0 4px;cursor:pointer"><input id="rememberMe" type="checkbox" checked style="width:auto"> Remember me</label>
+<button id="loginBtn" class="login-btn" type="button">LOGIN</button><div id="loginError" class="error hidden"></div>
+</form></div></section>
+<section id="dashboard" class="dashboard hidden"><header class="top"><div><h1>Lab Booking Dashboard</h1><small id="welcome"></small></div><div style="display:flex;gap:8px;align-items:center"><button id="refreshBtn" class="logout" type="button">↻ Refresh</button><button id="logoutBtn" class="logout" type="button">Logout</button></div></header>
+<main class="wrap"><div class="profile"><div><strong id="adminName">—</strong><br><small id="adminRole">—</small></div><div><small>Permission: <b id="permissionText">—</b></small></div></div>
+<div class="stats"><div class="stat"><b id="totalCount">0</b><span>Total shown</span></div><div class="stat"><b id="pendingCount">0</b><span>Pending</span></div><div class="stat"><b id="approvedCount">0</b><span>Approved</span></div><div class="stat"><b id="todayCount">0</b><span>Today</span></div></div>
+<div class="filters"><input id="dateFilter" type="date"><select id="labFilter"><option value="">All Labs</option></select><select id="statusFilter"><option value="">All Status</option><option>Pending</option><option>Approved</option><option>Cancelled</option><option>Completed</option></select><input id="searchFilter" type="search" placeholder="Search student, ID, teacher, lab or remarks"></div>
+<div class="table-card"><div class="table-title">All Laboratory Bookings <span style="font-size:11px;color:#718096;font-weight:500">• All active admins can approve/cancel any booking</span></div><div class="booking-legend"><span><i class="legend-student"></i> Student Booking</span><span><i class="legend-teacher"></i> Teacher Booking</span><span><i class="legend-officers"></i> Officers Booking</span></div><table class="table"><thead><tr><th>Booking Type</th><th>Name</th><th>Student ID / Mobile</th><th>Semester</th><th>Lab Name</th><th>Date</th><th>Time</th><th>Course Teacher</th><th>Purpose</th><th>Status</th><th>Remarks</th><th>Action</th></tr></thead><tbody id="bookingRows"></tbody></table></div></main>
+<footer>Designed &amp; Developed by Md. Tareq Ben Musha</footer></section>
+<script>
+const SUPABASE_URL="https://wftskmfxlbbhoryajqjm.supabase.co";
+const SUPABASE_KEY="sb_publishable_i1ay8CjelMyvaJyQrd9pbw_I4NCXFdD";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const loginPage=document.getElementById("loginPage"),dashboard=document.getElementById("dashboard"),loginForm=document.getElementById("loginForm"),username=document.getElementById("username"),password=document.getElementById("password"),loginBtn=document.getElementById("loginBtn"),loginError=document.getElementById("loginError");
+let admin=null,bookings=[];
+const ADMIN_LOGIN_EMAILS={
+  tareq2001:"osthirshaikat1133@gmail.com",
+  mahmud2004:"rifat.vu@gmail.com"
+};
+password.addEventListener("click",()=>password.focus());
+password.addEventListener("keydown",e=>e.stopPropagation());
+function showError(m){loginError.textContent=m;loginError.classList.remove("hidden")}function clearError(){loginError.textContent="";loginError.classList.add("hidden")}function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+async function doLogin(){clearError();const u=username.value.trim().toLowerCase(),p=password.value;if(!u||!p){showError("Please enter username and password.");return}loginBtn.disabled=true;loginBtn.textContent="LOGGING IN...";try{const loginEmail=ADMIN_LOGIN_EMAILS[u];if(!loginEmail)throw new Error("This username is not configured for a real Supabase email yet.");const {data,error}=await sb.auth.signInWithPassword({email:loginEmail,password:p});if(error)throw error;const {data:profile,error:pe}=await sb.from("admin_users").select("*").eq("auth_user_id",data.user.id).eq("is_active",true).single();if(pe||!profile){await sb.auth.signOut();throw new Error("This account is not registered as an active Lab Booking administrator.")}admin=profile;loginPage.classList.add("hidden");dashboard.classList.remove("hidden");document.getElementById("adminName").textContent=admin.display_name||admin.username;document.getElementById("adminRole").textContent=admin.role==="super_admin"?"Super Admin":"Lab In-charge";document.getElementById("permissionText").textContent=admin.role==="super_admin"?"Manage every laboratory":"View and manage all laboratory bookings";document.getElementById("welcome").textContent="Signed in as "+admin.username;await loadLabs();await loadBookings()}catch(err){showError(err.message||"Login failed.")}finally{loginBtn.disabled=false;loginBtn.textContent="LOGIN"}}
+loginBtn.addEventListener("click",doLogin);
+loginForm.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();doLogin()}});
+async function loadLabs(){const {data,error}=await sb.from("labs").select("id,name").order("id");if(error){console.error(error);return}const s=document.getElementById("labFilter");s.innerHTML='<option value="">All Labs</option>';(data||[]).forEach(x=>{const o=document.createElement("option");o.value=x.id;o.textContent=formatLabDisplay(x.name);s.appendChild(o)})}
+async function loadBookings(){const {data,error}=await sb.from("bookings").select("*,labs(id,name),semesters(name)").order("booking_date",{ascending:true}).order("start_time",{ascending:true});if(error){document.getElementById("bookingRows").innerHTML='<tr><td colspan="12" class="empty">Unable to load bookings: '+esc(error.message)+'</td></tr>';return}bookings=data||[];render()}
+
+function formatDateOnly(v){
+  if(!v)return "";
+  const s=String(v);
+  const m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m)return m[3]+"/"+m[2]+"/"+m[1];
+  const d=new Date(v);
+  if(Number.isNaN(d.getTime()))return s;
+  return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear();
+}
+
+function formatTime(t){if(!t)return "";const m=String(t).match(/^(\d{1,2}):(\d{2})/);if(!m)return String(t);let h=Number(m[1]),mi=m[2],ap=h>=12?"PM":"AM";h=h%12||12;return String(h).padStart(2,"0")+":"+mi+" "+ap}
+function formatDateTime(v){if(!v)return "";const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return d.toLocaleString("en-GB",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:true})}
+
+let currentPage=1;
+const PAGE_SIZE=10;
+
+function renderPagination(total){
+  let box=document.getElementById("paginationBox");
+  if(!box){
+    box=document.createElement("div");
+    box.id="paginationBox";
+    box.style.cssText="display:flex;justify-content:center;align-items:center;gap:8px;padding:16px;flex-wrap:wrap";
+    document.querySelector(".table-card").appendChild(box);
+  }
+  const pages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+  if(currentPage>pages) currentPage=pages;
+  box.innerHTML="";
+  if(pages<=1){return;}
+  const prev=document.createElement("button");
+  prev.textContent="‹ Previous";
+  prev.disabled=currentPage===1;
+  prev.className="action";
+  prev.style.cssText="background:#526174;font-size:13px;padding:8px 12px";
+  prev.onclick=()=>{currentPage--;render();};
+  box.appendChild(prev);
+
+  for(let i=1;i<=pages;i++){
+    if(pages>7 && i>2 && i<pages-1 && Math.abs(i-currentPage)>1){
+      if(i===3 || i===pages-2){
+        const dots=document.createElement("span"); dots.textContent="…"; dots.style.padding="0 4px"; box.appendChild(dots);
+      }
+      continue;
+    }
+    const btn=document.createElement("button");
+    btn.textContent=String(i);
+    btn.className="action";
+    btn.style.cssText="font-size:13px;padding:8px 11px;background:"+(i===currentPage?"#2864d0":"#526174");
+    btn.onclick=()=>{currentPage=i;render();};
+    box.appendChild(btn);
+  }
+
+  const next=document.createElement("button");
+  next.textContent="Next ›";
+  next.disabled=currentPage===pages;
+  next.className="action";
+  next.style.cssText="background:#526174;font-size:13px;padding:8px 12px";
+  next.onclick=()=>{currentPage++;render();};
+  box.appendChild(next);
+}
+
+function render(){const df=document.getElementById("dateFilter").value,lf=document.getElementById("labFilter").value,sf=document.getElementById("statusFilter").value,q=document.getElementById("searchFilter").value.toLowerCase().trim();const now=new Date();const arr=bookings.filter(b=>{const hay=[b.student_name,b.student_id,b.course_teacher,b.booking_purpose,b.remarks,b.labs?.name].join(" ").toLowerCase();return(!df||b.booking_date===df)&&(!lf||String(b.lab_id)===lf)&&(!sf||((b.status==="Approved"&&b.booking_date&&b.start_time&&new Date(String(b.booking_date)+"T"+String(b.start_time))<now)?"Completed":b.status)===sf)&&(!q||hay.includes(q))});document.getElementById("totalCount").textContent=arr.length;document.getElementById("pendingCount").textContent=arr.filter(x=>x.status==="Pending").length;document.getElementById("approvedCount").textContent=arr.filter(x=>x.status==="Approved").length;document.getElementById("todayCount").textContent=arr.filter(x=>x.booking_date===new Date().toISOString().slice(0,10)).length;const rows=document.getElementById("bookingRows");if(!arr.length){renderPagination(0);rows.innerHTML='<tr><td colspan="12" class="empty">No bookings found.</td></tr>';return}const start=(currentPage-1)*PAGE_SIZE;const pageArr=arr.slice(start,start+PAGE_SIZE);renderPagination(arr.length);rows.innerHTML=pageArr.map(b=>{const startDateTime=b.booking_date&&b.start_time?new Date(String(b.booking_date)+"T"+String(b.start_time)):null;
+const isCompleted=b.status==="Approved"&&startDateTime&&!Number.isNaN(startDateTime.getTime())&&startDateTime<now;
+const displayStatus=isCompleted?"Completed":(b.status||"Pending");
+const can=b.status==="Pending",st=displayStatus.toLowerCase();
+const approvedBy=b.approved_by_name||b.approved_by_display_name||"";const cancelledBy=b.cancelled_by_name||b.cancelled_by_display_name||"";const audit= b.status==="Approved"&&approvedBy?`<div style="margin-top:5px;font-size:11px;color:#526174">Approved by <b>${esc(approvedBy)}</b>${b.approved_at?`<br>${esc(formatDateTime(b.approved_at))}`:""}</div>`:b.status==="Cancelled"&&cancelledBy?`<div style="margin-top:5px;font-size:11px;color:#526174">Cancelled by <b>${esc(cancelledBy)}</b>${b.cancelled_at?`<br>${esc(formatDateTime(b.cancelled_at))}`:""}</div>`:"";const rawType=String(b.booking_type||"student").toLowerCase();const type=rawType==="teacher"?"teacher":rawType==="officers"||rawType==="officer"?"officers":"student";const typeLabel=type==="teacher"?"Teacher Booking":type==="officers"?"Officers Booking":"Student Booking";const typeIcon=type==="teacher"?"👨‍🏫":type==="officers"?"🏢":"🎓";return `<tr class="booking-row ${type}-booking"><td><span class="booking-type-badge booking-type-${type}">${typeIcon} ${typeLabel}</span></td><td><b>${esc(b.student_name)}</b>${type==="teacher"&&b.designation?`<br><small>${esc(b.designation)}</small>`:""}${type==="officers"&&b.designation?`<br><small>${esc(b.designation)}</small>`:""}</td><td>${esc(b.student_id)}</td><td>${esc(b.semesters?.name||b.semester_id)}</td><td>${esc(b.labs?.name||"")}</td><td>${esc(formatDateOnly(b.booking_date))}</td><td>${esc(formatTime(b.start_time))} – ${esc(formatTime(b.end_time))}</td><td>${esc(b.course_teacher)}</td><td>${esc(b.booking_purpose)}</td><td><span class="badge ${st}">${esc(displayStatus)}</span>${audit}</td><td><textarea id="remark-${b.id}" placeholder="Write a remark..." style="width:220px;min-height:72px;padding:10px;border:1px solid #d2dae7;border-radius:8px;resize:vertical;font:inherit;font-size:13px">${esc(b.remarks||"")}</textarea><button class="action" style="background:#526174" onclick="saveRemark(${b.id})">SAVE</button></td><td>${can?`<button class="action approve" onclick="changeStatus(${b.id},'approve')">APPROVE</button><button class="action cancel" onclick="changeStatus(${b.id},'cancel')">CANCEL</button>`:`<span style="color:#718096;font-size:11px">No action</span>`}</td></tr>`}).join("")}
+
+async function changeStatus(id,action){if(!confirm(action==="approve"?"Approve this booking?":"Cancel this booking?"))return;const {error}=await sb.rpc(action==="approve"?"approve_booking":"cancel_booking",{p_booking_id:id});if(error)alert(error.message);else await loadBookings()}
+async function saveRemark(id){const el=document.getElementById("remark-"+id);if(!el)return;const {error}=await sb.rpc("update_booking_remarks",{p_booking_id:id,p_remarks:el.value.trim()});if(error){alert(error.message);return}const b=bookings.find(x=>String(x.id)===String(id));if(b)b.remarks=el.value.trim();alert("Remark saved successfully.");render()}
+["dateFilter","labFilter","statusFilter","searchFilter"].forEach(id=>document.getElementById(id).addEventListener("input",()=>{currentPage=1;render()}));document.getElementById("refreshBtn").addEventListener("click",async()=>{await loadBookings()});document.getElementById("logoutBtn").addEventListener("click",async()=>{await sb.auth.signOut();location.reload()});
+
+async function restoreSession(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session||!session.user){return;}
+  const {data:profile,error}=await sb.from("admin_users").select("*").eq("auth_user_id",session.user.id).eq("is_active",true).single();
+  if(error||!profile){await sb.auth.signOut();return;}
+  admin=profile;
+  loginPage.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+  document.getElementById("adminName").textContent=admin.display_name||admin.username;
+  document.getElementById("adminRole").textContent=admin.role==="super_admin"?"Super Admin":"Lab In-charge";
+  document.getElementById("permissionText").textContent=admin.role==="super_admin"?"Manage every laboratory":"View and manage all laboratory bookings";
+  document.getElementById("welcome").textContent="Signed in as "+admin.username;
+  await loadLabs();
+  await loadBookings();
+}
+sb.auth.onAuthStateChange((event,session)=>{
+  if(event==="SIGNED_OUT"){
+    loginPage.classList.remove("hidden");
+    dashboard.classList.add("hidden");
+  }
+});
+window.addEventListener("DOMContentLoaded",restoreSession);
+
+</script></body></html>
