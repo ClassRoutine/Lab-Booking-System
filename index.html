@@ -587,8 +587,8 @@ footer strong {
 
 
                 <div class="form-group officer-fields" id="officersCourseTeacherGroup">
-                    <label for="officersCourseTeacher">👨‍🏫 Course Teacher</label>
-                    <input type="text" id="officersCourseTeacher" placeholder="Enter course teacher name">
+                    <label for="officersCourseTeacher">👨‍🏫 Course Teacher Name</label>
+                    <input type="text" id="officersCourseTeacher" name="officersCourseTeacher" placeholder="Enter course teacher name" autocomplete="name">
                 </div>
 
                 <!-- LAB -->
@@ -1478,7 +1478,7 @@ bookingForm.addEventListener(
             return;
         }
         if (bookingMode === "officers" && (!officersName.value.trim() || !officersDesignation.value.trim() || !studentSectionOfficer.value.trim() || !officersCourseTeacher.value.trim())) {
-            showMessage("Please complete Officers Name, Designation, Student Section and Course Teacher.", "error");
+            showMessage("Please complete Officers Name, Designation, Student Section and Course Teacher Name.", "error");
             return;
         }
         if (!semester.value) {
