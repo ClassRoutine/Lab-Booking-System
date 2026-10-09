@@ -400,9 +400,16 @@ footer strong {
 }
 
 
-.admin-login-tab{display:inline-flex;align-items:center;justify-content:center;margin-top:16px;padding:10px 18px;border:1px solid rgba(255,255,255,.45);border-radius:999px;background:rgba(255,255,255,.12);color:#fff;text-decoration:none;font-size:13px;font-weight:800;letter-spacing:.2px;transition:.2s;box-shadow:0 4px 12px rgba(0,0,0,.12)}
-.admin-login-tab:hover{background:#fff;color:#123b83;transform:translateY(-1px)}
-@media(max-width:650px){.admin-login-tab{margin-top:13px;padding:9px 15px;font-size:12px}}
+/* Booking mode tabs */
+.booking-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 26px}
+.booking-tab{border:1px solid #d8e1f0;background:#f4f7fc;color:#17345f;border-radius:11px;padding:14px 8px;font-weight:800;font-size:14px;cursor:pointer;transition:.2s}
+.booking-tab:hover{border-color:#286ce0;transform:translateY(-1px)}
+.booking-tab.active{background:linear-gradient(135deg,#1455c7,#286ce0);color:#fff;border-color:#286ce0;box-shadow:0 5px 14px rgba(39,100,216,.18)}
+.mode-note{padding:12px 14px;background:#eef5ff;border:1px solid #d6e5ff;color:#234578;border-radius:10px;font-size:13px;margin-bottom:20px;line-height:1.5}
+.teacher-fields{display:none}
+.teacher-fields.show{display:contents}
+@media(max-width:520px){.booking-tabs{gap:6px}.booking-tab{font-size:12px;padding:12px 4px}}
+
 </style>
 </head>
 
@@ -430,8 +437,6 @@ footer strong {
             Book your laboratory session easily
         </div>
 
-        <a href="admin.html" class="admin-login-tab" aria-label="Administrative Login">🔐 Administrative Login</a>
-
     </div>
 
 </header>
@@ -442,6 +447,13 @@ footer strong {
 <main>
 
     <div class="booking-card">
+
+        <div class="booking-tabs" role="tablist" aria-label="Booking options">
+            <button type="button" class="booking-tab active" id="studentTab" role="tab" aria-selected="true">🎓 Student Booking</button>
+            <button type="button" class="booking-tab" id="teacherTab" role="tab" aria-selected="false">👨‍🏫 Teacher Booking</button>
+            <button type="button" class="booking-tab" id="officersTab" role="tab" aria-selected="false">🔐 Officers Login</button>
+        </div>
+        <div class="mode-note" id="modeNote">Students: fill in your student details, choose a lab and time, then submit your booking.</div>
 
         <div class="form-heading">
 
@@ -460,7 +472,7 @@ footer strong {
 
                 <!-- STUDENT NAME -->
 
-                <div class="form-group">
+                <div class="form-group student-only">
 
                     <label for="studentName">
                         👤 Student Name
@@ -478,7 +490,7 @@ footer strong {
 
                 <!-- STUDENT ID -->
 
-                <div class="form-group">
+                <div class="form-group student-only">
 
                     <label for="studentId">
                         🪪 Student ID
@@ -494,7 +506,25 @@ footer strong {
                 </div>
 
 
-                <!-- SEMESTER -->
+                <!-- TEACHER-ONLY DETAILS -->
+                <div class="form-group teacher-fields" id="teacherNameGroup">
+                    <label for="teacherName">👨‍🏫 Teacher Name</label>
+                    <input type="text" id="teacherName" placeholder="Enter teacher name">
+                </div>
+                <div class="form-group teacher-fields" id="designationGroup">
+                    <label for="designation">💼 Designation</label>
+                    <input type="text" id="designation" placeholder="e.g. Lecturer, Assistant Professor">
+                </div>
+                <div class="form-group teacher-fields" id="mobileGroup">
+                    <label for="mobileNumber">📱 Mobile Number</label>
+                    <input type="tel" id="mobileNumber" placeholder="Enter mobile number" inputmode="tel">
+                </div>
+                <div class="form-group teacher-fields" id="sectionGroup">
+                    <label for="studentSection">🏷️ Student Section</label>
+                    <input type="text" id="studentSection" placeholder="e.g. A, B, C">
+                </div>
+
+                <!-- SEMESTER (shared by student and teacher bookings) -->
 
                 <div class="form-group">
 
@@ -515,7 +545,7 @@ footer strong {
 
                 <!-- COURSE TEACHER -->
 
-                <div class="form-group">
+                <div class="form-group student-only">
 
                     <label for="courseTeacher">
                         👨‍🏫 Course Teacher
@@ -767,8 +797,51 @@ const selectCustomSlotBtn =
 
 
 let selectedSlot = null;
-
 let timeSlots = [];
+let bookingMode = "student";
+
+const studentTab = document.getElementById("studentTab");
+const teacherTab = document.getElementById("teacherTab");
+const officersTab = document.getElementById("officersTab");
+const modeNote = document.getElementById("modeNote");
+const teacherName = document.getElementById("teacherName");
+const designation = document.getElementById("designation");
+const mobileNumber = document.getElementById("mobileNumber");
+const studentSection = document.getElementById("studentSection");
+
+function setBookingMode(mode) {
+    if (mode === "officers") {
+        window.location.href = "admin.html";
+        return;
+    }
+    bookingMode = mode;
+    const isTeacher = mode === "teacher";
+    studentTab.classList.toggle("active", !isTeacher);
+    teacherTab.classList.toggle("active", isTeacher);
+    studentTab.setAttribute("aria-selected", String(!isTeacher));
+    teacherTab.setAttribute("aria-selected", String(isTeacher));
+    document.querySelectorAll(".student-only").forEach(el => {
+        el.style.display = isTeacher ? "none" : "flex";
+        const input = el.querySelector("input,select,textarea");
+        if (input) input.required = !isTeacher;
+    });
+    document.querySelectorAll(".teacher-fields").forEach(el => {
+        el.classList.toggle("show", isTeacher);
+        const input = el.querySelector("input");
+        if (input) input.required = isTeacher;
+    });
+    modeNote.textContent = isTeacher
+        ? "Teachers: enter your name, designation and mobile number, then select the student semester/section, lab, date and time. Your booking will appear in the existing Officers Dashboard."
+        : "Students: fill in your student details, choose a lab and time, then submit your booking.";
+    document.querySelector(".form-heading h2").textContent = isTeacher ? "Teacher Laboratory Booking" : "Student Laboratory Booking";
+    document.querySelector(".form-heading p").textContent = isTeacher ? "Please provide teacher and session details below" : "Please provide the required information below";
+    submitBtn.textContent = isTeacher ? "SUBMIT TEACHER BOOKING" : "BOOK LAB NOW";
+    message.className = "";
+    message.textContent = "";
+}
+studentTab.addEventListener("click", () => setBookingMode("student"));
+teacherTab.addEventListener("click", () => setBookingMode("teacher"));
+officersTab.addEventListener("click", () => setBookingMode("officers"));
 
 
 /* =========================================================
@@ -1350,13 +1423,16 @@ bookingForm.addEventListener(
             return;
         }
 
+        if (bookingMode === "student" && (!studentName.value.trim() || !studentId.value.trim() || !courseTeacher.value.trim())) {
+            showMessage("Please complete Student Name, Student ID and Course Teacher.", "error");
+            return;
+        }
+        if (bookingMode === "teacher" && (!teacherName.value.trim() || !designation.value.trim() || !mobileNumber.value.trim() || !studentSection.value.trim())) {
+            showMessage("Please complete Teacher Name, Designation, Mobile Number and Student Section.", "error");
+            return;
+        }
         if (!semester.value) {
-
-            showMessage(
-                "Please select a semester.",
-                "error"
-            );
-
+            showMessage("Please select the students' semester.", "error");
             return;
         }
 
@@ -1389,16 +1465,16 @@ bookingForm.addEventListener(
                 "create_lab_booking",
                 {
                     p_student_name:
-                        studentName.value.trim(),
+                        bookingMode === "teacher" ? teacherName.value.trim() : studentName.value.trim(),
 
                     p_student_id:
-                        studentId.value.trim(),
+                        bookingMode === "teacher" ? mobileNumber.value.trim() : studentId.value.trim(),
 
                     p_semester_id:
                         Number(semester.value),
 
                     p_course_teacher:
-                        courseTeacher.value.trim(),
+                        bookingMode === "teacher" ? designation.value.trim() : courseTeacher.value.trim(),
 
                     p_lab_id:
                         Number(lab.value),
@@ -1413,7 +1489,22 @@ bookingForm.addEventListener(
                         selectedSlot.end_time,
 
                     p_booking_purpose:
-                        bookingPurpose.value.trim()
+                        bookingPurpose.value.trim(),
+
+                    p_booking_type:
+                        bookingMode,
+
+                    p_teacher_name:
+                        bookingMode === "teacher" ? teacherName.value.trim() : null,
+
+                    p_designation:
+                        bookingMode === "teacher" ? designation.value.trim() : null,
+
+                    p_mobile_number:
+                        bookingMode === "teacher" ? mobileNumber.value.trim() : null,
+
+                    p_student_section:
+                        bookingMode === "teacher" ? studentSection.value.trim() : null
                 }
             );
 
@@ -1458,6 +1549,10 @@ bookingForm.addEventListener(
             );
 
             bookingForm.reset();
+            teacherName.value = "";
+            designation.value = "";
+            mobileNumber.value = "";
+            studentSection.value = "";
 
             slotsContainer.innerHTML = "";
 
