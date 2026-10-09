@@ -30,19 +30,31 @@ tbody tr:last-child td{border-bottom:0}
 .status{display:inline-flex;align-items:center;justify-content:center;min-width:82px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
 .action{border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;color:#fff}
 textarea{border:1px solid #ccd6e4;border-radius:8px;padding:8px;min-width:190px;min-height:58px;resize:vertical;font-size:12px;background:#fff}
-/* Distinct booking types: student=blue, teacher=purple, officers=amber */
+/* Distinct booking types: student=blue, teacher=green, officers=amber */
 .booking-row.student-booking td{background:#eff6ff!important;border-bottom-color:#cfe0ff!important}
-.booking-row.teacher-booking td{background:#f5f0ff!important;border-bottom-color:#e2d5ff!important}
+.booking-row.teacher-booking td{background:#ecfdf3!important;border-bottom-color:#bbf7d0!important}
 .booking-row.officers-booking td{background:#fff7e6!important;border-bottom-color:#f5dfae!important}
 .booking-row:hover td{filter:brightness(.975)}
 .booking-type-badge{display:inline-flex;align-items:center;justify-content:center;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;border:1px solid transparent}
 .booking-type-student{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe}
-.booking-type-teacher{background:#ede9fe;color:#6d28d9;border-color:#ddd6fe}
+.booking-type-teacher{background:#dcfce7;color:#166534;border-color:#86efac}
 .booking-type-officers{background:#fef3c7;color:#92400e;border-color:#fde68a}
 .booking-legend{display:flex;gap:9px;flex-wrap:wrap;padding:0 16px 14px;font-size:12px;color:#526174}
 .booking-legend span{display:inline-flex;align-items:center;gap:6px}
 .booking-legend i{display:inline-block;width:11px;height:11px;border-radius:3px}
-.booking-legend .legend-student{background:#bfdbfe}.booking-legend .legend-teacher{background:#ddd6fe}.booking-legend .legend-officers{background:#fcd34d}
+.booking-legend .legend-student{background:#bfdbfe}.booking-legend .legend-teacher{background:#86efac}.booking-legend .legend-officers{background:#fcd34d}
+/* Fit the complete booking table within the screen: no horizontal side-scroll */
+.table-card{overflow:hidden!important;max-width:100%;}
+.table-scroll{overflow-x:hidden!important;width:100%;}
+.table-card table,.table,table{width:100%!important;min-width:0!important;table-layout:fixed!important;border-collapse:collapse!important;}
+.table th,.table td,thead th,tbody td{padding:6px 4px!important;font-size:10px!important;line-height:1.25;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;}
+.table th:nth-child(n),.table td:nth-child(n){min-width:0!important;width:auto;}
+.table td:nth-child(11),.table td:nth-child(12){min-width:0!important;width:auto;}
+.table td textarea,.table-card table td textarea{width:100%!important;min-width:0!important;max-width:100%!important;min-height:54px;padding:5px!important;font-size:10px!important;}
+.table td .action,.table-card table td .action{display:block;width:100%;margin:3px 0!important;padding:6px 2px!important;font-size:9px!important;white-space:normal!important;}
+.booking-type-badge{white-space:normal!important;padding:4px!important;font-size:9px!important;}
+@media(max-width:900px){.wrap{padding:0 6px!important}.table th,.table td,thead th,tbody td{padding:4px 2px!important;font-size:9px!important}.top{padding:12px}.table-title{padding:10px;font-size:13px}}
+@media(max-width:560px){.table th,.table td,thead th,tbody td{font-size:8px!important;padding:3px 1px!important}.table td textarea{min-height:48px!important;font-size:8px!important}.booking-type-badge{font-size:8px!important}}
 </style>
 
 <style id="center-all-table-content">
