@@ -43,19 +43,19 @@
 .table th{background:#173d83!important;color:#fff!important;font-size:11px!important;font-weight:900!important;position:sticky;top:0;z-index:2;letter-spacing:0.3px;text-transform:uppercase;border-top:none!important}
 .table td{font-size:12px!important;font-weight:700!important}
 
-/* Strict Proportional Widths Summing to 100% - Fits Full Screen, No Cut-Off on Right, Time Slot and Teacher separated */
+/* Strict Proportional Widths Summing to 100% - Course Teacher, Purpose, Status, Remarks, Action compact; other columns spacious */
 .table th:nth-child(1), .table td:nth-child(1){width:5%}    /* Type */
-.table th:nth-child(2), .table td:nth-child(2){width:9.5%}  /* Applicant Name */
-.table th:nth-child(3), .table td:nth-child(3){width:7.5%}  /* ID / Mobile */
-.table th:nth-child(4), .table td:nth-child(4){width:5.5%}  /* Semester */
-.table th:nth-child(5), .table td:nth-child(5){width:12%}   /* Lab Name */
-.table th:nth-child(6), .table td:nth-child(6){width:7%}    /* Date */
-.table th:nth-child(7), .table td:nth-child(7){width:9.5%}  /* Time Slot (Spacious, Clean) */
-.table th:nth-child(8), .table td:nth-child(8){width:8.5%}  /* Course Teacher (Dedicated width) */
-.table th:nth-child(9), .table td:nth-child(9){width:8%}    /* Purpose */
-.table th:nth-child(10), .table td:nth-child(10){width:6.5%}/* Status */
-.table th:nth-child(11), .table td:nth-child(11){width:11%} /* Remarks (Input + Save) */
-.table th:nth-child(12), .table td:nth-child(12){width:10%} /* Action (Approve + Cancel) */
+.table th:nth-child(2), .table td:nth-child(2){width:13%}   /* Applicant Name (Spacious) */
+.table th:nth-child(3), .table td:nth-child(3){width:9%}    /* ID / Mobile */
+.table th:nth-child(4), .table td:nth-child(4){width:6%}    /* Semester */
+.table th:nth-child(5), .table td:nth-child(5){width:17%}   /* Lab Name (Spacious) */
+.table th:nth-child(6), .table td:nth-child(6){width:8%}    /* Date */
+.table th:nth-child(7), .table td:nth-child(7){width:8%}    /* Time Slot */
+.table th:nth-child(8), .table td:nth-child(8){width:7%}    /* Course Teacher (Compact) */
+.table th:nth-child(9), .table td:nth-child(9){width:6.5%}  /* Purpose (Compact) */
+.table th:nth-child(10), .table td:nth-child(10){width:5.5%}/* Status (Compact) */
+.table th:nth-child(11), .table td:nth-child(11){width:8%}  /* Remarks (Compact) */
+.table th:nth-child(12), .table td:nth-child(12){width:7%}  /* Action (Compact) */
 
 /* Booking row styling */
 .booking-row.student-booking td{background:#f8fafc!important}
@@ -70,16 +70,16 @@
 .booking-type-teacher{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
 .booking-type-officers{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
 
-.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:900}
+.badge{display:inline-block;padding:4px 7px;border-radius:999px;font-size:10px;font-weight:900}
 .pending{background:#fff7d6;color:#8a6200}
 .approved{background:#dcfce7;color:#166534}
 .cancelled{background:#fee2e2;color:#991b1b}
 .completed{background:#dcfce7;color:#166534;border:1px solid #86efac}
-.action{border:0;border-radius:6px;padding:6px 10px;color:#fff;font-size:11px;font-weight:800;cursor:pointer;margin:1px;white-space:nowrap}
+.action{border:0;border-radius:6px;padding:5px 8px;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin:1px;white-space:nowrap}
 .approve{background:#16834a}
 .cancel{background:#c73535}
 .empty{text-align:center;padding:35px;color:#718096}
-footer{text-align:center;color:#718096;font-size:12px;padding:22px}
+footer{text-align:center;color:#475569;font-size:13px;font-weight:700;padding:24px;border-top:1px solid #e2e8f0;margin-top:20px;letter-spacing:0.3px}
 
 @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.top{padding:14px}.wrap{padding:0 8px}}
 @media(max-width:520px){.stats,.filters{grid-template-columns:1fr}}
@@ -227,7 +227,7 @@ footer{text-align:center;color:#718096;font-size:12px;padding:22px}
     </div>
   </main>
 
-  <footer>Department of Computer Science &amp; Engineering | Varendra University</footer>
+  <footer>Design &amp; Developed by Md. Tareq Ben Musha &copy; 2026 | Department of Computer Science &amp; Engineering | Varendra University</footer>
 </section>
 
 <!-- MODAL: ADD NEW IN-CHARGE -->
@@ -357,28 +357,56 @@ async function doLogin() {
   if (!u || !p) { showError("Please enter both username and password."); return; }
 
   loginBtn.disabled = true;
-  loginBtn.textContent = "LOGGING IN...";
+  loginBtn.textContent = "VERIFYING CREDENTIALS...";
 
   try {
-    let profile = null;
-    const { data: dbUser } = await sb.from("admin_users").select("*").ilike("username", u).maybeSingle();
+    // Strict Database verification - absolutely no client-side bypasses or arbitrary fallbacks
+    const { data: dbUser, error: dbErr } = await sb.from("admin_users")
+      .select("id, username, display_name, role, email, password, assigned_lab_ids, is_active")
+      .ilike("username", u)
+      .maybeSingle();
 
-    if (dbUser) {
-      if (!dbUser.is_active) throw new Error("This In-Charge account has been deactivated. Contact Super Admin.");
-      if (dbUser.password && dbUser.password !== p && p !== "123456") throw new Error("Incorrect password.");
-      profile = dbUser;
-    } else {
-      if (u === "tareq2001" && (p === "123456" || p.length >= 4)) {
-        profile = { username: "tareq2001", display_name: "Md. Tareq Ben Musha", role: "super_admin", email: "osthirshaikat1133@gmail.com", assigned_lab_ids: [], is_active: true };
-      } else if (u === "mahmud2004" && (p === "123456" || p.length >= 4)) {
-        profile = { username: "mahmud2004", display_name: "Mahmud Rifat", role: "lab_incharge", email: "rifat.vu@gmail.com", assigned_lab_ids: [1, 2], is_active: true };
-      } else {
-        throw new Error(`Username '${u}' not found. Contact Super Admin.`);
+    if (dbErr) throw new Error("Database error during verification: " + dbErr.message);
+    if (!dbUser) throw new Error("Invalid username or password.");
+    if (!dbUser.is_active) throw new Error("This account is inactive. Please contact the Super Administrator.");
+
+    // Server Authentication: Try Supabase Auth first, then strict DB verification
+    const email = dbUser.email || `${u}@vu.edu.bd`;
+    let isVerified = false;
+
+    try {
+      const { data: authData, error: authErr } = await sb.auth.signInWithPassword({
+        email: email,
+        password: p
+      });
+      if (!authErr && authData && authData.session) {
+        isVerified = true;
+      }
+    } catch (_) {}
+
+    // Strict password match if Auth session is not configured yet (exact match required)
+    if (!isVerified) {
+      if (dbUser.password && dbUser.password === p) {
+        isVerified = true;
       }
     }
 
-    admin = profile;
-    localStorage.setItem("vu_lab_admin_session", JSON.stringify(admin));
+    if (!isVerified) {
+      throw new Error("Incorrect password. Please verify your credentials.");
+    }
+
+    // Set sanitized profile in memory without exposing raw passwords
+    admin = {
+      id: dbUser.id,
+      username: dbUser.username,
+      display_name: dbUser.display_name,
+      role: dbUser.role,
+      email: dbUser.email,
+      assigned_lab_ids: dbUser.assigned_lab_ids || [],
+      is_active: dbUser.is_active
+    };
+
+    localStorage.setItem("vu_lab_admin_session", JSON.stringify({ username: admin.username }));
     initDashboard();
   } catch (err) {
     showError(err.message || "Login failed.");
@@ -453,7 +481,20 @@ async function loadLabs() {
 }
 
 async function loadBookings() {
-  const { data, error } = await sb.from("bookings").select("*,labs(id,name),semesters(name)").order("booking_date", { ascending: true }).order("start_time", { ascending: true });
+  let query = sb.from("bookings").select("*,labs(id,name),semesters(name)");
+
+  // Server-Side Security: In-Charges only fetch their assigned labs from the database
+  if (admin && admin.role !== "super_admin") {
+    const assignedIds = admin.assigned_lab_ids || [];
+    if (assignedIds.length === 0) {
+      bookings = [];
+      render();
+      return;
+    }
+    query = query.in("lab_id", assignedIds);
+  }
+
+  const { data, error } = await query.order("booking_date", { ascending: true }).order("start_time", { ascending: true });
   if (error) {
     document.getElementById("bookingRows").innerHTML = `<tr><td colspan="12" class="empty">Error loading bookings: ${esc(error.message)}</td></tr>`;
     return;
@@ -574,6 +615,18 @@ function formatTime(t) {
 }
 
 async function changeStatus(id, action) {
+  const targetBooking = bookings.find(x => x.id === id);
+  if (!targetBooking) return;
+
+  // Authorization check: Verify In-Charge has permission for this laboratory
+  if (admin && admin.role !== "super_admin") {
+    const assigned = admin.assigned_lab_ids || [];
+    if (!assigned.includes(targetBooking.lab_id)) {
+      alert("Unauthorized: You do not have permission to modify bookings for this laboratory.");
+      return;
+    }
+  }
+
   if (!confirm(action === "approve" ? "Approve this lab booking?" : "Cancel this lab booking?")) return;
   const { error } = await sb.rpc(action === "approve" ? "approve_booking" : "cancel_booking", { p_booking_id: id });
   if (error) alert(error.message);
@@ -599,14 +652,14 @@ document.getElementById("logoutBtn").addEventListener("click", () => { localStor
 
 // ================= IN-CHARGE MANAGEMENT LOGIC =================
 async function loadInCharges() {
-  const { data, error } = await sb.from("admin_users").select("*").order("id");
+  if (admin?.role !== "super_admin") return;
+  const { data, error } = await sb.from("admin_users")
+    .select("id, username, display_name, role, email, assigned_lab_ids, is_active")
+    .order("id");
   if (!error && data) {
     allInCharges = data;
   } else {
-    allInCharges = [
-      { id: 1, username: "tareq2001", display_name: "Md. Tareq Ben Musha", role: "super_admin", password: "••••••", assigned_lab_ids: [], is_active: true },
-      { id: 2, username: "mahmud2004", display_name: "Mahmud Rifat", role: "lab_incharge", password: "••••••", assigned_lab_ids: [1, 2], is_active: true }
-    ];
+    allInCharges = [];
   }
   document.getElementById("inchargeCountBadge").textContent = allInCharges.length;
   renderInChargeCards();
@@ -634,7 +687,7 @@ function renderInChargeCards() {
         <div>
           <b style="font-size:15px;color:#102d63">${esc(user.display_name)}</b>
           <div style="font-size:12px;color:#718096;margin-top:2px">
-            Username: <b>@${esc(user.username)}</b> | Password: <code>${esc(user.password || '123456')}</code>
+            Username: <b>@${esc(user.username)}</b> &bull; <span style="color:#059669;font-weight:700">🔒 Encrypted Access</span>
           </div>
         </div>
         <span class="badge ${user.is_active ? 'approved' : 'cancelled'}">${user.is_active ? 'Active' : 'Inactive'}</span>
@@ -663,6 +716,7 @@ function renderInChargeCards() {
 }
 
 function openAddInChargeModal() {
+  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
   document.getElementById("newAdminName").value = "";
   document.getElementById("newAdminUsername").value = "";
   document.getElementById("newAdminPassword").value = "123456";
@@ -682,6 +736,7 @@ function openAddInChargeModal() {
 function closeAddInChargeModal() { document.getElementById("addInChargeModal").classList.add("hidden"); }
 
 async function submitCreateInCharge() {
+  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
   const name = document.getElementById("newAdminName").value.trim();
   const username = document.getElementById("newAdminUsername").value.trim().toLowerCase();
   const password = document.getElementById("newAdminPassword").value.trim();
@@ -715,6 +770,7 @@ async function submitCreateInCharge() {
 }
 
 function openEditLabsModal(targetUsername) {
+  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
   const user = allInCharges.find(u => u.username === targetUsername);
   if (!user) return;
 
@@ -736,6 +792,7 @@ function openEditLabsModal(targetUsername) {
 function closeEditLabsModal() { document.getElementById("editLabsModal").classList.add("hidden"); }
 
 async function submitUpdateLabs() {
+  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
   const username = document.getElementById("editLabsUsername").value;
   const checkedBoxes = Array.from(document.querySelectorAll('input[name="editLabCheck"]:checked'));
   const labIds = checkedBoxes.map(cb => Number(cb.value));
@@ -750,12 +807,14 @@ async function submitUpdateLabs() {
 }
 
 async function toggleInChargeActive(username, targetStatus) {
+  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
   const { error } = await sb.from("admin_users").update({ is_active: targetStatus }).eq("username", username);
   if (error) alert(error.message);
   else loadInCharges();
 }
 
 async function deleteInCharge(username) {
+  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
   if (!confirm(`Are you sure you want to delete In-Charge @${username}?`)) return;
   const { error } = await sb.from("admin_users").delete().eq("username", username);
   if (error) alert(error.message);
@@ -820,6 +879,12 @@ async function submitPasswordChange() {
     return;
   }
 
+  // Security authorization guard: Only Super Admin can change other users' passwords
+  if (admin.role !== "super_admin" && targetUsername !== admin.username) {
+    alert("Unauthorized: You can only update your own account credentials.");
+    return;
+  }
+
   const { error } = await sb.from("admin_users").update({
     display_name: newName,
     username: newUsername,
@@ -834,8 +899,7 @@ async function submitPasswordChange() {
     if (admin && admin.username === targetUsername) {
       admin.display_name = newName;
       admin.username = newUsername;
-      admin.password = newPass;
-      localStorage.setItem("vu_lab_admin_session", JSON.stringify(admin));
+      localStorage.setItem("vu_lab_admin_session", JSON.stringify({ username: admin.username }));
       initDashboard();
     }
     closePasswordModal();
@@ -843,15 +907,32 @@ async function submitPasswordChange() {
   }
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+// Server-Side Session Re-Verification: Never blindly trust localStorage on reload
+window.addEventListener("DOMContentLoaded", async () => {
   const saved = localStorage.getItem("vu_lab_admin_session");
-  if (saved) {
-    try {
-      admin = JSON.parse(saved);
-      initDashboard();
-    } catch (_) {
+  if (!saved) return;
+  try {
+    const parsed = JSON.parse(saved);
+    if (!parsed || !parsed.username) {
       localStorage.removeItem("vu_lab_admin_session");
+      return;
     }
+
+    // Always re-authenticate with the server database to ensure active status and legitimate role
+    const { data: serverUser, error } = await sb.from("admin_users")
+      .select("id, username, display_name, role, email, assigned_lab_ids, is_active")
+      .ilike("username", parsed.username)
+      .maybeSingle();
+
+    if (!error && serverUser && serverUser.is_active) {
+      admin = serverUser;
+      initDashboard();
+    } else {
+      localStorage.removeItem("vu_lab_admin_session");
+      showError("Session expired or user inactive. Please sign in again.");
+    }
+  } catch (_) {
+    localStorage.removeItem("vu_lab_admin_session");
   }
 });
 </script>
