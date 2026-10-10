@@ -14,81 +14,97 @@
 .brand{text-align:center;color:#173d83;font-weight:800;letter-spacing:1px;font-size:14px}.login-card h1{text-align:center;margin:8px 0 5px;font-size:27px;color:#122b5c}.login-card p{text-align:center;color:#718096;margin:0 0 26px;font-size:13px}.field{margin:15px 0;position:relative;z-index:2}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}
 .field input{display:block;position:relative;z-index:3;width:100%;padding:13px 14px;border:1px solid #cfd8e6;border-radius:10px;outline:none;background:#fff!important;color:#172033!important;caret-color:#172033!important;-webkit-text-fill-color:#172033!important}.field input::placeholder{color:#8a94a6!important;opacity:1}.field input:focus{border-color:#2868d8;box-shadow:0 0 0 3px rgba(40,104,216,.12)}
 .login-btn{width:100%;border:0;border-radius:10px;padding:14px;background:#2864d0;color:#fff;font-weight:800;cursor:pointer;margin-top:8px}.login-btn:disabled{opacity:.6;cursor:not-allowed}.error{margin-top:14px;background:#fee2e2;color:#991b1b;border:1px solid #fecaca;padding:11px;border-radius:9px;font-size:13px;text-align:center}
-.dashboard{min-height:100vh}.top{background:linear-gradient(135deg,#071a3d,#17458f);color:#fff;padding:20px 26px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.top h1{font-size:22px;font-weight:900;margin:0}.top small{opacity:.9;font-size:13px}.logout{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:9px;padding:9px 14px;cursor:pointer;font-weight:bold}.wrap{width:100%;max-width:none;margin:22px auto;padding:0 22px}
-.profile{background:#fff;border:1px solid #e1e7f0;border-radius:14px;padding:16px 20px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.profile strong{color:#173d83;font-size:18px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stat{background:#fff;border:1px solid #e1e7f0;border-radius:14px;padding:18px}.stat b{display:block;font-size:26px;color:#173d83}.stat span{font-size:12px;color:#718096}
-.filters{background:#fff;border:1px solid #e1e7f0;border-radius:14px;padding:15px;display:grid;grid-template-columns:1.1fr 1fr 1fr 2fr;gap:10px;margin-bottom:18px}.filters input,.filters select{width:100%;padding:11px;border:1px solid #d2dae7;border-radius:9px;background:#fff}
 
-/* Table Card & Scrollable Layout with Middle-Order alignment */
-.table-card{background:#fff;border:1px solid #e1e7f0;border-radius:14px;overflow-x:auto!important;max-width:100%;box-shadow:0 4px 18px rgba(15,35,70,.06)}
-.table-header-bar{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:2px solid #e2e8f0;flex-wrap:wrap;gap:10px;background:#f8fafc}
-.table-title{font-weight:900;color:#102d63;font-size:17px}
-.table{width:100%!important;border-collapse:separate!important;border-spacing:0!important;min-width:2160px!important;table-layout:fixed!important}
-.table th,.table td{padding:14px 10px!important;border-bottom:1.5px solid #edf1f6!important;border-right:1px solid #e2e8f0!important;border-left:1px solid #e2e8f0!important;text-align:center!important;vertical-align:middle!important;line-height:1.45;box-sizing:border-box}
-.table th{background:#173d83!important;color:#fff!important;font-size:15px!important;font-weight:900!important;position:sticky;top:0;z-index:2;letter-spacing:0.3px;white-space:nowrap;text-transform:uppercase}
-.table td{font-size:15px!important;font-weight:700!important}
+.dashboard{min-height:100vh}
+.top{background:linear-gradient(135deg,#071a3d,#17458f);color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.top h1{font-size:21px;font-weight:900;margin:0}
+.top small{opacity:.9;font-size:13px}
+.logout{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:bold;font-size:13px;transition:background .15s}
+.logout:hover{background:rgba(255,255,255,.22)}
 
-/* Strict Column Widths & Middle Ordering - Lab Name and Date NEVER touch */
-.table th:nth-child(1), .table td:nth-child(1){width:140px!important} /* Type */
-.table th:nth-child(2), .table td:nth-child(2){width:200px!important;font-size:16px!important;font-weight:900!important} /* Name */
-.table th:nth-child(3), .table td:nth-child(3){width:180px!important;font-family:monospace!important;font-size:15px!important;font-weight:900!important} /* ID */
-.table th:nth-child(4), .table td:nth-child(4){width:130px!important;font-size:15px!important;font-weight:900!important} /* Semester */
-.table th:nth-child(5), .table td:nth-child(5){width:310px!important;min-width:310px!important;max-width:310px!important;text-align:center!important;vertical-align:middle!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important} /* Lab Name */
-.table th:nth-child(6), .table td:nth-child(6){width:155px!important;min-width:155px!important;max-width:155px!important;text-align:center!important;vertical-align:middle!important;white-space:nowrap!important} /* Date */
-.table th:nth-child(7), .table td:nth-child(7){width:195px!important;min-width:195px!important;max-width:195px!important;text-align:center!important;vertical-align:middle!important;white-space:nowrap!important;color:#0284c7!important} /* Time */
-.table th:nth-child(8), .table td:nth-child(8){width:180px!important;font-weight:800!important;font-size:14px!important} /* Teacher */
-.table th:nth-child(9), .table td:nth-child(9){width:200px!important;text-align:center!important;font-weight:700!important;font-size:14px!important} /* Purpose */
-.table th:nth-child(10), .table td:nth-child(10){width:140px!important} /* Status */
-.table th:nth-child(11), .table td:nth-child(11){width:180px!important} /* Remarks */
-.table th:nth-child(12), .table td:nth-child(12){width:170px!important} /* Action */
-.table textarea{width:100%;font-size:13px;border:1px solid #cbd5e1;border-radius:6px;padding:6px;box-sizing:border-box}
+.wrap{width:100%;max-width:100%;margin:16px auto;padding:0 20px}
+.profile{background:#fff;border:1px solid #e1e7f0;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.profile strong{color:#173d83;font-size:17px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.stat{background:#fff;border:1px solid #e1e7f0;border-radius:12px;padding:16px}.stat b{display:block;font-size:24px;color:#173d83}.stat span{font-size:12px;color:#718096}
+.filters{background:#fff;border:1px solid #e1e7f0;border-radius:12px;padding:14px;display:grid;grid-template-columns:1.1fr 1fr 1fr 2fr;gap:10px;margin-bottom:16px}
+.filters input,.filters select{width:100%;padding:10px;border:1px solid #d2dae7;border-radius:8px;background:#fff;font-size:13px}
 
-.badge{display:inline-block;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:900}
-.pending{background:#fff7d6;color:#8a6200}
-.approved{background:#dcfce7;color:#166534}
-.cancelled{background:#fee2e2;color:#991b1b}
-.completed{background:#dcfce7;color:#166534;border:1px solid #86efac}
-.action{border:0;border-radius:7px;padding:8px 12px;color:#fff;font-size:12px;font-weight:800;cursor:pointer;margin:2px}
-.approve{background:#16834a}
-.cancel{background:#c73535}
-.empty{text-align:center;padding:35px;color:#718096}
-footer{text-align:center;color:#718096;font-size:12px;padding:25px}
+/* ================= FULL-SCREEN FIT TABLE SYSTEM ================= */
+.table-card{background:#fff;border:1px solid #dbeafe;border-radius:12px;overflow-x:auto;width:100%;max-width:100%;box-shadow:0 2px 12px rgba(15,35,70,.04);box-sizing:border-box}
+.table-header-bar{padding:14px 18px;border-bottom:1.5px solid #e2e8f0;background:#f8fafc}
+.table-title{font-weight:900;color:#102d63;font-size:16px}
 
-@media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.top{padding:16px}.wrap{padding:0 10px}.table th,.table td{font-size:13px;padding:12px 10px}}
-@media(max-width:520px){.stats,.filters{grid-template-columns:1fr}}
+/* Table spans 100% width cleanly so right side is never cut off */
+.table{width:100%!important;min-width:100%!important;border-collapse:collapse!important;table-layout:fixed!important;margin:0!important}
+.table th,.table td{padding:8px 4px!important;border:1px solid #e2e8f0!important;text-align:center!important;vertical-align:middle!important;line-height:1.3;box-sizing:border-box!important;overflow:hidden!important;word-break:break-word!important;overflow-wrap:break-word!important}
 
-/* Sub-Tab Navigation for Super Admin */
-.sub-tabs{display:flex;gap:10px;margin-bottom:18px;background:#e9f0f8;padding:6px;border-radius:12px;width:fit-content}
-.sub-tab-btn{border:0;padding:10px 22px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;background:transparent;color:#526174;transition:all .2s}
-.sub-tab-btn.active{background:#102d63;color:#fff;box-shadow:0 4px 12px rgba(16,45,99,.15)}
+/* Clean unified header row */
+.table th{background:#173d83!important;color:#fff!important;font-size:11px!important;font-weight:900!important;position:sticky;top:0;z-index:2;letter-spacing:0.3px;text-transform:uppercase;border-top:none!important}
+.table td{font-size:12px!important;font-weight:700!important}
 
-/* Incharge Management Grid */
-.incharge-header-card{background:#fff;border:1px solid #dbe3ee;border-radius:14px;padding:20px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;box-shadow:0 4px 16px rgba(15,35,70,.05)}
-.incharge-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));gap:16px;margin-bottom:30px}
-.incharge-card{background:#fff;border:1px solid #dbe3ee;border-radius:14px;padding:18px;box-shadow:0 4px 16px rgba(15,35,70,.04);position:relative;transition:transform .15s}
-.incharge-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,35,70,.08)}
-.incharge-card.super{border-color:#fde047;background:#fefce8}
-.lab-tag{display:inline-block;padding:4px 8px;border-radius:6px;background:#eff6ff;color:#1e40af;font-size:11px;font-weight:700;margin:2px;border:1px solid #bfdbfe}
-.lab-tag-empty{display:inline-block;padding:4px 8px;border-radius:6px;background:#fee2e2;color:#991b1b;font-size:11px;font-weight:700}
+/* Strict Proportional Widths Summing to 100% - Fits Full Screen, No Cut-Off on Right, Time Slot and Teacher separated */
+.table th:nth-child(1), .table td:nth-child(1){width:5%}    /* Type */
+.table th:nth-child(2), .table td:nth-child(2){width:9.5%}  /* Applicant Name */
+.table th:nth-child(3), .table td:nth-child(3){width:7.5%}  /* ID / Mobile */
+.table th:nth-child(4), .table td:nth-child(4){width:5.5%}  /* Semester */
+.table th:nth-child(5), .table td:nth-child(5){width:12%}   /* Lab Name */
+.table th:nth-child(6), .table td:nth-child(6){width:7%}    /* Date */
+.table th:nth-child(7), .table td:nth-child(7){width:9.5%}  /* Time Slot (Spacious, Clean) */
+.table th:nth-child(8), .table td:nth-child(8){width:8.5%}  /* Course Teacher (Dedicated width) */
+.table th:nth-child(9), .table td:nth-child(9){width:8%}    /* Purpose */
+.table th:nth-child(10), .table td:nth-child(10){width:6.5%}/* Status */
+.table th:nth-child(11), .table td:nth-child(11){width:11%} /* Remarks (Input + Save) */
+.table th:nth-child(12), .table td:nth-child(12){width:10%} /* Action (Approve + Cancel) */
 
-/* Modal styles */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(7,26,61,.65);backdrop-filter:blur(3px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal-box{background:#fff;border-radius:18px;width:min(540px, 100%);max-height:90vh;overflow-y:auto;padding:26px;box-shadow:0 25px 70px rgba(0,0,0,.35)}
-.modal-box h2{margin:0 0 6px;color:#102d63;font-size:21px}
-.modal-box p{margin:0 0 18px;color:#718096;font-size:13px}
-.lab-checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 18px;background:#f8fafc;padding:12px;border-radius:10px;border:1px solid #e2e8f0}
-.lab-check-item{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#1e293b;cursor:pointer}
-.lab-check-item input{cursor:pointer}
-
+/* Booking row styling */
 .booking-row.student-booking td{background:#f8fafc!important}
-.booking-row.student-booking:hover td{background:#eef6ff!important}
+.booking-row.student-booking:hover td{background:#eff6ff!important}
 .booking-row.teacher-booking td{background:#f0fdf4!important}
 .booking-row.teacher-booking:hover td{background:#dcfce7!important}
 .booking-row.officers-booking td{background:#fffbeb!important}
 .booking-row.officers-booking:hover td{background:#fef3c7!important}
-.booking-type-badge{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}
+
+.booking-type-badge{display:inline-block;padding:4px 7px;border-radius:999px;font-size:11px;font-weight:800}
 .booking-type-student{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
 .booking-type-teacher{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
 .booking-type-officers{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:900}
+.pending{background:#fff7d6;color:#8a6200}
+.approved{background:#dcfce7;color:#166534}
+.cancelled{background:#fee2e2;color:#991b1b}
+.completed{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.action{border:0;border-radius:6px;padding:6px 10px;color:#fff;font-size:11px;font-weight:800;cursor:pointer;margin:1px;white-space:nowrap}
+.approve{background:#16834a}
+.cancel{background:#c73535}
+.empty{text-align:center;padding:35px;color:#718096}
+footer{text-align:center;color:#718096;font-size:12px;padding:22px}
+
+@media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.top{padding:14px}.wrap{padding:0 8px}}
+@media(max-width:520px){.stats,.filters{grid-template-columns:1fr}}
+
+/* Sub-Tab Navigation for Super Admin */
+.sub-tabs{display:flex;gap:10px;margin-bottom:16px;background:#e9f0f8;padding:6px;border-radius:10px;width:fit-content}
+.sub-tab-btn{border:0;padding:9px 20px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;background:transparent;color:#526174;transition:all .2s}
+.sub-tab-btn.active{background:#102d63;color:#fff;box-shadow:0 3px 10px rgba(16,45,99,.15)}
+
+/* Incharge Management Grid */
+.incharge-header-card{background:#fff;border:1px solid #dbe3ee;border-radius:12px;padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;box-shadow:0 3px 12px rgba(15,35,70,.04)}
+.incharge-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:14px;margin-bottom:30px}
+.incharge-card{background:#fff;border:1px solid #dbe3ee;border-radius:12px;padding:16px;box-shadow:0 3px 12px rgba(15,35,70,.04);position:relative}
+.incharge-card.super{border-color:#fde047;background:#fefce8}
+.lab-tag{display:inline-block;padding:3px 7px;border-radius:5px;background:#eff6ff;color:#1e40af;font-size:11px;font-weight:700;margin:2px;border:1px solid #bfdbfe}
+.lab-tag-empty{display:inline-block;padding:3px 7px;border-radius:5px;background:#fee2e2;color:#991b1b;font-size:11px;font-weight:700}
+
+/* Modal styles */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(7,26,61,.65);backdrop-filter:blur(3px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-box{background:#fff;border-radius:16px;width:min(520px, 100%);max-height:90vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.modal-box h2{margin:0 0 6px;color:#102d63;font-size:20px}
+.modal-box p{margin:0 0 16px;color:#718096;font-size:13px}
+.lab-checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 16px;background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e2e8f0}
+.lab-check-item{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#1e293b;cursor:pointer}
+.lab-check-item input{cursor:pointer}
 </style>
 </head>
 <body>
@@ -116,33 +132,29 @@ footer{text-align:center;color:#718096;font-size:12px;padding:25px}
 
 <!-- MAIN DASHBOARD -->
 <section id="dashboard" class="dashboard hidden">
+  <!-- TOP BAR: Single central place for Password management -->
   <header class="top">
     <div>
       <h1>🏢 Lab Booking Dashboard</h1>
       <small id="welcome"></small>
     </div>
-    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <button id="refreshBtn" class="logout" type="button">↻ Refresh</button>
-      <button id="changePassBtn" class="logout" type="button" style="background:#2563eb;color:#fff;border-color:#3b82f6;font-weight:800" onclick="openChangeMyPasswordModal()">🔑 My Password &amp; Username</button>
-      <button id="manageAllUsersBtn" class="logout" type="button" style="background:#d97706;color:#fff;border-color:#f59e0b;font-weight:800" onclick="openUniversalUserModal()">👥 Edit Any User Password</button>
+      <button id="changePassBtn" class="logout" type="button" style="background:#2563eb;color:#fff;border-color:#3b82f6" onclick="openPasswordModal()">🔑 Change Password</button>
       <button id="logoutBtn" class="logout" type="button">Logout</button>
     </div>
   </header>
 
   <main class="wrap">
-    <!-- Profile Card with Password Change buttons -->
+    <!-- Clean Profile Card without redundant buttons -->
     <div class="profile">
       <div>
         <strong id="adminName">—</strong><br>
         <small id="adminRole" style="font-weight:bold;color:#1d4ed8;font-size:13px">—</small>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <button id="profileChangePassBtn" type="button" class="action" style="background:#1d4ed8;padding:10px 18px;font-size:13px;font-weight:800;border-radius:9px" onclick="openChangeMyPasswordModal()">🔑 CHANGE MY PASSWORD &amp; USERNAME</button>
-        <button id="profileManageAllBtn" type="button" class="action" style="background:#b45309;padding:10px 18px;font-size:13px;font-weight:800;border-radius:9px" onclick="openUniversalUserModal()">👥 EDIT ALL USERS' PASSWORDS &amp; USERNAMES</button>
-        <div style="text-align:right">
-          <small>Permission: <b id="permissionText">—</b></small>
-          <div id="assignedLabsNotice" style="font-size:12px;color:#166534;margin-top:3px;font-weight:600"></div>
-        </div>
+      <div style="text-align:right">
+        <small>Permission: <b id="permissionText">—</b></small>
+        <div id="assignedLabsNotice" style="font-size:12px;color:#166534;margin-top:2px;font-weight:600"></div>
       </div>
     </div>
 
@@ -174,37 +186,20 @@ footer{text-align:center;color:#718096;font-size:12px;padding:25px}
         <input id="searchFilter" type="search" placeholder="Search student, ID, teacher, lab or remarks">
       </div>
 
+      <!-- FULL-SCREEN RESPONSIVE TABLE -->
       <div class="table-card">
         <div class="table-header-bar">
           <div class="table-title">📋 Laboratory Bookings Overview</div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <button type="button" class="action" style="background:#2563eb;padding:8px 14px;font-size:12px;font-weight:800;border-radius:7px" onclick="openChangeMyPasswordModal()">🔑 My Password</button>
-            <button type="button" class="action" style="background:#d97706;padding:8px 14px;font-size:12px;font-weight:800;border-radius:7px" onclick="openUniversalUserModal()">👥 Edit Any User Password</button>
-          </div>
         </div>
         <table class="table">
-          <colgroup>
-            <col style="width:140px;min-width:140px">
-            <col style="width:200px;min-width:200px">
-            <col style="width:180px;min-width:180px">
-            <col style="width:130px;min-width:130px">
-            <col style="width:310px;min-width:310px">
-            <col style="width:155px;min-width:155px">
-            <col style="width:195px;min-width:195px">
-            <col style="width:180px;min-width:180px">
-            <col style="width:200px;min-width:200px">
-            <col style="width:140px;min-width:140px">
-            <col style="width:180px;min-width:180px">
-            <col style="width:170px;min-width:170px">
-          </colgroup>
           <thead>
             <tr>
               <th>Type</th>
               <th>Applicant Name</th>
-              <th>Student ID / Mobile</th>
+              <th>ID / Mobile</th>
               <th>Semester</th>
               <th>Lab Name</th>
-              <th>Booking Date</th>
+              <th>Date</th>
               <th>Time Slot</th>
               <th>Course Teacher</th>
               <th>Purpose</th>
@@ -222,10 +217,10 @@ footer{text-align:center;color:#718096;font-size:12px;padding:25px}
     <div id="inchargesSection" class="hidden">
       <div class="incharge-header-card">
         <div>
-          <h2 style="margin:0 0 4px;font-size:19px;color:#102d63">👑 Super Admin In-Charge Control</h2>
-          <p style="margin:0;font-size:13px;color:#718096">Add 7-10+ Lab In-Charges, set separate credentials, and assign 1 or multiple in-charges per lab.</p>
+          <h2 style="margin:0 0 4px;font-size:18px;color:#102d63">👑 Super Admin In-Charge Control</h2>
+          <p style="margin:0;font-size:13px;color:#718096">Add 7-10+ Lab In-Charges, set separate credentials, and assign laboratories.</p>
         </div>
-        <button class="action" style="background:#16834a;padding:12px 22px;font-size:13px;font-weight:800;border-radius:10px" onclick="openAddInChargeModal()">➕ ADD NEW LAB IN-CHARGE</button>
+        <button class="action" style="background:#16834a;padding:10px 20px;font-size:13px;font-weight:800;border-radius:8px" onclick="openAddInChargeModal()">➕ ADD NEW IN-CHARGE</button>
       </div>
 
       <div id="inchargeCardsContainer" class="incharge-grid"></div>
@@ -264,8 +259,8 @@ footer{text-align:center;color:#718096;font-size:12px;padding:25px}
     <div class="lab-checklist" id="addLabChecklist"></div>
 
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
-      <button type="button" class="action" style="background:#94a3b8;padding:10px 18px" onclick="closeAddInChargeModal()">Cancel</button>
-      <button type="button" class="action" style="background:#16834a;padding:10px 22px" onclick="submitCreateInCharge()">CREATE IN-CHARGE</button>
+      <button type="button" class="action" style="background:#94a3b8;padding:9px 16px" onclick="closeAddInChargeModal()">Cancel</button>
+      <button type="button" class="action" style="background:#16834a;padding:9px 20px" onclick="submitCreateInCharge()">CREATE IN-CHARGE</button>
     </div>
   </div>
 </div>
@@ -280,74 +275,44 @@ footer{text-align:center;color:#718096;font-size:12px;padding:25px}
     <div class="lab-checklist" id="editLabChecklist"></div>
 
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
-      <button type="button" class="action" style="background:#94a3b8;padding:10px 18px" onclick="closeEditLabsModal()">Cancel</button>
-      <button type="button" class="action" style="background:#2864d0;padding:10px 22px" onclick="submitUpdateLabs()">SAVE LAB CHANGES</button>
+      <button type="button" class="action" style="background:#94a3b8;padding:9px 16px" onclick="closeEditLabsModal()">Cancel</button>
+      <button type="button" class="action" style="background:#2864d0;padding:9px 20px" onclick="submitUpdateLabs()">SAVE LAB CHANGES</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: CHANGE OWN PROFILE & PASSWORD -->
-<div id="changeOwnPasswordModal" class="modal-overlay hidden">
+<!-- ================= MODAL: CHANGE PASSWORD (SINGLE CENTRAL PLACE) ================= -->
+<div id="passwordModal" class="modal-overlay hidden">
   <div class="modal-box">
-    <h2>Edit Profile &amp; Password</h2>
-    <p>Update your display name, username, or login password (<b id="changeOwnUsernameDisplay"></b>):</p>
+    <h2>🔑 Change Password</h2>
+    <p id="passwordModalDesc">Update account credentials and login password.</p>
 
-    <div class="field">
-      <label>Full / Display Name *</label>
-      <input id="ownDisplayName" type="text" placeholder="Enter display name" required>
-    </div>
-    <div class="field">
-      <label>Username *</label>
-      <input id="ownNewUsername" type="text" placeholder="Enter username" required>
-    </div>
-    <div class="field">
-      <label>New Password (Leave blank to keep current password)</label>
-      <input id="ownNewPassword" type="password" placeholder="Enter new password (optional)">
-    </div>
-    <div class="field">
-      <label>Confirm New Password</label>
-      <input id="ownConfirmPassword" type="password" placeholder="Re-type new password">
-    </div>
-    <div id="changeOwnError" class="error hidden" style="margin-top:8px"></div>
-
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
-      <button type="button" class="action" style="background:#94a3b8;padding:10px 18px" onclick="closeChangeMyPasswordModal()">Cancel</button>
-      <button type="button" class="action" style="background:#16834a;padding:10px 22px;font-weight:bold" onclick="submitChangeOwnPassword()">SAVE PROFILE &amp; PASSWORD</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: UNIVERSAL USER & PASSWORD CONTROL (FOR EDITING ANY USER) -->
-<div id="universalUserModal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <h2 style="color:#102d63;font-size:20px;margin-bottom:6px">👥 Change Any User's Password &amp; Username</h2>
-    <p style="color:#64748b;font-size:13px;margin-bottom:14px">Select any administrator or lab in-charge below to update their display name, username, or login password immediately:</p>
-
-    <div class="field" style="margin-bottom:14px">
-      <label style="font-weight:800;font-size:13px;color:#1e3a8a">Select User to Edit *</label>
-      <select id="universalUserSelect" style="width:100%;padding:12px;border:2px solid #2563eb;border-radius:10px;font-size:14px;font-weight:bold;background:#eff6ff" onchange="onUniversalUserSelected(this.value)">
+    <!-- Super Admin user selection (only shown when super admin) -->
+    <div id="passwordUserSelectGroup" class="field hidden" style="margin-bottom:14px">
+      <label style="font-weight:800;font-size:13px;color:#1e3a8a">Select Account to Change Password *</label>
+      <select id="passwordUserSelect" style="width:100%;padding:11px;border:2px solid #2563eb;border-radius:8px;font-size:13px;font-weight:bold;background:#eff6ff" onchange="onPasswordUserSelected(this.value)">
       </select>
     </div>
 
-    <input type="hidden" id="universalOriginalUsername">
+    <input type="hidden" id="passwordTargetUsername">
 
     <div class="field">
       <label>Full / Display Name *</label>
-      <input id="universalDisplayName" type="text" placeholder="Enter display name" required>
+      <input id="passwordDisplayName" type="text" placeholder="Enter display name" required>
     </div>
     <div class="field">
       <label>Username *</label>
-      <input id="universalUsername" type="text" placeholder="e.g. shakil103 or tareq2001" required>
+      <input id="passwordUsername" type="text" placeholder="Enter username" required>
     </div>
     <div class="field">
-      <label>Login Password *</label>
-      <input id="universalPassword" type="text" placeholder="Enter new password" required>
+      <label>New Password *</label>
+      <input id="passwordNew" type="text" placeholder="Enter new password" required>
     </div>
-    <div id="universalError" class="error hidden" style="margin-top:8px"></div>
+    <div id="passwordError" class="error hidden" style="margin-top:8px"></div>
 
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:22px">
-      <button type="button" class="action" style="background:#94a3b8;padding:10px 18px" onclick="closeUniversalUserModal()">Cancel</button>
-      <button type="button" class="action" style="background:#16a34a;padding:11px 24px;font-weight:900" onclick="submitUniversalUserEdit()">💾 SAVE USER CREDENTIALS</button>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+      <button type="button" class="action" style="background:#94a3b8;padding:9px 16px" onclick="closePasswordModal()">Cancel</button>
+      <button type="button" class="action" style="background:#16a34a;padding:10px 22px;font-weight:900" onclick="submitPasswordChange()">💾 SAVE PASSWORD</button>
     </div>
   </div>
 </div>
@@ -404,7 +369,7 @@ async function doLogin() {
       profile = dbUser;
     } else {
       if (u === "tareq2001" && (p === "123456" || p.length >= 4)) {
-        profile = { username: "tareq2001", display_name: "Tareq", role: "super_admin", email: "osthirshaikat1133@gmail.com", assigned_lab_ids: [], is_active: true };
+        profile = { username: "tareq2001", display_name: "Md. Tareq Ben Musha", role: "super_admin", email: "osthirshaikat1133@gmail.com", assigned_lab_ids: [], is_active: true };
       } else if (u === "mahmud2004" && (p === "123456" || p.length >= 4)) {
         profile = { username: "mahmud2004", display_name: "Mahmud Rifat", role: "lab_incharge", email: "rifat.vu@gmail.com", assigned_lab_ids: [1, 2], is_active: true };
       } else {
@@ -542,37 +507,50 @@ function render() {
 
     return `
     <tr class="booking-row ${type}-booking">
-      <td><span class="booking-type-badge booking-type-${type}">${typeIcon} ${typeLabel}</span></td>
-      <td><span style="font-size:16px;font-weight:900;color:#0f2952;display:block">${esc(b.student_name)}</span>${b.designation ? `<small style="color:#2864d0;font-weight:800;display:block;margin-top:2px">${esc(b.designation)}</small>` : ""}</td>
-      <td><span style="font-family:monospace;font-size:15px;font-weight:900;color:#0f2952">${esc(b.student_id)}</span></td>
-      <td><span style="font-size:15px;font-weight:900;color:#0f2952">${esc(b.semesters?.name || b.semester_id)}</span></td>
+      <td><span class="booking-type-badge booking-type-${type}" style="font-size:10px;padding:3px 5px">${typeIcon} ${typeLabel}</span></td>
       <td>
-        <div style="padding:8px 12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;display:inline-block;max-width:290px;text-align:center;margin:0 auto;box-shadow:0 1px 3px rgba(30,58,138,.06)">
-          <span style="font-size:15px;font-weight:900;color:#1e3a8a;display:block;line-height:1.35;word-break:normal;overflow-wrap:break-word">${esc(labDisplay)}</span>
+        <div style="font-size:12px;font-weight:800;color:#0f2952;line-height:1.2;word-break:break-word">${esc(b.student_name)}</div>
+        ${b.designation ? `<div style="color:#2563eb;font-weight:700;font-size:10px;margin-top:2px;word-break:break-word">${esc(b.designation)}</div>` : ""}
+      </td>
+      <td><span style="font-family:monospace;font-size:12px;font-weight:800;color:#0f2952;word-break:break-all">${esc(b.student_id)}</span></td>
+      <td><span style="font-size:11px;font-weight:700;color:#0f2952;word-break:break-word">${esc(b.semesters?.name || b.semester_id || "—")}</span></td>
+      <td>
+        <div style="padding:3px 4px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;font-size:11px;font-weight:800;color:#1e3a8a;line-height:1.25;word-break:break-word">
+          ${esc(labDisplay)}
         </div>
       </td>
       <td>
-        <div style="padding:7px 12px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:8px;display:inline-block;text-align:center;margin:0 auto">
-          <span style="font-size:15px;font-weight:900;white-space:nowrap;color:#0f172a;display:block">📅 ${esc(formatDateOnly(b.booking_date))}</span>
+        <div style="padding:3px 4px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:5px;font-size:11px;font-weight:800;color:#0f172a;line-height:1.2">
+          📅 ${esc(formatDateOnly(b.booking_date))}
         </div>
       </td>
       <td>
-        <div style="padding:7px 12px;background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:8px;display:inline-block;text-align:center;margin:0 auto">
-          <span style="font-size:15px;font-weight:900;white-space:nowrap;color:#0284c7;display:block">⏰ ${esc(formatTime(b.start_time))} – ${esc(formatTime(b.end_time))}</span>
+        <div style="padding:3px 2px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:5px;font-size:11px;font-weight:800;color:#0284c7;line-height:1.25;text-align:center">
+          <div>${esc(formatTime(b.start_time))}</div>
+          <div style="font-size:10px;color:#64748b;font-weight:bold;margin:1px 0">to</div>
+          <div>${esc(formatTime(b.end_time))}</div>
         </div>
       </td>
-      <td><span style="font-size:14px;font-weight:800;color:#1e293b;display:block">${esc(b.course_teacher)}</span></td>
-      <td><span style="font-size:14px;font-weight:700;color:#334155;display:block">${esc(b.booking_purpose)}</span></td>
-      <td><span class="badge ${st}" style="font-size:12px;font-weight:900">${esc(displayStatus)}</span></td>
       <td>
-        <textarea id="remark-${b.id}" placeholder="Write remark..." style="font-size:13px;font-weight:600">${esc(b.remarks || "")}</textarea>
-        <button class="action" style="background:#526174;margin-top:4px" onclick="saveRemark(${b.id})">SAVE</button>
+        <div style="font-size:12px;font-weight:700;color:#1e293b;word-break:break-word;line-height:1.25">
+          ${esc(b.course_teacher || "—")}
+        </div>
+      </td>
+      <td><span style="font-size:11px;font-weight:700;color:#334155;word-break:break-word">${esc(b.booking_purpose || "—")}</span></td>
+      <td><span class="badge ${st}" style="font-size:10px;padding:3px 6px">${esc(displayStatus)}</span></td>
+      <td>
+        <div style="display:flex;flex-direction:column;gap:3px;align-items:center">
+          <input type="text" id="remark-${b.id}" value="${esc(b.remarks || "")}" placeholder="Remark..." style="width:100%;font-size:11px;padding:3px 4px;border:1px solid #cbd5e1;border-radius:4px;box-sizing:border-box">
+          <button class="action" style="background:#475569;width:100%;padding:3px 2px;font-size:10px" onclick="saveRemark(${b.id})">Save</button>
+        </div>
       </td>
       <td>
         ${can ? `
-          <button class="action approve" onclick="changeStatus(${b.id}, 'approve')">APPROVE</button>
-          <button class="action cancel" onclick="changeStatus(${b.id}, 'cancel')">CANCEL</button>
-        ` : `<span style="color:#718096;font-size:12px;font-weight:700">No Action</span>`}
+        <div style="display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center">
+          <button class="action approve" style="width:100%;padding:4px 2px;font-size:10px" onclick="changeStatus(${b.id}, 'approve')">Approve</button>
+          <button class="action cancel" style="width:100%;padding:4px 2px;font-size:10px" onclick="changeStatus(${b.id}, 'cancel')">Cancel</button>
+        </div>
+        ` : `<span style="color:#94a3b8;font-size:11px;font-weight:bold">—</span>`}
       </td>
     </tr>`;
   }).join("");
@@ -626,7 +604,7 @@ async function loadInCharges() {
     allInCharges = data;
   } else {
     allInCharges = [
-      { id: 1, username: "tareq2001", display_name: "Tareq", role: "super_admin", password: "••••••", assigned_lab_ids: [], is_active: true },
+      { id: 1, username: "tareq2001", display_name: "Md. Tareq Ben Musha", role: "super_admin", password: "••••••", assigned_lab_ids: [], is_active: true },
       { id: 2, username: "mahmud2004", display_name: "Mahmud Rifat", role: "lab_incharge", password: "••••••", assigned_lab_ids: [1, 2], is_active: true }
     ];
   }
@@ -654,7 +632,7 @@ function renderInChargeCards() {
     <div class="incharge-card ${isSuper ? 'super' : ''}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
-          <b style="font-size:16px;color:#102d63">${esc(user.display_name)}</b>
+          <b style="font-size:15px;color:#102d63">${esc(user.display_name)}</b>
           <div style="font-size:12px;color:#718096;margin-top:2px">
             Username: <b>@${esc(user.username)}</b> | Password: <code>${esc(user.password || '123456')}</code>
           </div>
@@ -662,24 +640,22 @@ function renderInChargeCards() {
         <span class="badge ${user.is_active ? 'approved' : 'cancelled'}">${user.is_active ? 'Active' : 'Inactive'}</span>
       </div>
 
-      <div style="margin:12px 0 6px">
+      <div style="margin:10px 0 6px">
         <small style="display:block;font-size:11px;color:#64748b;font-weight:700;margin-bottom:4px">LABORATORY RESPONSIBILITY:</small>
         <div style="display:flex;flex-wrap:wrap;gap:2px">${labTags}</div>
       </div>
 
       ${!isSuper ? `
-      <div style="display:flex;gap:6px;margin-top:14px;border-top:1px solid #f1f5f9;padding-top:12px">
-        <button class="action" style="background:#2864d0;flex:1;font-weight:800" onclick="openEditLabsModal('${user.username}')">✏️ Edit Labs</button>
-        <button class="action" style="background:#b45309;flex:1.2;font-weight:800" onclick="openUniversalUserModal('${user.username}')">🔑 Edit User &amp; Pass</button>
+      <div style="display:flex;gap:6px;margin-top:12px;border-top:1px solid #f1f5f9;padding-top:10px">
+        <button class="action" style="background:#2864d0;flex:1.5;font-weight:800" onclick="openEditLabsModal('${user.username}')">✏️ Edit Labs</button>
         <button class="action" style="background:#64748b;flex:1;font-weight:800" onclick="toggleInChargeActive('${user.username}', ${!user.is_active})">
-          ${user.is_active ? 'Deactivate' : 'Activate'}
+          ${user.is_active ? 'Off' : 'On'}
         </button>
-        <button class="action cancel" style="padding:7px 12px" onclick="deleteInCharge('${user.username}')">🗑️</button>
+        <button class="action cancel" style="padding:6px 12px" onclick="deleteInCharge('${user.username}')">🗑️</button>
       </div>
       ` : `
-      <div style="margin-top:12px;padding:12px;background:rgba(254,243,199,.7);border:1px solid #fde68a;border-radius:10px;text-align:center">
-        <div style="font-size:12px;color:#92400e;font-weight:900">👑 Primary Super Administrator (Full Control)</div>
-        <button class="action" style="background:#1d4ed8;margin-top:8px;padding:8px 16px;border-radius:8px;font-weight:800;font-size:12px" onclick="openChangeMyPasswordModal()">🔑 Edit Super Admin Password &amp; Username</button>
+      <div style="margin-top:10px;padding:8px;background:rgba(254,243,199,.7);border:1px solid #fde68a;border-radius:8px;text-align:center">
+        <div style="font-size:11px;color:#92400e;font-weight:bold">👑 Primary Super Administrator</div>
       </div>
       `}
     </div>`;
@@ -786,100 +762,57 @@ async function deleteInCharge(username) {
   else loadInCharges();
 }
 
-// ================= PASSWORD MANAGEMENT FUNCTIONS =================
-function openChangeMyPasswordModal() {
+// ================= PASSWORD MANAGEMENT (SINGLE UNIFIED PLACE) =================
+function openPasswordModal(selectedUsername) {
   if (!admin) return;
-  document.getElementById("changeOwnUsernameDisplay").textContent = `@${admin.username} (${admin.display_name || admin.username})`;
-  document.getElementById("ownDisplayName").value = admin.display_name || admin.username;
-  document.getElementById("ownNewUsername").value = admin.username;
-  document.getElementById("ownNewPassword").value = "";
-  document.getElementById("ownConfirmPassword").value = "";
-  document.getElementById("changeOwnError").classList.add("hidden");
-  document.getElementById("changeOwnPasswordModal").classList.remove("hidden");
-}
+  const isSuper = admin.role === "super_admin";
+  const selectGroup = document.getElementById("passwordUserSelectGroup");
+  const select = document.getElementById("passwordUserSelect");
+  const desc = document.getElementById("passwordModalDesc");
+  const errBox = document.getElementById("passwordError");
+  errBox.classList.add("hidden");
 
-function closeChangeMyPasswordModal() {
-  document.getElementById("changeOwnPasswordModal").classList.add("hidden");
-}
+  if (isSuper && allInCharges && allInCharges.length > 0) {
+    selectGroup.classList.remove("hidden");
+    desc.textContent = "Super Admin: Select yourself or any in-charge to update password and credentials.";
+    select.innerHTML = allInCharges.map(u => `
+      <option value="${u.username}">${u.username === admin.username ? '👑 Myself (' + (u.display_name || u.username) + ')' : (u.display_name || u.username) + ' (@' + u.username + ') - In-Charge'}</option>
+    `).join("");
 
-async function submitChangeOwnPassword() {
-  const newName = document.getElementById("ownDisplayName").value.trim();
-  const newUsername = document.getElementById("ownNewUsername").value.trim().toLowerCase();
-  const p1 = document.getElementById("ownNewPassword").value.trim();
-  const p2 = document.getElementById("ownConfirmPassword").value.trim();
-  const errBox = document.getElementById("changeOwnError");
-  
-  if (!newName || !newUsername) {
-    errBox.textContent = "Display Name and Username cannot be empty!";
-    errBox.classList.remove("hidden");
-    return;
-  }
-  if (p1 && p1 !== p2) {
-    errBox.textContent = "Passwords do not match!";
-    errBox.classList.remove("hidden");
-    return;
-  }
-
-  const origUsername = admin.username;
-  const updateData = {
-    display_name: newName,
-    username: newUsername
-  };
-  if (p1) {
-    updateData.password = p1;
-  }
-
-  const { error } = await sb.from("admin_users").update(updateData).eq("username", origUsername);
-  if (error) {
-    errBox.textContent = "Failed to update: " + error.message;
-    errBox.classList.remove("hidden");
+    const target = selectedUsername || admin.username;
+    select.value = target;
+    onPasswordUserSelected(target);
   } else {
-    alert(`✅ Successfully updated!\nName: ${newName}\nUsername: @${newUsername}${p1 ? '\nPassword updated!' : ''}\nSynced across both Phone and PC.`);
-    admin.display_name = newName;
-    admin.username = newUsername;
-    if (p1) admin.password = p1;
-    localStorage.setItem("vu_lab_admin_session", JSON.stringify(admin));
-    closeChangeMyPasswordModal();
-    initDashboard();
-    if (admin.role === "super_admin") loadInCharges();
+    selectGroup.classList.add("hidden");
+    desc.textContent = `Update login credentials for @${admin.username}:`;
+    document.getElementById("passwordTargetUsername").value = admin.username;
+    document.getElementById("passwordDisplayName").value = admin.display_name || admin.username;
+    document.getElementById("passwordUsername").value = admin.username;
+    document.getElementById("passwordNew").value = (admin.password && admin.password !== "••••••") ? admin.password : "";
   }
+
+  document.getElementById("passwordModal").classList.remove("hidden");
 }
 
-// Universal User & Password Control (For editing ANY user's credentials)
-function openUniversalUserModal(selectedUsername) {
-  const select = document.getElementById("universalUserSelect");
-  if (!select) return;
-  select.innerHTML = allInCharges.map(u => `
-    <option value="${u.username}">${esc(u.display_name || u.username)} (@${esc(u.username)}) - ${u.role === 'super_admin' ? 'Super Admin' : 'In-Charge'}</option>
-  `).join("");
-
-  const target = selectedUsername || (allInCharges[0] ? allInCharges[0].username : (admin ? admin.username : ''));
-  select.value = target;
-  onUniversalUserSelected(target);
-
-  document.getElementById("universalError").classList.add("hidden");
-  document.getElementById("universalUserModal").classList.remove("hidden");
+function closePasswordModal() {
+  document.getElementById("passwordModal").classList.add("hidden");
 }
 
-function closeUniversalUserModal() {
-  document.getElementById("universalUserModal").classList.add("hidden");
-}
-
-function onUniversalUserSelected(uname) {
-  const user = allInCharges.find(u => u.username === uname);
+function onPasswordUserSelected(uname) {
+  const user = (allInCharges || []).find(u => u.username === uname);
   if (!user) return;
-  document.getElementById("universalOriginalUsername").value = user.username;
-  document.getElementById("universalDisplayName").value = user.display_name || user.username;
-  document.getElementById("universalUsername").value = user.username;
-  document.getElementById("universalPassword").value = (user.password && user.password !== "••••••") ? user.password : "";
+  document.getElementById("passwordTargetUsername").value = user.username;
+  document.getElementById("passwordDisplayName").value = user.display_name || user.username;
+  document.getElementById("passwordUsername").value = user.username;
+  document.getElementById("passwordNew").value = (user.password && user.password !== "••••••") ? user.password : "";
 }
 
-async function submitUniversalUserEdit() {
-  const origUsername = document.getElementById("universalOriginalUsername").value;
-  const newName = document.getElementById("universalDisplayName").value.trim();
-  const newUsername = document.getElementById("universalUsername").value.trim().toLowerCase();
-  const newPass = document.getElementById("universalPassword").value.trim();
-  const errBox = document.getElementById("universalError");
+async function submitPasswordChange() {
+  const targetUsername = document.getElementById("passwordTargetUsername").value;
+  const newName = document.getElementById("passwordDisplayName").value.trim();
+  const newUsername = document.getElementById("passwordUsername").value.trim().toLowerCase();
+  const newPass = document.getElementById("passwordNew").value.trim();
+  const errBox = document.getElementById("passwordError");
 
   if (!newName || !newUsername || !newPass) {
     errBox.textContent = "Please fill in Name, Username, and Password.";
@@ -891,22 +824,22 @@ async function submitUniversalUserEdit() {
     display_name: newName,
     username: newUsername,
     password: newPass
-  }).eq("username", origUsername);
+  }).eq("username", targetUsername);
 
   if (error) {
     errBox.textContent = "Failed to update: " + error.message;
     errBox.classList.remove("hidden");
   } else {
-    alert(`✅ Successfully updated credentials!\nName: ${newName}\nUsername: @${newUsername}\nPassword: ${newPass}\nSynced across both Phone and PC.`);
-    if (admin && admin.username === origUsername) {
+    alert(`✅ Successfully updated credentials!\nName: ${newName}\nUsername: @${newUsername}\nNew Password: ${newPass}\nSynced across Phone & PC.`);
+    if (admin && admin.username === targetUsername) {
       admin.display_name = newName;
       admin.username = newUsername;
       admin.password = newPass;
       localStorage.setItem("vu_lab_admin_session", JSON.stringify(admin));
       initDashboard();
     }
-    closeUniversalUserModal();
-    loadInCharges();
+    closePasswordModal();
+    if (admin.role === "super_admin") loadInCharges();
   }
 }
 
