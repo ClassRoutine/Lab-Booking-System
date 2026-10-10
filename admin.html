@@ -41,6 +41,8 @@
 
 /* Clean unified header row */
 .table th{background:#173d83!important;color:#fff!important;font-size:11px!important;font-weight:900!important;position:sticky;top:0;z-index:2;letter-spacing:0.3px;text-transform:uppercase;border-top:none!important}
+/* Make the Type, Applicant Name, and ID / Mobile headings larger and extra bold */
+.table th:nth-child(1),.table th:nth-child(2),.table th:nth-child(3){font-size:13px!important;font-weight:900!important;letter-spacing:0.2px}
 .table td{font-size:12px!important;font-weight:700!important}
 
 /* Strict Proportional Widths Summing to 100% - Course Teacher, Purpose, Status, Remarks, Action compact; other columns spacious */
@@ -79,7 +81,7 @@
 .approve{background:#16834a}
 .cancel{background:#c73535}
 .empty{text-align:center;padding:35px;color:#718096}
-footer{text-align:center;color:#475569;font-size:13px;font-weight:700;padding:24px;border-top:1px solid #e2e8f0;margin-top:20px;letter-spacing:0.3px}
+footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weight:700;padding:22px 14px;border-top:1px solid #e2e8f0;margin-top:20px;letter-spacing:0.2px}
 
 @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.top{padding:14px}.wrap{padding:0 8px}}
 @media(max-width:520px){.stats,.filters{grid-template-columns:1fr}}
@@ -227,7 +229,7 @@ footer{text-align:center;color:#475569;font-size:13px;font-weight:700;padding:24
     </div>
   </main>
 
-  <footer>Design &amp; Developed by Md. Tareq Ben Musha &copy; 2026 | Department of Computer Science &amp; Engineering | Varendra University</footer>
+  <footer><span>Design &amp; Developed by Md. Tareq Ben Musha &copy; 2026</span><br><span>Department of Computer Science &amp; Engineering | Varendra University</span></footer>
 </section>
 
 <!-- MODAL: ADD NEW IN-CHARGE -->
