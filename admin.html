@@ -2,941 +2,1655 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>Admin Dashboard | Lab Booking System | Department of CSE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lab Booking System | Department of CSE | Varendra University</title>
+
+<link rel="icon" href="data:,">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}button,input,select{font:inherit}input{pointer-events:auto;user-select:text;-webkit-user-select:text}.hidden{display:none!important}
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#071a3d,#1d4e9e);padding:20px}.login-card{width:min(420px,100%);background:#fff;border-radius:20px;padding:34px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
-.brand{text-align:center;color:#173d83;font-weight:800;letter-spacing:1px;font-size:14px}.login-card h1{text-align:center;margin:8px 0 5px;font-size:27px;color:#122b5c}.login-card p{text-align:center;color:#718096;margin:0 0 26px;font-size:13px}.field{margin:15px 0;position:relative;z-index:2}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}
-.field input{display:block;position:relative;z-index:3;width:100%;padding:13px 14px;border:1px solid #cfd8e6;border-radius:10px;outline:none;background:#fff!important;color:#172033!important;caret-color:#172033!important;-webkit-text-fill-color:#172033!important}.field input::placeholder{color:#8a94a6!important;opacity:1}.field input:focus{border-color:#2868d8;box-shadow:0 0 0 3px rgba(40,104,216,.12)}
-.login-btn{width:100%;border:0;border-radius:10px;padding:14px;background:#2864d0;color:#fff;font-weight:800;cursor:pointer;margin-top:8px}.login-btn:disabled{opacity:.6;cursor:not-allowed}.error{margin-top:14px;background:#fee2e2;color:#991b1b;border:1px solid #fecaca;padding:11px;border-radius:9px;font-size:13px;text-align:center}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-.dashboard{min-height:100vh}
-.top{background:linear-gradient(135deg,#071a3d,#17458f);color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-.top h1{font-size:21px;font-weight:900;margin:0}
-.top small{opacity:.9;font-size:13px}
-.logout{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:bold;font-size:13px;transition:background .15s}
-.logout:hover{background:rgba(255,255,255,.22)}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f6fb;
+    color: #172033;
+    min-height: 100vh;
+}
 
-.wrap{width:100%;max-width:100%;margin:16px auto;padding:0 20px}
-.profile{background:#fff;border:1px solid #e1e7f0;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-.profile strong{color:#173d83;font-size:17px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
-.stat{background:#fff;border:1px solid #e1e7f0;border-radius:12px;padding:16px}.stat b{display:block;font-size:24px;color:#173d83}.stat span{font-size:12px;color:#718096}
-.filters{background:#fff;border:1px solid #e1e7f0;border-radius:12px;padding:14px;display:grid;grid-template-columns:1.1fr 1fr 1fr 2fr;gap:10px;margin-bottom:16px}
-.filters input,.filters select{width:100%;padding:10px;border:1px solid #d2dae7;border-radius:8px;background:#fff;font-size:13px}
+/* ================= HEADER ================= */
 
-/* ================= FULL-SCREEN FIT TABLE SYSTEM ================= */
-.table-card{background:#fff;border:1px solid #dbeafe;border-radius:12px;overflow-x:auto;width:100%;max-width:100%;box-shadow:0 2px 12px rgba(15,35,70,.04);box-sizing:border-box}
-.table-header-bar{padding:14px 18px;border-bottom:1.5px solid #e2e8f0;background:#f8fafc}
-.table-title{font-weight:900;color:#102d63;font-size:16px}
+header {
+    background: linear-gradient(135deg, #071a3d, #123b83);
+    color: white;
+    padding: 30px 20px 32px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+}
 
-/* Table spans 100% width cleanly so right side is never cut off */
-.table{width:100%!important;min-width:100%!important;border-collapse:collapse!important;table-layout:fixed!important;margin:0!important}
-.table th,.table td{padding:8px 4px!important;border:1px solid #e2e8f0!important;text-align:center!important;vertical-align:middle!important;line-height:1.3;box-sizing:border-box!important;overflow:hidden!important;word-break:break-word!important;overflow-wrap:break-word!important}
+.header-center {
+    max-width: 1100px;
+    margin: auto;
+    text-align: center;
+}
 
-/* Clean unified header row */
-.table th{background:#173d83!important;color:#fff!important;font-size:11px!important;font-weight:900!important;position:sticky;top:0;z-index:2;letter-spacing:0.3px;text-transform:uppercase;border-top:none!important}
-/* Make the Type, Applicant Name, and ID / Mobile headings larger and extra bold */
-.table th:nth-child(1),.table th:nth-child(2),.table th:nth-child(3){font-size:13px!important;font-weight:900!important;letter-spacing:0.2px}
-.table td{font-size:12px!important;font-weight:700!important}
+.university {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 7px;
+    opacity: 0.95;
+}
 
-/* Strict Proportional Widths Summing to 100% - Course Teacher, Purpose, Status, Remarks, Action compact; other columns spacious */
-.table th:nth-child(1), .table td:nth-child(1){width:5%}    /* Type */
-.table th:nth-child(2), .table td:nth-child(2){width:13%}   /* Applicant Name (Spacious) */
-.table th:nth-child(3), .table td:nth-child(3){width:9%}    /* ID / Mobile */
-.table th:nth-child(4), .table td:nth-child(4){width:6%}    /* Semester */
-.table th:nth-child(5), .table td:nth-child(5){width:17%}   /* Lab Name (Spacious) */
-.table th:nth-child(6), .table td:nth-child(6){width:8%}    /* Date */
-.table th:nth-child(7), .table td:nth-child(7){width:8%}    /* Time Slot */
-.table th:nth-child(8), .table td:nth-child(8){width:7%}    /* Course Teacher (Compact) */
-.table th:nth-child(9), .table td:nth-child(9){width:6.5%}  /* Purpose (Compact) */
-.table th:nth-child(10), .table td:nth-child(10){width:5.5%}/* Status (Compact) */
-.table th:nth-child(11), .table td:nth-child(11){width:8%}  /* Remarks (Compact) */
-.table th:nth-child(12), .table td:nth-child(12){width:7%}  /* Action (Compact) */
+.department {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
 
-/* Booking row styling */
-.booking-row.student-booking td{background:#f8fafc!important}
-.booking-row.student-booking:hover td{background:#eff6ff!important}
-.booking-row.teacher-booking td{background:#f0fdf4!important}
-.booking-row.teacher-booking:hover td{background:#dcfce7!important}
-.booking-row.officers-booking td{background:#fffbeb!important}
-.booking-row.officers-booking:hover td{background:#fef3c7!important}
+.system-title {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
 
-.booking-type-badge{display:inline-block;padding:4px 7px;border-radius:999px;font-size:11px;font-weight:800}
-.booking-type-student{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
-.booking-type-teacher{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
-.booking-type-officers{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.subtitle {
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 7px;
+    opacity: 0.9;
+}
 
-.badge{display:inline-block;padding:4px 7px;border-radius:999px;font-size:10px;font-weight:900}
-.pending{background:#fff7d6;color:#8a6200}
-.approved{background:#dcfce7;color:#166534}
-.cancelled{background:#fee2e2;color:#991b1b}
-.completed{background:#dcfce7;color:#166534;border:1px solid #86efac}
-.action{border:0;border-radius:6px;padding:5px 8px;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin:1px;white-space:nowrap}
-.approve{background:#16834a}
-.cancel{background:#c73535}
-.empty{text-align:center;padding:35px;color:#718096}
-footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weight:700;padding:22px 14px;border-top:1px solid #e2e8f0;margin-top:20px;letter-spacing:0.2px}
+/* ================= MAIN ================= */
 
-@media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.top{padding:14px}.wrap{padding:0 8px}}
-@media(max-width:520px){.stats,.filters{grid-template-columns:1fr}}
+main {
+    max-width: 850px;
+    margin: 35px auto 60px;
+    padding: 0 18px;
+}
 
-/* Sub-Tab Navigation for Super Admin */
-.sub-tabs{display:flex;gap:10px;margin-bottom:16px;background:#e9f0f8;padding:6px;border-radius:10px;width:fit-content}
-.sub-tab-btn{border:0;padding:9px 20px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;background:transparent;color:#526174;transition:all .2s}
-.sub-tab-btn.active{background:#102d63;color:#fff;box-shadow:0 3px 10px rgba(16,45,99,.15)}
+.booking-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 8px 35px rgba(22, 44, 80, 0.10);
+    border: 1px solid #e2e8f0;
+}
 
-/* Incharge Management Grid */
-.incharge-header-card{background:#fff;border:1px solid #dbe3ee;border-radius:12px;padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;box-shadow:0 3px 12px rgba(15,35,70,.04)}
-.incharge-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:14px;margin-bottom:30px}
-.incharge-card{background:#fff;border:1px solid #dbe3ee;border-radius:12px;padding:16px;box-shadow:0 3px 12px rgba(15,35,70,.04);position:relative}
-.incharge-card.super{border-color:#fde047;background:#fefce8}
-.lab-tag{display:inline-block;padding:3px 7px;border-radius:5px;background:#eff6ff;color:#1e40af;font-size:11px;font-weight:700;margin:2px;border:1px solid #bfdbfe}
-.lab-tag-empty{display:inline-block;padding:3px 7px;border-radius:5px;background:#fee2e2;color:#991b1b;font-size:11px;font-weight:700}
+.form-heading {
+    text-align: center;
+    margin-bottom: 28px;
+}
 
-/* Modal styles */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(7,26,61,.65);backdrop-filter:blur(3px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal-box{background:#fff;border-radius:16px;width:min(520px, 100%);max-height:90vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
-.modal-box h2{margin:0 0 6px;color:#102d63;font-size:20px}
-.modal-box p{margin:0 0 16px;color:#718096;font-size:13px}
-.lab-checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 16px;background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e2e8f0}
-.lab-check-item{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#1e293b;cursor:pointer}
-.lab-check-item input{cursor:pointer}
+.form-heading h2 {
+    color: #102d63;
+    font-size: 27px;
+    margin-bottom: 7px;
+}
+
+.form-heading p {
+    color: #718096;
+    font-size: 14px;
+}
+
+/* ================= FORM ================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #24334d;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid #d5dce8;
+    border-radius: 9px;
+    padding: 12px 13px;
+    font-size: 14px;
+    background: #ffffff;
+    color: #1f2937;
+    outline: none;
+    transition: 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #2764d8;
+    box-shadow: 0 0 0 3px rgba(39, 100, 216, 0.10);
+}
+
+textarea {
+    min-height: 105px;
+    resize: vertical;
+}
+
+/* ================= TIME SLOT ================= */
+
+.slot-section {
+    margin-top: 27px;
+}
+
+.slot-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #24334d;
+    margin-bottom: 8px;
+}
+
+.slot-info {
+    font-size: 13px;
+    color: #718096;
+    margin-bottom: 12px;
+}
+
+.slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 11px;
+}
+
+.slot {
+    border: 1px solid #d9e0eb;
+    border-radius: 10px;
+    padding: 13px;
+    background: #fafcff;
+    transition: all 0.2s ease;
+}
+
+.slot.available {
+    border-left: 5px solid #16a34a;
+    cursor: pointer;
+}
+
+.slot.available:hover {
+    border-color: #2764d8;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(39, 100, 216, 0.08);
+}
+
+.slot.booked {
+    border-left: 5px solid #dc2626;
+    background: #fff5f5;
+    color: #991b1b;
+    cursor: not-allowed;
+    opacity: 0.75;
+}
+
+.slot.selected {
+    border-color: #2764d8;
+    background: #edf4ff;
+    box-shadow: 0 0 0 2px rgba(39, 100, 216, 0.12);
+}
+
+.slot-time {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.slot-status {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ================= BUTTON ================= */
+
+.submit-btn {
+    width: 100%;
+    margin-top: 27px;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    background: linear-gradient(135deg, #1455c7, #286ce0);
+    color: white;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 18px rgba(20, 85, 199, 0.25);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ================= MESSAGE ================= */
+
+#message {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 9px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+}
+
+#message.success {
+    display: block;
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+#message.error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* ================= FOOTER ================= */
+
+footer {
+    text-align: center;
+    padding: 28px 15px;
+    color: #718096;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+footer strong {
+    color: #294e92;
+}
+
+/* ================= ADMIN LINK ================= */
+.admin-link{display:inline-block;margin-top:18px;padding:9px 16px;border:1px solid rgba(255,255,255,.35);border-radius:999px;color:#fff;text-decoration:none;font-size:13px;font-weight:700;background:rgba(255,255,255,.10);transition:.2s}
+.admin-link:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.admin-login-strip{display:flex;justify-content:center;align-items:center;padding:12px 16px;background:#f4f7fc;border-bottom:1px solid #dce5f2}
+.admin-login-strip a{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:9px;background:#173f91;color:#fff;text-decoration:none;font-size:14px;font-weight:800;box-shadow:0 4px 12px rgba(23,63,145,.16);transition:transform .2s,background .2s}
+.admin-login-strip a:hover{background:#102e6d;transform:translateY(-1px)}
+@media(max-width:520px){.admin-login-strip{padding:10px}.admin-login-strip a{width:100%;max-width:360px}}
+/* ================= MOBILE ================= */
+
+@media (max-width: 650px) {
+
+    header {
+        padding: 25px 15px 27px;
+    }
+
+    .university {
+        font-size: 13px;
+    }
+
+    .department {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+    .system-title {
+        font-size: 24px;
+    }
+
+    .subtitle {
+        font-size: 13px;
+    }
+
+    main {
+        margin-top: 22px;
+        padding: 0 12px;
+    }
+
+    .booking-card {
+        padding: 24px 17px;
+        border-radius: 15px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+
+    .slots {
+        grid-template-columns: 1fr;
+    }
+
+    .form-heading h2 {
+        font-size: 23px;
+    }
+}
+
+/* ================= CUSTOM TIME SLOT ================= */
+
+.custom-slot-panel {
+    margin-top: 14px;
+    padding: 18px;
+    border: 1px solid #cbd8ee;
+    border-radius: 12px;
+    background: #f7faff;
+}
+
+.custom-slot-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #173d83;
+    margin-bottom: 6px;
+}
+
+.custom-slot-help {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+
+.custom-time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.custom-time-grid .form-group {
+    min-width: 0;
+}
+
+.custom-slot-preview {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #eaf2ff;
+    color: #173d83;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.custom-slot-error {
+    margin-top: 10px;
+    color: #991b1b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+@media (max-width: 650px) {
+    .custom-time-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Booking mode tabs */
+.booking-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 26px}
+.booking-tab{border:1px solid #d8e1f0;background:#f4f7fc;color:#17345f;border-radius:11px;padding:14px 8px;font-weight:800;font-size:14px;cursor:pointer;transition:.2s}
+.booking-tab:hover{border-color:#286ce0;transform:translateY(-1px)}
+.booking-tab.active{background:linear-gradient(135deg,#1455c7,#286ce0);color:#fff;border-color:#286ce0;box-shadow:0 5px 14px rgba(39,100,216,.18)}
+.mode-note{padding:12px 14px;background:#eef5ff;border:1px solid #d6e5ff;color:#234578;border-radius:10px;font-size:13px;margin-bottom:20px;line-height:1.5}
+.teacher-fields,.officer-fields{display:none}
+.teacher-fields.show,.officer-fields.show{display:contents}
+.admin-login-panel{display:none;margin:0 0 22px;padding:18px;border:1px solid #d6e5ff;border-radius:12px;background:#f7faff;text-align:center}
+.admin-login-panel.show{display:block}
+.admin-login-panel a{display:inline-block;margin-top:10px;padding:12px 18px;border-radius:9px;background:#173f91;color:#fff;text-decoration:none;font-weight:800}
+@media(max-width:520px){.booking-tabs{gap:6px}.booking-tab{font-size:12px;padding:12px 4px}}
+
 </style>
 </head>
+
 <body>
 
-<!-- LOGIN PAGE -->
-<section id="loginPage" class="login-page">
-  <div class="login-card">
-    <div class="brand">VARENDRA UNIVERSITY</div>
-    <h1>Lab Booking Admin</h1>
-    <p>Sign in as Super Admin or Lab In-charge</p>
-    <form id="loginForm" autocomplete="on">
-      <div class="field">
-        <label for="username">Username</label>
-        <input id="username" name="username" type="text" placeholder="e.g. tareq2001 or incharge username" autocomplete="username" spellcheck="false" required>
-      </div>
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" placeholder="Enter password" autocomplete="current-password" required>
-      </div>
-      <button id="loginBtn" class="login-btn" type="button">LOGIN TO DASHBOARD</button>
-      <div id="loginError" class="error hidden"></div>
-    </form>
-  </div>
-</section>
+<!-- ================= HEADER ================= -->
 
-<!-- MAIN DASHBOARD -->
-<section id="dashboard" class="dashboard hidden">
-  <!-- TOP BAR: Single central place for Password management -->
-  <header class="top">
-    <div>
-      <h1>🏢 Lab Booking Dashboard</h1>
-      <small id="welcome"></small>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <button id="refreshBtn" class="logout" type="button">↻ Refresh</button>
-      <button id="changePassBtn" class="logout" type="button" style="background:#2563eb;color:#fff;border-color:#3b82f6" onclick="openPasswordModal()">🔑 Change Password</button>
-      <button id="logoutBtn" class="logout" type="button">Logout</button>
-    </div>
-  </header>
+<header>
 
-  <main class="wrap">
-    <!-- Clean Profile Card without redundant buttons -->
-    <div class="profile">
-      <div>
-        <strong id="adminName">—</strong><br>
-        <small id="adminRole" style="font-weight:bold;color:#1d4ed8;font-size:13px">—</small>
-      </div>
-      <div style="text-align:right">
-        <small>Permission: <b id="permissionText">—</b></small>
-        <div id="assignedLabsNotice" style="font-size:12px;color:#166534;margin-top:2px;font-weight:600"></div>
-      </div>
-    </div>
+    <div class="header-center">
 
-    <!-- Super Admin Sub-Tabs -->
-    <div id="adminTabNav" class="sub-tabs hidden">
-      <button id="tabBookings" class="sub-tab-btn active" type="button" onclick="switchAdminTab('bookings')">📋 Bookings Management</button>
-      <button id="tabInCharges" class="sub-tab-btn" type="button" onclick="switchAdminTab('incharges')">👥 Manage In-Charges (<span id="inchargeCountBadge">0</span>)</button>
-    </div>
-
-    <!-- BOOKINGS MANAGEMENT -->
-    <div id="bookingsSection">
-      <div class="stats">
-        <div class="stat"><b id="totalCount">0</b><span>Total Shown</span></div>
-        <div class="stat"><b id="pendingCount">0</b><span>Pending</span></div>
-        <div class="stat"><b id="approvedCount">0</b><span>Approved</span></div>
-        <div class="stat"><b id="todayCount">0</b><span>Today</span></div>
-      </div>
-
-      <div class="filters">
-        <input id="dateFilter" type="date">
-        <select id="labFilter"><option value="">All Labs</option></select>
-        <select id="statusFilter">
-          <option value="">All Status</option>
-          <option>Pending</option>
-          <option>Approved</option>
-          <option>Cancelled</option>
-          <option>Completed</option>
-        </select>
-        <input id="searchFilter" type="search" placeholder="Search student, ID, teacher, lab or remarks">
-      </div>
-
-      <!-- FULL-SCREEN RESPONSIVE TABLE -->
-      <div class="table-card">
-        <div class="table-header-bar">
-          <div class="table-title">📋 Laboratory Bookings Overview</div>
+        <div class="university">
+            VARENDRA UNIVERSITY
         </div>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Applicant Name</th>
-              <th>ID / Mobile</th>
-              <th>Semester</th>
-              <th>Lab Name</th>
-              <th>Date</th>
-              <th>Time Slot</th>
-              <th>Course Teacher</th>
-              <th>Purpose</th>
-              <th>Status</th>
-              <th>Remarks</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="bookingRows"></tbody>
-        </table>
-      </div>
-    </div>
 
-    <!-- IN-CHARGE MANAGEMENT (SUPER ADMIN) -->
-    <div id="inchargesSection" class="hidden">
-      <div class="incharge-header-card">
-        <div>
-          <h2 style="margin:0 0 4px;font-size:18px;color:#102d63">👑 Super Admin In-Charge Control</h2>
-          <p style="margin:0;font-size:13px;color:#718096">Add 7-10+ Lab In-Charges, set separate credentials, and assign laboratories.</p>
+        <div class="department">
+            Department of Computer Science &amp; Engineering
         </div>
-        <button class="action" style="background:#16834a;padding:10px 20px;font-size:13px;font-weight:800;border-radius:8px" onclick="openAddInChargeModal()">➕ ADD NEW IN-CHARGE</button>
-      </div>
 
-      <div id="inchargeCardsContainer" class="incharge-grid"></div>
-    </div>
-  </main>
+        <div class="system-title">
+            Lab Booking System
+        </div>
 
-  <footer><span>Design &amp; Developed by Md. Tareq Ben Musha &copy; 2026</span><br><span>Department of Computer Science &amp; Engineering | Varendra University</span></footer>
-</section>
+        <div class="subtitle">
+            Book your laboratory session easily
+        </div>
 
-<!-- MODAL: ADD NEW IN-CHARGE -->
-<div id="addInChargeModal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <h2>Add New Lab In-Charge</h2>
-    <p>Create login credentials and assign laboratory responsibility.</p>
-    
-    <div class="field">
-      <label>Full Name *</label>
-      <input id="newAdminName" type="text" placeholder="e.g. Md. Shakil Hossain" required>
-    </div>
-    <div class="field">
-      <label>Username *</label>
-      <input id="newAdminUsername" type="text" placeholder="e.g. shakil103" required>
-    </div>
-    <div class="field">
-      <label>Password *</label>
-      <input id="newAdminPassword" type="text" placeholder="Set login password" value="123456" required>
-    </div>
-    <div class="field">
-      <label>Email (Optional)</label>
-      <input id="newAdminEmail" type="email" placeholder="e.g. shakil@vu.edu.bd">
     </div>
 
-    <label style="display:block;font-size:13px;font-weight:800;margin:14px 0 6px">Assign to Laboratory(ies):</label>
-    <div style="font-size:12px;color:#718096;margin-bottom:8px">Select all labs this in-charge will manage (multi-select supported):</div>
-    
-    <div class="lab-checklist" id="addLabChecklist"></div>
+</header>
 
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
-      <button type="button" class="action" style="background:#94a3b8;padding:9px 16px" onclick="closeAddInChargeModal()">Cancel</button>
-      <button type="button" class="action" style="background:#16834a;padding:9px 20px" onclick="submitCreateInCharge()">CREATE IN-CHARGE</button>
-    </div>
-  </div>
+<!-- ADMINISTRATION LOGIN: SEPARATE FROM THE THREE BOOKING TABS -->
+<div class="admin-login-strip">
+    <a href="admin.html" aria-label="Administration Login">🔐 Administration Login</a>
 </div>
 
-<!-- MODAL: EDIT LAB ASSIGNMENTS -->
-<div id="editLabsModal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <h2 id="editLabsModalTitle">Reassign Labs</h2>
-    <p>Select which laboratories this in-charge is responsible for:</p>
-    
-    <input type="hidden" id="editLabsUsername">
-    <div class="lab-checklist" id="editLabChecklist"></div>
+<!-- ================= MAIN ================= -->
 
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
-      <button type="button" class="action" style="background:#94a3b8;padding:9px 16px" onclick="closeEditLabsModal()">Cancel</button>
-      <button type="button" class="action" style="background:#2864d0;padding:9px 20px" onclick="submitUpdateLabs()">SAVE LAB CHANGES</button>
-    </div>
-  </div>
-</div>
+<main>
 
-<!-- ================= MODAL: CHANGE PASSWORD (SINGLE CENTRAL PLACE) ================= -->
-<div id="passwordModal" class="modal-overlay hidden">
-  <div class="modal-box">
-    <h2>🔑 Change Password</h2>
-    <p id="passwordModalDesc">Update account credentials and login password.</p>
+    <div class="booking-card">
 
-    <!-- Super Admin user selection (only shown when super admin) -->
-    <div id="passwordUserSelectGroup" class="field hidden" style="margin-bottom:14px">
-      <label style="font-weight:800;font-size:13px;color:#1e3a8a">Select Account to Change Password *</label>
-      <select id="passwordUserSelect" style="width:100%;padding:11px;border:2px solid #2563eb;border-radius:8px;font-size:13px;font-weight:bold;background:#eff6ff" onchange="onPasswordUserSelected(this.value)">
-      </select>
+        <div class="booking-tabs" role="tablist" aria-label="Booking options">
+            <button type="button" class="booking-tab active" id="studentTab" role="tab" aria-selected="true">🎓 Student Booking</button>
+            <button type="button" class="booking-tab" id="teacherTab" role="tab" aria-selected="false">👨‍🏫 Teacher Booking</button>
+            <button type="button" class="booking-tab" id="officersTab" role="tab" aria-selected="false">🏢 Officers Booking</button>
+        </div>
+        <div class="mode-note" id="modeNote">Students: fill in your student details, choose a lab and time, then submit your booking.</div>
+
+        <div class="form-heading">
+
+            <h2>Laboratory Booking</h2>
+
+            <p>
+                Please provide the required information below
+            </p>
+
+        </div>
+
+
+        <form id="bookingForm">
+
+            <div class="form-grid">
+
+                <!-- STUDENT NAME -->
+
+                <div class="form-group student-only">
+
+                    <label for="studentName">
+                        👤 Student Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="Enter student name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- STUDENT ID -->
+
+                <div class="form-group student-only">
+
+                    <label for="studentId">
+                        🪪 Student ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentId"
+                        placeholder="Enter student ID"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- TEACHER-ONLY DETAILS -->
+                <div class="form-group teacher-fields" id="teacherNameGroup">
+                    <label for="teacherName">👨‍🏫 Teacher Name</label>
+                    <input type="text" id="teacherName" placeholder="Enter teacher name">
+                </div>
+                <div class="form-group teacher-fields" id="designationGroup">
+                    <label for="designation">💼 Designation</label>
+                    <input type="text" id="designation" placeholder="e.g. Lecturer, Assistant Professor">
+                </div>
+                <div class="form-group teacher-fields" id="mobileGroup">
+                    <label for="mobileNumber">📱 Mobile Number</label>
+                    <input type="tel" id="mobileNumber" placeholder="Enter mobile number" inputmode="tel">
+                </div>
+                <div class="form-group teacher-fields" id="sectionGroup">
+                    <label for="studentSection">🏷️ Student Section</label>
+                    <input type="text" id="studentSection" placeholder="e.g. A, B, C">
+                </div>
+
+                <!-- OFFICERS-ONLY DETAILS -->
+                <div class="form-group officer-fields" id="officersNameGroup">
+                    <label for="officersName">🏢 Officers Name</label>
+                    <input type="text" id="officersName" placeholder="Enter officers name">
+                </div>
+                <div class="form-group officer-fields" id="officersDesignationGroup">
+                    <label for="officersDesignation">💼 Designation</label>
+                    <input type="text" id="officersDesignation" placeholder="Enter designation">
+                </div>
+
+                <div class="form-group officer-fields" id="officersCourseTeacherGroup">
+                    <label for="officersCourseTeacher">👨‍🏫 Course Teacher Name</label>
+                    <input type="text" id="officersCourseTeacher" name="officersCourseTeacher" placeholder="Enter course teacher name" autocomplete="name">
+                </div>
+                <div class="form-group officer-fields" id="officersSectionGroup">
+                    <label for="officersSection">🏷️ Student Section</label>
+                    <input type="text" id="officersSection" placeholder="e.g. A, B, C">
+                </div>
+
+                <!-- SEMESTER (shared by student and teacher bookings) -->
+
+                <div class="form-group">
+
+                    <label for="semester">
+                        🎓 Semester
+                    </label>
+
+                    <select id="semester" required>
+
+                        <option value="">
+                            Select Semester
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- COURSE TEACHER -->
+
+                <div class="form-group student-only">
+
+                    <label for="courseTeacher">
+                        👨‍🏫 Course Teacher
+                    </label>
+
+                    <input
+                        type="text"
+                        id="courseTeacher"
+                        placeholder="Enter course teacher name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- LAB -->
+
+                <div class="form-group full">
+
+                    <label for="lab">
+                        🧪 Lab Name
+                    </label>
+
+                    <select id="lab" required>
+
+                        <option value="">
+                            Select Lab
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BOOKING DATE -->
+
+                <div class="form-group full">
+
+                    <label for="bookingDate">
+                        📅 Booking Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="bookingDate"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- BOOKING PURPOSE -->
+
+                <div class="form-group full">
+
+                    <label for="bookingPurpose">
+                        📝 Booking Purpose
+                    </label>
+
+                    <textarea
+                        id="bookingPurpose"
+                        placeholder="Why do you need this lab?"
+                    ></textarea>
+
+                </div>
+
+                <div class="form-group full officer-fields" id="officersRemarksGroup">
+                    <label for="officersRemarks">📝 Remarks</label>
+                    <textarea id="officersRemarks" placeholder="Enter remarks"></textarea>
+                </div>
+
+            </div>
+
+
+            <!-- ================= TIME SLOTS ================= -->
+
+            <div class="slot-section">
+
+                <div class="slot-title">
+                    ⏰ Select Time Slot
+                </div>
+
+                <div
+                    class="slot-info"
+                    id="slotInfo"
+                >
+                    Select a Lab and Date first.
+                </div>
+
+                <div
+                    class="slots"
+                    id="slotsContainer"
+                ></div>
+
+                <div class="custom-slot-panel">
+                    <div class="custom-slot-title">🕘 Custom Time Slot</div>
+                    <div class="custom-slot-help">
+                        Need a longer or different session? Choose your own start and end time.
+                        Booking time must be between <strong>09:00 AM and 05:00 PM</strong>.
+                    </div>
+
+                    <div class="custom-time-grid">
+                        <div class="form-group">
+                            <label for="customStartTime">Start Time</label>
+                            <input type="time" id="customStartTime" min="09:00" max="17:00">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="customEndTime">End Time</label>
+                            <input type="time" id="customEndTime" min="09:00" max="17:00">
+                        </div>
+                    </div>
+
+                    <div id="customSlotPreview" class="custom-slot-preview">
+                        Example: 09:00 AM – 01:00 PM
+                    </div>
+
+                    <div id="customSlotError" class="custom-slot-error"></div>
+
+                    <button
+                        type="button"
+                        id="selectCustomSlotBtn"
+                        class="submit-btn"
+                        style="margin-top:12px"
+                    >
+                        SELECT CUSTOM TIME
+                    </button>
+                </div>
+
+            </div>
+
+
+            <!-- ================= SUBMIT ================= -->
+
+            <button
+                type="submit"
+                class="submit-btn"
+                id="submitBtn"
+            >
+                BOOK LAB NOW
+            </button>
+
+        </form>
+
+
+        <!-- MESSAGE -->
+
+        <div id="message"></div>
+
     </div>
 
-    <input type="hidden" id="passwordTargetUsername">
+</main>
 
-    <div class="field">
-      <label>Full / Display Name *</label>
-      <input id="passwordDisplayName" type="text" placeholder="Enter display name" required>
-    </div>
-    <div class="field">
-      <label>Username *</label>
-      <input id="passwordUsername" type="text" placeholder="Enter username" required>
-    </div>
-    <div class="field">
-      <label>New Password *</label>
-      <input id="passwordNew" type="text" placeholder="Enter new password" required>
-    </div>
-    <div id="passwordError" class="error hidden" style="margin-top:8px"></div>
 
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
-      <button type="button" class="action" style="background:#94a3b8;padding:9px 16px" onclick="closePasswordModal()">Cancel</button>
-      <button type="button" class="action" style="background:#16a34a;padding:10px 22px;font-weight:900" onclick="submitPasswordChange()">💾 SAVE PASSWORD</button>
-    </div>
-  </div>
-</div>
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <strong>
+        Department of Computer Science &amp; Engineering
+    </strong>
+
+    <br>
+
+    Varendra University
+
+    <br><br>
+
+    Designed & Developed by Md. Tareq Ben Musha © 2026
+
+    <br><br>
+
+    <strong>
+       
+    </strong>
+
+</footer>
+
 
 <script>
-const SUPABASE_URL = "https://wftskmfxlbbhoryajqjm.supabase.co";
-const SUPABASE_KEY = "sb_publishable_i1ay8CjelMyvaJyQrd9pbw_I4NCXFdD";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const LAB_MAP = {
-  1: { name: "Database Management System Lab", code: "DMSL-103" },
-  2: { name: "Computer Networks Lab", code: "CNL-104" },
-  3: { name: "Data Structure & Algorithm Lab", code: "DSAL-106" },
-  4: { name: "Electrical & Electronics Lab", code: "EEL-127" },
-  5: { name: "Basic Computing Lab", code: "BCL-128" },
-  6: { name: "Software Engineering Lab", code: "SEL-129" },
-  7: { name: "Digital System & Computer Architecture Lab", code: "DSCAL-130" },
-  8: { name: "Microprocessor & Interfacing Lab", code: "MIL-131" }
+/* =========================================================
+   SUPABASE CONFIGURATION
+   ========================================================= */
+
+const SUPABASE_URL =
+    "https://wftskmfxlbbhoryajqjm.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_i1ay8CjelMyvaJyQrd9pbw_I4NCXFdD";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const bookingForm =
+    document.getElementById("bookingForm");
+
+const studentName =
+    document.getElementById("studentName");
+
+const studentId =
+    document.getElementById("studentId");
+
+const semester =
+    document.getElementById("semester");
+
+const courseTeacher =
+    document.getElementById("courseTeacher");
+
+const lab =
+    document.getElementById("lab");
+
+const bookingDate =
+    document.getElementById("bookingDate");
+
+const bookingPurpose =
+    document.getElementById("bookingPurpose");
+
+const slotsContainer =
+    document.getElementById("slotsContainer");
+
+const slotInfo =
+    document.getElementById("slotInfo");
+
+const submitBtn =
+    document.getElementById("submitBtn");
+
+const message =
+    document.getElementById("message");
+
+const customStartTime =
+    document.getElementById("customStartTime");
+
+const customEndTime =
+    document.getElementById("customEndTime");
+
+const customSlotPreview =
+    document.getElementById("customSlotPreview");
+
+const customSlotError =
+    document.getElementById("customSlotError");
+
+const selectCustomSlotBtn =
+    document.getElementById("selectCustomSlotBtn");
+
+
+let selectedSlot = null;
+let timeSlots = [];
+let bookingMode = "student";
+
+const studentTab = document.getElementById("studentTab");
+const teacherTab = document.getElementById("teacherTab");
+const officersTab = document.getElementById("officersTab");
+const modeNote = document.getElementById("modeNote");
+const teacherName = document.getElementById("teacherName");
+const designation = document.getElementById("designation");
+const mobileNumber = document.getElementById("mobileNumber");
+const studentSection = document.getElementById("studentSection");
+const officersName = document.getElementById("officersName");
+const officersDesignation = document.getElementById("officersDesignation");
+const studentSectionOfficer = document.getElementById("officersSection");
+const officersCourseTeacher = document.getElementById("officersCourseTeacher");
+const officersRemarks = document.getElementById("officersRemarks");
+
+function setBookingMode(mode) {
+    bookingMode = mode;
+    const isStudent = mode === "student";
+    const isTeacher = mode === "teacher";
+    const isOfficer = mode === "officers";
+    [studentTab, teacherTab, officersTab].forEach((tab, i) => {
+        const active = [isStudent, isTeacher, isOfficer][i];
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-selected", String(active));
+    });
+    document.querySelectorAll(".student-only").forEach(el => {
+        el.style.display = isStudent ? "flex" : "none";
+        const input = el.querySelector("input,select,textarea");
+        if (input) input.required = isStudent;
+    });
+    document.querySelectorAll(".teacher-fields").forEach(el => {
+        el.classList.toggle("show", isTeacher);
+        const input = el.querySelector("input,select,textarea");
+        if (input) input.required = isTeacher;
+    });
+    document.querySelectorAll(".officer-fields").forEach(el => {
+        el.classList.toggle("show", isOfficer);
+        const input = el.querySelector("input,select,textarea");
+        if (input) input.required = isOfficer && !el.classList.contains("full");
+    });
+    modeNote.textContent = isStudent
+        ? "Students: fill in your student details, choose a lab and time, then submit your booking."
+        : isTeacher
+        ? "Teachers: enter teacher details, student semester/section, course teacher, lab, date and time."
+        : "Officers: submit a lab booking below, or use the Administration Login button above the booking tabs to open the dashboard.";
+    document.querySelector(".form-heading h2").textContent = isStudent ? "Student Laboratory Booking" : isTeacher ? "Teacher Laboratory Booking" : "Officers Laboratory Booking";
+    document.querySelector(".form-heading p").textContent = isOfficer ? "Provide officer and session details below" : isTeacher ? "Please provide teacher and session details below" : "Please provide the required information below";
+    submitBtn.textContent = isStudent ? "BOOK LAB NOW" : isTeacher ? "SUBMIT TEACHER BOOKING" : "SUBMIT OFFICERS BOOKING";
+    message.className = "";
+    message.textContent = "";
+}
+studentTab.addEventListener("click", () => setBookingMode("student"));
+teacherTab.addEventListener("click", () => setBookingMode("teacher"));
+officersTab.addEventListener("click", () => setBookingMode("officers"));
+
+
+/* =========================================================
+   MINIMUM BOOKING DATE
+   ========================================================= */
+
+const today =
+    new Date().toISOString().split("T")[0];
+
+bookingDate.min = today;
+
+
+/* =========================================================
+   SHOW MESSAGE
+   ========================================================= */
+
+function showMessage(text, type) {
+
+    message.textContent = text;
+
+    message.className = "";
+
+    message.classList.add(type);
+
+}
+
+
+/* =========================================================
+   LOAD SEMESTERS
+   ========================================================= */
+
+async function loadSemesters() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("semesters")
+        .select("*")
+        .order("id");
+
+
+    if (error) {
+
+        console.error(
+            "Semester loading error:",
+            error
+        );
+
+        showMessage(
+            "Unable to load semesters.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    semester.innerHTML =
+        '<option value="">Select Semester</option>';
+
+
+    data.forEach(item => {
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            item.id;
+
+        option.textContent =
+            item.name;
+
+        semester.appendChild(option);
+
+    });
+
+}
+
+
+/* =========================================================
+   LOAD LABS
+   ========================================================= */
+
+
+const LAB_DISPLAY = {
+    "Database Management System Lab": "Database Management System Lab (DMSL-103)",
+    "Computer Networks Lab": "Computer Networks Lab (CNL-104)",
+    "Data Structure & Algorithm Lab": "Data Structure & Algorithm Lab (DSAL-106)",
+    "Electrical & Electronics Lab": "Electrical & Electronics Lab (EEL-127)",
+    "Basic Computing Lab": "Basic Computing Lab (BCL-128)",
+    "Software Engineering Lab": "Software Engineering Lab (SEL-129)",
+    "Digital System & Computer Architecture Lab": "Digital System & Computer Architecture Lab (DSCAL-130)",
+    "Microprocessor & Interfacing Lab": "Microprocessor & Interfacing Lab (MIL-131)"
 };
 
-let admin = null;
-let bookings = [];
-let allInCharges = [];
-let labsData = [];
-
-const loginPage = document.getElementById("loginPage");
-const dashboard = document.getElementById("dashboard");
-const loginForm = document.getElementById("loginForm");
-const usernameInput = document.getElementById("username");
-const passwordInput = document.getElementById("password");
-const loginBtn = document.getElementById("loginBtn");
-const loginError = document.getElementById("loginError");
-
-function showError(msg) { loginError.textContent = msg; loginError.classList.remove("hidden"); }
-function clearError() { loginError.textContent = ""; loginError.classList.add("hidden"); }
-function esc(v) { return String(v ?? "").replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m])); }
-
-async function doLogin() {
-  clearError();
-  const u = usernameInput.value.trim().toLowerCase();
-  const p = passwordInput.value;
-  if (!u || !p) { showError("Please enter both username and password."); return; }
-
-  loginBtn.disabled = true;
-  loginBtn.textContent = "VERIFYING CREDENTIALS...";
-
-  try {
-    // Strict Database verification - absolutely no client-side bypasses or arbitrary fallbacks
-    const { data: dbUser, error: dbErr } = await sb.from("admin_users")
-      .select("id, username, display_name, role, email, password, assigned_lab_ids, is_active")
-      .ilike("username", u)
-      .maybeSingle();
-
-    if (dbErr) throw new Error("Database error during verification: " + dbErr.message);
-    if (!dbUser) throw new Error("Invalid username or password.");
-    if (!dbUser.is_active) throw new Error("This account is inactive. Please contact the Super Administrator.");
-
-    // Server Authentication: Try Supabase Auth first, then strict DB verification
-    const email = dbUser.email || `${u}@vu.edu.bd`;
-    let isVerified = false;
-
-    try {
-      const { data: authData, error: authErr } = await sb.auth.signInWithPassword({
-        email: email,
-        password: p
-      });
-      if (!authErr && authData && authData.session) {
-        isVerified = true;
-      }
-    } catch (_) {}
-
-    // Strict password match if Auth session is not configured yet (exact match required)
-    if (!isVerified) {
-      if (dbUser.password && dbUser.password === p) {
-        isVerified = true;
-      }
-    }
-
-    if (!isVerified) {
-      throw new Error("Incorrect password. Please verify your credentials.");
-    }
-
-    // Set sanitized profile in memory without exposing raw passwords
-    admin = {
-      id: dbUser.id,
-      username: dbUser.username,
-      display_name: dbUser.display_name,
-      role: dbUser.role,
-      email: dbUser.email,
-      assigned_lab_ids: dbUser.assigned_lab_ids || [],
-      is_active: dbUser.is_active
-    };
-
-    localStorage.setItem("vu_lab_admin_session", JSON.stringify({ username: admin.username }));
-    initDashboard();
-  } catch (err) {
-    showError(err.message || "Login failed.");
-  } finally {
-    loginBtn.disabled = false;
-    loginBtn.textContent = "LOGIN TO DASHBOARD";
-  }
-}
-
-loginBtn.addEventListener("click", doLogin);
-loginForm.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); doLogin(); } });
-
-function initDashboard() {
-  loginPage.classList.add("hidden");
-  dashboard.classList.remove("hidden");
-
-  const isSuper = admin.role === "super_admin";
-  document.getElementById("adminName").textContent = admin.display_name || admin.username;
-  document.getElementById("adminRole").textContent = isSuper ? "Super Admin" : "Lab In-charge";
-  document.getElementById("permissionText").textContent = isSuper ? "Manage all 8 laboratories" : "Manage assigned laboratory bookings";
-  document.getElementById("welcome").textContent = "Signed in as @" + admin.username;
-
-  const tabNav = document.getElementById("adminTabNav");
-  if (isSuper) {
-    tabNav.classList.remove("hidden");
-  } else {
-    tabNav.classList.add("hidden");
-    const labCodes = (admin.assigned_lab_ids || []).map(id => LAB_MAP[id] ? LAB_MAP[id].code : `Lab ${id}`).join(", ");
-    document.getElementById("assignedLabsNotice").textContent = "Assigned Labs: " + (labCodes || "None");
-  }
-
-  loadLabs();
-  loadBookings();
-  if (isSuper) loadInCharges();
-}
-
-function switchAdminTab(tab) {
-  const tabBookings = document.getElementById("tabBookings");
-  const tabInCharges = document.getElementById("tabInCharges");
-  const bookingsSec = document.getElementById("bookingsSection");
-  const inchargesSec = document.getElementById("inchargesSection");
-
-  if (tab === "bookings") {
-    tabBookings.classList.add("active");
-    tabInCharges.classList.remove("active");
-    bookingsSec.classList.remove("hidden");
-    inchargesSec.classList.add("hidden");
-  } else {
-    tabInCharges.classList.add("active");
-    tabBookings.classList.remove("active");
-    bookingsSec.classList.add("hidden");
-    inchargesSec.classList.remove("hidden");
-    loadInCharges();
-  }
+function formatLabDisplay(name) {
+    if (!name) return "";
+    const s = String(name).trim();
+    if (/\([A-Z]+-\d+\)\s*$/.test(s)) return s;
+    if (LAB_DISPLAY[s]) return LAB_DISPLAY[s];
+    const key = Object.keys(LAB_DISPLAY).find(
+        k => k.toLowerCase() === s.toLowerCase()
+    );
+    return key ? LAB_DISPLAY[key] : s;
 }
 
 async function loadLabs() {
-  const { data } = await sb.from("labs").select("id,name").order("id");
-  labsData = data || [];
-  const s = document.getElementById("labFilter");
-  s.innerHTML = '<option value="">All Labs</option>';
-  labsData.forEach(x => {
-    if (admin.role !== "super_admin" && admin.assigned_lab_ids && admin.assigned_lab_ids.length > 0) {
-      if (!admin.assigned_lab_ids.includes(x.id)) return;
-    }
-    const o = document.createElement("option");
-    o.value = x.id;
-    const code = LAB_MAP[x.id] ? ` (${LAB_MAP[x.id].code})` : "";
-    o.textContent = x.name + code;
-    s.appendChild(o);
-  });
-}
 
-async function loadBookings() {
-  let query = sb.from("bookings").select("*,labs(id,name),semesters(name)");
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("labs")
+        .select("*")
+        .order("id");
 
-  // Server-Side Security: In-Charges only fetch their assigned labs from the database
-  if (admin && admin.role !== "super_admin") {
-    const assignedIds = admin.assigned_lab_ids || [];
-    if (assignedIds.length === 0) {
-      bookings = [];
-      render();
-      return;
-    }
-    query = query.in("lab_id", assignedIds);
-  }
 
-  const { data, error } = await query.order("booking_date", { ascending: true }).order("start_time", { ascending: true });
-  if (error) {
-    document.getElementById("bookingRows").innerHTML = `<tr><td colspan="12" class="empty">Error loading bookings: ${esc(error.message)}</td></tr>`;
-    return;
-  }
-  bookings = data || [];
-  render();
-}
+    if (error) {
 
-function render() {
-  const df = document.getElementById("dateFilter").value;
-  const lf = document.getElementById("labFilter").value;
-  const sf = document.getElementById("statusFilter").value;
-  const q = document.getElementById("searchFilter").value.toLowerCase().trim();
-  const now = new Date();
+        console.error(
+            "Lab loading error:",
+            error
+        );
 
-  const arr = bookings.filter(b => {
-    if (admin.role !== "super_admin" && admin.assigned_lab_ids && admin.assigned_lab_ids.length > 0) {
-      if (!admin.assigned_lab_ids.includes(b.lab_id)) return false;
-    }
-    const hay = [b.student_name, b.student_id, b.course_teacher, b.booking_purpose, b.remarks, b.labs?.name].join(" ").toLowerCase();
-    return (!df || b.booking_date === df) &&
-           (!lf || String(b.lab_id) === lf) &&
-           (!sf || ((b.status === "Approved" && b.booking_date && b.start_time && new Date(String(b.booking_date) + "T" + String(b.start_time)) < now) ? "Completed" : b.status) === sf) &&
-           (!q || hay.includes(q));
-  });
+        showMessage(
+            "Unable to load laboratory list.",
+            "error"
+        );
 
-  document.getElementById("totalCount").textContent = arr.length;
-  document.getElementById("pendingCount").textContent = arr.filter(x => x.status === "Pending").length;
-  document.getElementById("approvedCount").textContent = arr.filter(x => x.status === "Approved").length;
-  const todayIso = new Date().toISOString().slice(0, 10);
-  document.getElementById("todayCount").textContent = arr.filter(x => x.booking_date === todayIso).length;
-
-  const rows = document.getElementById("bookingRows");
-  if (!arr.length) {
-    rows.innerHTML = '<tr><td colspan="12" class="empty">No bookings found matching current filters.</td></tr>';
-    return;
-  }
-
-  rows.innerHTML = arr.map(b => {
-    const startDateTime = b.booking_date && b.start_time ? new Date(String(b.booking_date) + "T" + String(b.start_time)) : null;
-    const isCompleted = b.status === "Approved" && startDateTime && !Number.isNaN(startDateTime.getTime()) && startDateTime < now;
-    const displayStatus = isCompleted ? "Completed" : (b.status || "Pending");
-    const can = b.status === "Pending";
-    const st = displayStatus.toLowerCase();
-
-    const rawType = String(b.booking_type || "student").toLowerCase();
-    const type = rawType === "teacher" ? "teacher" : rawType === "officers" || rawType === "officer" ? "officers" : "student";
-    const typeLabel = type === "teacher" ? "Teacher" : type === "officers" ? "Officers" : "Student";
-    const typeIcon = type === "teacher" ? "👨‍🏫" : type === "officers" ? "🏢" : "🎓";
-    const labDisplay = LAB_MAP[b.lab_id] ? `${LAB_MAP[b.lab_id].name} (${LAB_MAP[b.lab_id].code})` : (b.labs?.name || "");
-
-    return `
-    <tr class="booking-row ${type}-booking">
-      <td><span class="booking-type-badge booking-type-${type}" style="font-size:10px;padding:3px 5px">${typeIcon} ${typeLabel}</span></td>
-      <td>
-        <div style="font-size:12px;font-weight:800;color:#0f2952;line-height:1.2;word-break:break-word">${esc(b.student_name)}</div>
-        ${b.designation ? `<div style="color:#2563eb;font-weight:700;font-size:10px;margin-top:2px;word-break:break-word">${esc(b.designation)}</div>` : ""}
-      </td>
-      <td><span style="font-family:monospace;font-size:12px;font-weight:800;color:#0f2952;word-break:break-all">${esc(b.student_id)}</span></td>
-      <td><span style="font-size:11px;font-weight:700;color:#0f2952;word-break:break-word">${esc(b.semesters?.name || b.semester_id || "—")}</span></td>
-      <td>
-        <div style="padding:3px 4px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;font-size:11px;font-weight:800;color:#1e3a8a;line-height:1.25;word-break:break-word">
-          ${esc(labDisplay)}
-        </div>
-      </td>
-      <td>
-        <div style="padding:3px 4px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:5px;font-size:11px;font-weight:800;color:#0f172a;line-height:1.2">
-          📅 ${esc(formatDateOnly(b.booking_date))}
-        </div>
-      </td>
-      <td>
-        <div style="padding:3px 2px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:5px;font-size:11px;font-weight:800;color:#0284c7;line-height:1.25;text-align:center">
-          <div>${esc(formatTime(b.start_time))}</div>
-          <div style="font-size:10px;color:#64748b;font-weight:bold;margin:1px 0">to</div>
-          <div>${esc(formatTime(b.end_time))}</div>
-        </div>
-      </td>
-      <td>
-        <div style="font-size:12px;font-weight:700;color:#1e293b;word-break:break-word;line-height:1.25">
-          ${esc(b.course_teacher || "—")}
-        </div>
-      </td>
-      <td><span style="font-size:11px;font-weight:700;color:#334155;word-break:break-word">${esc(b.booking_purpose || "—")}</span></td>
-      <td><span class="badge ${st}" style="font-size:10px;padding:3px 6px">${esc(displayStatus)}</span></td>
-      <td>
-        <div style="display:flex;flex-direction:column;gap:3px;align-items:center">
-          <input type="text" id="remark-${b.id}" value="${esc(b.remarks || "")}" placeholder="Remark..." style="width:100%;font-size:11px;padding:3px 4px;border:1px solid #cbd5e1;border-radius:4px;box-sizing:border-box">
-          <button class="action" style="background:#475569;width:100%;padding:3px 2px;font-size:10px" onclick="saveRemark(${b.id})">Save</button>
-        </div>
-      </td>
-      <td>
-        ${can ? `
-        <div style="display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center">
-          <button class="action approve" style="width:100%;padding:4px 2px;font-size:10px" onclick="changeStatus(${b.id}, 'approve')">Approve</button>
-          <button class="action cancel" style="width:100%;padding:4px 2px;font-size:10px" onclick="changeStatus(${b.id}, 'cancel')">Cancel</button>
-        </div>
-        ` : `<span style="color:#94a3b8;font-size:11px;font-weight:bold">—</span>`}
-      </td>
-    </tr>`;
-  }).join("");
-}
-
-function formatDateOnly(v) {
-  if (!v) return "";
-  const s = String(v);
-  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (m) return m[3] + "/" + m[2] + "/" + m[1];
-  return s;
-}
-
-function formatTime(t) {
-  if (!t) return "";
-  const m = String(t).match(/^(\d{1,2}):(\d{2})/);
-  if (!m) return String(t);
-  let h = Number(m[1]), mi = m[2], ap = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12;
-  return String(h).padStart(2, "0") + ":" + mi + " " + ap;
-}
-
-async function changeStatus(id, action) {
-  const targetBooking = bookings.find(x => x.id === id);
-  if (!targetBooking) return;
-
-  // Authorization check: Verify In-Charge has permission for this laboratory
-  if (admin && admin.role !== "super_admin") {
-    const assigned = admin.assigned_lab_ids || [];
-    if (!assigned.includes(targetBooking.lab_id)) {
-      alert("Unauthorized: You do not have permission to modify bookings for this laboratory.");
-      return;
-    }
-  }
-
-  if (!confirm(action === "approve" ? "Approve this lab booking?" : "Cancel this lab booking?")) return;
-  const { error } = await sb.rpc(action === "approve" ? "approve_booking" : "cancel_booking", { p_booking_id: id });
-  if (error) alert(error.message);
-  else await loadBookings();
-}
-
-async function saveRemark(id) {
-  const el = document.getElementById("remark-" + id);
-  if (!el) return;
-  const { error } = await sb.rpc("update_booking_remarks", { p_booking_id: id, p_remarks: el.value.trim() });
-  if (error) { alert(error.message); return; }
-  const b = bookings.find(x => String(x.id) === String(id));
-  if (b) b.remarks = el.value.trim();
-  alert("Remark saved successfully.");
-  render();
-}
-
-["dateFilter", "labFilter", "statusFilter", "searchFilter"].forEach(id => {
-  document.getElementById(id).addEventListener("input", render);
-});
-document.getElementById("refreshBtn").addEventListener("click", () => { loadBookings(); if (admin.role === "super_admin") loadInCharges(); });
-document.getElementById("logoutBtn").addEventListener("click", () => { localStorage.removeItem("vu_lab_admin_session"); location.reload(); });
-
-// ================= IN-CHARGE MANAGEMENT LOGIC =================
-async function loadInCharges() {
-  if (admin?.role !== "super_admin") return;
-  const { data, error } = await sb.from("admin_users")
-    .select("id, username, display_name, role, email, assigned_lab_ids, is_active")
-    .order("id");
-  if (!error && data) {
-    allInCharges = data;
-  } else {
-    allInCharges = [];
-  }
-  document.getElementById("inchargeCountBadge").textContent = allInCharges.length;
-  renderInChargeCards();
-}
-
-function renderInChargeCards() {
-  const container = document.getElementById("inchargeCardsContainer");
-  if (!container) return;
-
-  container.innerHTML = allInCharges.map(user => {
-    const isSuper = user.role === "super_admin";
-    const labTags = isSuper ? 
-      '<span class="lab-tag" style="background:#fef3c7;color:#92400e;border-color:#fde68a">🌟 All 8 CSE Laboratories</span>' :
-      (user.assigned_lab_ids && user.assigned_lab_ids.length > 0 ?
-        user.assigned_lab_ids.map(id => {
-          const l = LAB_MAP[id];
-          return `<span class="lab-tag">${l ? l.code : 'Lab ' + id}</span>`;
-        }).join("") :
-        '<span class="lab-tag-empty">No Labs Assigned</span>'
-      );
-
-    return `
-    <div class="incharge-card ${isSuper ? 'super' : ''}">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div>
-          <b style="font-size:15px;color:#102d63">${esc(user.display_name)}</b>
-          <div style="font-size:12px;color:#718096;margin-top:2px">
-            Username: <b>@${esc(user.username)}</b> &bull; <span style="color:#059669;font-weight:700">🔒 Encrypted Access</span>
-          </div>
-        </div>
-        <span class="badge ${user.is_active ? 'approved' : 'cancelled'}">${user.is_active ? 'Active' : 'Inactive'}</span>
-      </div>
-
-      <div style="margin:10px 0 6px">
-        <small style="display:block;font-size:11px;color:#64748b;font-weight:700;margin-bottom:4px">LABORATORY RESPONSIBILITY:</small>
-        <div style="display:flex;flex-wrap:wrap;gap:2px">${labTags}</div>
-      </div>
-
-      ${!isSuper ? `
-      <div style="display:flex;gap:6px;margin-top:12px;border-top:1px solid #f1f5f9;padding-top:10px">
-        <button class="action" style="background:#2864d0;flex:1.5;font-weight:800" onclick="openEditLabsModal('${user.username}')">✏️ Edit Labs</button>
-        <button class="action" style="background:#64748b;flex:1;font-weight:800" onclick="toggleInChargeActive('${user.username}', ${!user.is_active})">
-          ${user.is_active ? 'Off' : 'On'}
-        </button>
-        <button class="action cancel" style="padding:6px 12px" onclick="deleteInCharge('${user.username}')">🗑️</button>
-      </div>
-      ` : `
-      <div style="margin-top:10px;padding:8px;background:rgba(254,243,199,.7);border:1px solid #fde68a;border-radius:8px;text-align:center">
-        <div style="font-size:11px;color:#92400e;font-weight:bold">👑 Primary Super Administrator</div>
-      </div>
-      `}
-    </div>`;
-  }).join("");
-}
-
-function openAddInChargeModal() {
-  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
-  document.getElementById("newAdminName").value = "";
-  document.getElementById("newAdminUsername").value = "";
-  document.getElementById("newAdminPassword").value = "123456";
-  document.getElementById("newAdminEmail").value = "";
-
-  const list = document.getElementById("addLabChecklist");
-  list.innerHTML = Object.entries(LAB_MAP).map(([id, info]) => `
-    <label class="lab-check-item">
-      <input type="checkbox" name="addLabCheck" value="${id}">
-      <span>${info.code}</span>
-    </label>
-  `).join("");
-
-  document.getElementById("addInChargeModal").classList.remove("hidden");
-}
-
-function closeAddInChargeModal() { document.getElementById("addInChargeModal").classList.add("hidden"); }
-
-async function submitCreateInCharge() {
-  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
-  const name = document.getElementById("newAdminName").value.trim();
-  const username = document.getElementById("newAdminUsername").value.trim().toLowerCase();
-  const password = document.getElementById("newAdminPassword").value.trim();
-  const email = document.getElementById("newAdminEmail").value.trim() || `${username}@vu.edu.bd`;
-
-  if (!name || !username || !password) {
-    alert("Please fill in Name, Username, and Password.");
-    return;
-  }
-
-  const checkedBoxes = Array.from(document.querySelectorAll('input[name="addLabCheck"]:checked'));
-  const labIds = checkedBoxes.map(cb => Number(cb.value));
-
-  const { error } = await sb.from("admin_users").upsert({
-    display_name: name,
-    username: username,
-    password: password,
-    email: email,
-    role: "lab_incharge",
-    assigned_lab_ids: labIds,
-    is_active: true
-  }, { onConflict: "username" });
-
-  if (error) {
-    alert("Failed to save to Supabase: " + error.message);
-  } else {
-    alert(`✅ In-Charge @${username} created successfully! Synced across phone and PC.`);
-    closeAddInChargeModal();
-    loadInCharges();
-  }
-}
-
-function openEditLabsModal(targetUsername) {
-  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
-  const user = allInCharges.find(u => u.username === targetUsername);
-  if (!user) return;
-
-  document.getElementById("editLabsUsername").value = targetUsername;
-  document.getElementById("editLabsModalTitle").textContent = `Reassign Labs for @${targetUsername}`;
-
-  const assigned = user.assigned_lab_ids || [];
-  const list = document.getElementById("editLabChecklist");
-  list.innerHTML = Object.entries(LAB_MAP).map(([id, info]) => `
-    <label class="lab-check-item">
-      <input type="checkbox" name="editLabCheck" value="${id}" ${assigned.includes(Number(id)) ? 'checked' : ''}>
-      <span>${info.code} - ${info.name}</span>
-    </label>
-  `).join("");
-
-  document.getElementById("editLabsModal").classList.remove("hidden");
-}
-
-function closeEditLabsModal() { document.getElementById("editLabsModal").classList.add("hidden"); }
-
-async function submitUpdateLabs() {
-  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
-  const username = document.getElementById("editLabsUsername").value;
-  const checkedBoxes = Array.from(document.querySelectorAll('input[name="editLabCheck"]:checked'));
-  const labIds = checkedBoxes.map(cb => Number(cb.value));
-
-  const { error } = await sb.from("admin_users").update({ assigned_lab_ids: labIds }).eq("username", username);
-  if (error) alert("Update failed: " + error.message);
-  else {
-    alert("✅ Laboratory assignments updated! Synced to phone and PC.");
-    closeEditLabsModal();
-    loadInCharges();
-  }
-}
-
-async function toggleInChargeActive(username, targetStatus) {
-  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
-  const { error } = await sb.from("admin_users").update({ is_active: targetStatus }).eq("username", username);
-  if (error) alert(error.message);
-  else loadInCharges();
-}
-
-async function deleteInCharge(username) {
-  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
-  if (!confirm(`Are you sure you want to delete In-Charge @${username}?`)) return;
-  const { error } = await sb.from("admin_users").delete().eq("username", username);
-  if (error) alert(error.message);
-  else loadInCharges();
-}
-
-// ================= PASSWORD MANAGEMENT (SINGLE UNIFIED PLACE) =================
-function openPasswordModal(selectedUsername) {
-  if (!admin) return;
-  const isSuper = admin.role === "super_admin";
-  const selectGroup = document.getElementById("passwordUserSelectGroup");
-  const select = document.getElementById("passwordUserSelect");
-  const desc = document.getElementById("passwordModalDesc");
-  const errBox = document.getElementById("passwordError");
-  errBox.classList.add("hidden");
-
-  if (isSuper && allInCharges && allInCharges.length > 0) {
-    selectGroup.classList.remove("hidden");
-    desc.textContent = "Super Admin: Select yourself or any in-charge to update password and credentials.";
-    select.innerHTML = allInCharges.map(u => `
-      <option value="${u.username}">${u.username === admin.username ? '👑 Myself (' + (u.display_name || u.username) + ')' : (u.display_name || u.username) + ' (@' + u.username + ') - In-Charge'}</option>
-    `).join("");
-
-    const target = selectedUsername || admin.username;
-    select.value = target;
-    onPasswordUserSelected(target);
-  } else {
-    selectGroup.classList.add("hidden");
-    desc.textContent = `Update login credentials for @${admin.username}:`;
-    document.getElementById("passwordTargetUsername").value = admin.username;
-    document.getElementById("passwordDisplayName").value = admin.display_name || admin.username;
-    document.getElementById("passwordUsername").value = admin.username;
-    document.getElementById("passwordNew").value = (admin.password && admin.password !== "••••••") ? admin.password : "";
-  }
-
-  document.getElementById("passwordModal").classList.remove("hidden");
-}
-
-function closePasswordModal() {
-  document.getElementById("passwordModal").classList.add("hidden");
-}
-
-function onPasswordUserSelected(uname) {
-  const user = (allInCharges || []).find(u => u.username === uname);
-  if (!user) return;
-  document.getElementById("passwordTargetUsername").value = user.username;
-  document.getElementById("passwordDisplayName").value = user.display_name || user.username;
-  document.getElementById("passwordUsername").value = user.username;
-  document.getElementById("passwordNew").value = (user.password && user.password !== "••••••") ? user.password : "";
-}
-
-async function submitPasswordChange() {
-  const targetUsername = document.getElementById("passwordTargetUsername").value;
-  const newName = document.getElementById("passwordDisplayName").value.trim();
-  const newUsername = document.getElementById("passwordUsername").value.trim().toLowerCase();
-  const newPass = document.getElementById("passwordNew").value.trim();
-  const errBox = document.getElementById("passwordError");
-
-  if (!newName || !newUsername || !newPass) {
-    errBox.textContent = "Please fill in Name, Username, and Password.";
-    errBox.classList.remove("hidden");
-    return;
-  }
-
-  // Security authorization guard: Only Super Admin can change other users' passwords
-  if (admin.role !== "super_admin" && targetUsername !== admin.username) {
-    alert("Unauthorized: You can only update your own account credentials.");
-    return;
-  }
-
-  const { error } = await sb.from("admin_users").update({
-    display_name: newName,
-    username: newUsername,
-    password: newPass
-  }).eq("username", targetUsername);
-
-  if (error) {
-    errBox.textContent = "Failed to update: " + error.message;
-    errBox.classList.remove("hidden");
-  } else {
-    alert(`✅ Successfully updated credentials!\nName: ${newName}\nUsername: @${newUsername}\nNew Password: ${newPass}\nSynced across Phone & PC.`);
-    if (admin && admin.username === targetUsername) {
-      admin.display_name = newName;
-      admin.username = newUsername;
-      localStorage.setItem("vu_lab_admin_session", JSON.stringify({ username: admin.username }));
-      initDashboard();
-    }
-    closePasswordModal();
-    if (admin.role === "super_admin") loadInCharges();
-  }
-}
-
-// Server-Side Session Re-Verification: Never blindly trust localStorage on reload
-window.addEventListener("DOMContentLoaded", async () => {
-  const saved = localStorage.getItem("vu_lab_admin_session");
-  if (!saved) return;
-  try {
-    const parsed = JSON.parse(saved);
-    if (!parsed || !parsed.username) {
-      localStorage.removeItem("vu_lab_admin_session");
-      return;
+        return;
     }
 
-    // Always re-authenticate with the server database to ensure active status and legitimate role
-    const { data: serverUser, error } = await sb.from("admin_users")
-      .select("id, username, display_name, role, email, assigned_lab_ids, is_active")
-      .ilike("username", parsed.username)
-      .maybeSingle();
 
-    if (!error && serverUser && serverUser.is_active) {
-      admin = serverUser;
-      initDashboard();
+    lab.innerHTML =
+        '<option value="">Select Lab</option>';
+
+
+    data.forEach(item => {
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            item.id;
+
+        option.textContent =
+            item.name;
+
+        lab.appendChild(option);
+
+    });
+
+}
+
+
+/* =========================================================
+   LOAD TIME SLOTS
+   ========================================================= */
+
+async function loadTimeSlots() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("time_slots")
+        .select("*")
+        .order("slot_number");
+
+
+    if (error) {
+
+        console.error(
+            "Time slot loading error:",
+            error
+        );
+
+        showMessage(
+            "Unable to load time slots.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    timeSlots = data || [];
+
+}
+
+
+/* =========================================================
+   FORMAT TIME
+   ========================================================= */
+
+function formatTime(time) {
+
+    const parts =
+        time.split(":");
+
+    let hour =
+        parseInt(parts[0]);
+
+    const minute =
+        parts[1];
+
+    const ampm =
+        hour >= 12 ? "PM" : "AM";
+
+    hour =
+        hour % 12 || 12;
+
+    return `${hour}:${minute} ${ampm}`;
+
+}
+
+
+/* =========================================================
+   TIME HELPERS
+   ========================================================= */
+
+function minutesFromTime(time) {
+    if (!time) return null;
+
+    const parts = String(time).split(":");
+    if (parts.length < 2) return null;
+
+    const hour = Number(parts[0]);
+    const minute = Number(parts[1]);
+
+    if (!Number.isFinite(hour) || !Number.isFinite(minute)) {
+        return null;
+    }
+
+    return (hour * 60) + minute;
+}
+
+function formatTime(time) {
+    const parts = String(time).split(":");
+    let hour = parseInt(parts[0], 10);
+    const minute = parts[1];
+
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+
+    return `${String(hour).padStart(2, "0")}:${minute} ${ampm}`;
+}
+
+function intervalsOverlap(startA, endA, startB, endB) {
+    const aStart = minutesFromTime(startA);
+    const aEnd = minutesFromTime(endA);
+    const bStart = minutesFromTime(startB);
+    const bEnd = minutesFromTime(endB);
+
+    if ([aStart, aEnd, bStart, bEnd].some(v => v === null)) {
+        return false;
+    }
+
+    return aStart < bEnd && aEnd > bStart;
+}
+
+function clearCustomSlotError() {
+    customSlotError.textContent = "";
+}
+
+function validateCustomTime(showError = true) {
+    const start = customStartTime.value;
+    const end = customEndTime.value;
+
+    clearCustomSlotError();
+
+    if (!start || !end) {
+        if (showError) {
+            customSlotError.textContent = "Please select both start and end time.";
+        }
+        return false;
+    }
+
+    const startMinutes = minutesFromTime(start);
+    const endMinutes = minutesFromTime(end);
+
+    if (startMinutes < 9 * 60 || endMinutes > 17 * 60) {
+        if (showError) {
+            customSlotError.textContent =
+                "Custom booking must be between 09:00 AM and 05:00 PM.";
+        }
+        return false;
+    }
+
+    if (startMinutes >= endMinutes) {
+        if (showError) {
+            customSlotError.textContent =
+                "End time must be later than start time.";
+        }
+        return false;
+    }
+
+    return true;
+}
+
+function updateCustomPreview() {
+    const start = customStartTime.value;
+    const end = customEndTime.value;
+
+    if (start && end) {
+        customSlotPreview.textContent =
+            `${formatTime(start)} – ${formatTime(end)}`;
     } else {
-      localStorage.removeItem("vu_lab_admin_session");
-      showError("Session expired or user inactive. Please sign in again.");
+        customSlotPreview.textContent =
+            "Example: 09:00 AM – 01:00 PM";
     }
-  } catch (_) {
-    localStorage.removeItem("vu_lab_admin_session");
-  }
-});
+
+    if (start && end) {
+        validateCustomTime(false);
+    } else {
+        clearCustomSlotError();
+    }
+}
+
+/* =========================================================
+   LOAD BOOKED INTERVALS
+   ========================================================= */
+
+async function loadBookedSlots() {
+
+    selectedSlot = null;
+    slotsContainer.innerHTML = "";
+    clearCustomSlotError();
+
+    if (!lab.value || !bookingDate.value) {
+
+        slotInfo.textContent =
+            "Select a Lab and Date first.";
+
+        return;
+    }
+
+    slotInfo.textContent =
+        "Checking slot availability...";
+
+    const {
+        data,
+        error
+    } = await supabaseClient.rpc(
+        "get_booked_slots",
+        {
+            p_lab_id:
+                Number(lab.value),
+
+            p_booking_date:
+                bookingDate.value
+        }
+    );
+
+    if (error) {
+
+        console.error(
+            "Availability error:",
+            error
+        );
+
+        slotInfo.textContent =
+            "Unable to check availability.";
+
+        return;
+    }
+
+    const bookedSlots =
+        data || [];
+
+    timeSlots.forEach(slot => {
+
+        const isBooked =
+            bookedSlots.some(
+                booked =>
+                    intervalsOverlap(
+                        slot.start_time,
+                        slot.end_time,
+                        booked.start_time,
+                        booked.end_time
+                    )
+            );
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "slot " +
+            (
+                isBooked
+                    ? "booked"
+                    : "available"
+            );
+
+        div.innerHTML = `
+
+            <span class="slot-time">
+                ${formatTime(slot.start_time)}
+                –
+                ${formatTime(slot.end_time)}
+            </span>
+
+            <span class="slot-status">
+                ${
+                    isBooked
+                        ? "🔴 BOOKED / OVERLAPPED"
+                        : "🟢 AVAILABLE"
+                }
+            </span>
+
+        `;
+
+        if (!isBooked) {
+
+            div.addEventListener(
+                "click",
+                function() {
+
+                    document
+                        .querySelectorAll(".slot")
+                        .forEach(
+                            s =>
+                                s.classList
+                                 .remove("selected")
+                        );
+
+                    div.classList.add(
+                        "selected"
+                    );
+
+                    clearCustomSlotError();
+
+                    selectedSlot = {
+                        start_time: slot.start_time,
+                        end_time: slot.end_time,
+                        is_custom: false
+                    };
+
+                }
+            );
+
+        }
+
+        slotsContainer.appendChild(div);
+
+    });
+
+    slotInfo.textContent =
+        "🟢 Available slots can be selected. 🔴 Booked or overlapping slots are unavailable.";
+}
+
+/* =========================================================
+   CUSTOM SLOT SELECTION
+   ========================================================= */
+
+async function selectCustomSlot() {
+
+    clearCustomSlotError();
+
+    if (!lab.value || !bookingDate.value) {
+        customSlotError.textContent =
+            "Please select a Lab and Booking Date first.";
+        return;
+    }
+
+    if (!validateCustomTime(true)) {
+        return;
+    }
+
+    const start = customStartTime.value;
+    const end = customEndTime.value;
+
+    selectCustomSlotBtn.disabled = true;
+    selectCustomSlotBtn.textContent = "CHECKING...";
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient.rpc(
+            "check_custom_slot_available",
+            {
+                p_lab_id: Number(lab.value),
+                p_booking_date: bookingDate.value,
+                p_start_time: start,
+                p_end_time: end
+            }
+        );
+
+        if (error) {
+            console.error(error);
+            customSlotError.textContent =
+                "Unable to check custom slot availability.";
+            return;
+        }
+
+        if (data !== true) {
+            customSlotError.textContent =
+                "🔴 This custom time overlaps with an existing booking. Please choose another time.";
+            await loadBookedSlots();
+            return;
+        }
+
+        document
+            .querySelectorAll(".slot")
+            .forEach(
+                s => s.classList.remove("selected")
+            );
+
+        selectedSlot = {
+            start_time: start,
+            end_time: end,
+            is_custom: true
+        };
+
+        customSlotPreview.textContent =
+            `✅ Selected Custom Time: ${formatTime(start)} – ${formatTime(end)}`;
+
+        slotInfo.textContent =
+            "✅ Custom time selected. You can now submit the booking.";
+
+    } finally {
+
+        selectCustomSlotBtn.disabled = false;
+        selectCustomSlotBtn.textContent =
+            "SELECT CUSTOM TIME";
+    }
+}
+
+customStartTime.addEventListener(
+    "input",
+    updateCustomPreview
+);
+
+customEndTime.addEventListener(
+    "input",
+    updateCustomPreview
+);
+
+selectCustomSlotBtn.addEventListener(
+    "click",
+    selectCustomSlot
+);
+
+/* =========================================================
+   LAB / DATE EVENTS
+   ========================================================= */
+
+lab.addEventListener(
+    "change",
+    loadBookedSlots
+);
+
+bookingDate.addEventListener(
+    "change",
+    loadBookedSlots
+);
+
+
+/* =========================================================
+   SUBMIT BOOKING
+   ========================================================= */
+
+bookingForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        if (!selectedSlot) {
+
+            showMessage(
+                "Please select an available time slot or create a custom time slot.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (bookingMode === "student" && (!studentName.value.trim() || !studentId.value.trim() || !courseTeacher.value.trim())) {
+            showMessage("Please complete Student Name, Student ID and Course Teacher.", "error");
+            return;
+        }
+        if (bookingMode === "teacher" && (!teacherName.value.trim() || !designation.value.trim() || !mobileNumber.value.trim() || !studentSection.value.trim())) {
+            showMessage("Please complete Teacher Name, Designation, Mobile Number and Student Section.", "error");
+            return;
+        }
+        if (bookingMode === "officers" && (!officersName.value.trim() || !officersDesignation.value.trim() || !studentSectionOfficer.value.trim() || !officersCourseTeacher.value.trim())) {
+            showMessage("Please complete Officers Name, Designation, Student Section and Course Teacher Name.", "error");
+            return;
+        }
+        if (!semester.value) {
+            showMessage("Please select the students' semester.", "error");
+            return;
+        }
+
+        if (!lab.value) {
+
+            showMessage(
+                "Please select a laboratory.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (selectedSlot.is_custom && !validateCustomTime(true)) {
+            return;
+        }
+
+        submitBtn.disabled =
+            true;
+
+        submitBtn.textContent =
+            "SUBMITTING...";
+
+        try {
+
+            const {
+                data,
+                error
+            } = await supabaseClient.rpc(
+                "create_lab_booking",
+                {
+                    p_student_name:
+                        bookingMode === "teacher" ? teacherName.value.trim() : bookingMode === "officers" ? officersName.value.trim() : studentName.value.trim(),
+
+                    p_student_id:
+                        bookingMode === "teacher" ? mobileNumber.value.trim() : bookingMode === "officers" ? "OFFICER" : studentId.value.trim(),
+
+                    p_semester_id:
+                        Number(semester.value),
+
+                    p_course_teacher:
+                        bookingMode === "teacher" ? designation.value.trim() : bookingMode === "officers" ? officersCourseTeacher.value.trim() : courseTeacher.value.trim(),
+
+                    p_lab_id:
+                        Number(lab.value),
+
+                    p_booking_date:
+                        bookingDate.value,
+
+                    p_start_time:
+                        selectedSlot.start_time,
+
+                    p_end_time:
+                        selectedSlot.end_time,
+
+                    p_booking_purpose:
+                        bookingPurpose.value.trim(),
+
+                    p_booking_type:
+                        bookingMode,
+
+                    p_teacher_name:
+                        bookingMode === "teacher" ? teacherName.value.trim() : null,
+
+                    p_designation:
+                        bookingMode === "teacher" ? designation.value.trim() : bookingMode === "officers" ? officersDesignation.value.trim() : null,
+
+                    p_mobile_number:
+                        bookingMode === "teacher" ? mobileNumber.value.trim() : null,
+
+                    p_student_section:
+                        bookingMode === "teacher" ? studentSection.value.trim() : bookingMode === "officers" ? studentSectionOfficer.value.trim() : null,
+                    p_officers_name:
+                        bookingMode === "officers" ? officersName.value.trim() : null,
+                    p_remarks:
+                        bookingMode === "officers" ? officersRemarks.value.trim() : null
+                }
+            );
+
+            if (error) {
+
+                console.error(
+                    "Booking error:",
+                    error
+                );
+
+                const msg =
+                    String(error.message || "");
+
+                if (
+                    msg.toLowerCase().includes("overlap") ||
+                    msg.toLowerCase().includes("already booked") ||
+                    msg.toLowerCase().includes("not available")
+                ) {
+
+                    showMessage(
+                        "🔴 This time overlaps with another booking. Please select another time.",
+                        "error"
+                    );
+
+                    await loadBookedSlots();
+
+                } else {
+
+                    showMessage(
+                        "❌ Booking failed. " + msg,
+                        "error"
+                    );
+
+                }
+
+                return;
+            }
+
+            showMessage(
+                "✅ Booking submitted successfully! Your booking is now Pending.",
+                "success"
+            );
+
+            bookingForm.reset();
+            teacherName.value = "";
+            designation.value = "";
+            mobileNumber.value = "";
+            studentSection.value = "";
+
+            slotsContainer.innerHTML = "";
+
+            slotInfo.textContent =
+                "Select a Lab and Date first.";
+
+            selectedSlot =
+                null;
+
+            customSlotPreview.textContent =
+                "Example: 09:00 AM – 01:00 PM";
+
+            clearCustomSlotError();
+
+        } finally {
+
+            submitBtn.disabled =
+                false;
+
+            submitBtn.textContent =
+                "BOOK LAB NOW";
+        }
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+async function initialize() {
+
+    await Promise.all([
+        loadSemesters(),
+        loadLabs(),
+        loadTimeSlots()
+    ]);
+
+}
+
+
+initialize();
+
 </script>
+
 </body>
 </html>
