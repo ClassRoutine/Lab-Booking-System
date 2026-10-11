@@ -43,7 +43,6 @@
 .table th:nth-child(1),.table th:nth-child(2),.table th:nth-child(3){font-size:13px!important;font-weight:900!important;letter-spacing:0.2px}
 .table td{font-size:12px!important;font-weight:700!important}
 
-/* Column Proportions Summing to 100% */
 .table th:nth-child(1), .table td:nth-child(1){width:6.5%}  /* Type */
 .table th:nth-child(2), .table td:nth-child(2){width:14.5%} /* Applicant Name */
 .table th:nth-child(3), .table td:nth-child(3){width:10.5%} /* ID / Mobile */
@@ -79,7 +78,6 @@
 .cancel{background:#c73535}
 .empty{text-align:center;padding:35px;color:#718096}
 
-/* Pagination Bar (20 bookings per page) */
 .pagination-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#fff;border:1px solid #dbeafe;border-top:none;border-radius:0 0 12px 12px;flex-wrap:wrap;gap:10px;box-shadow:0 2px 12px rgba(15,35,70,.04)}
 .pagination-info{font-size:13px;font-weight:800;color:#334155}
 .pagination-controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
@@ -88,7 +86,6 @@
 .page-btn.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8;box-shadow:0 2px 6px rgba(29,78,216,.25)}
 .page-btn:disabled{opacity:.4;cursor:not-allowed}
 
-/* Two-line Footer */
 footer{text-align:center;color:#475569;font-size:14px;line-height:1.8;font-weight:700;padding:24px 16px;border-top:1.5px solid #cbd5e1;margin-top:28px;background:#fff;border-radius:12px;letter-spacing:0.3px;box-shadow:0 2px 8px rgba(15,35,70,.03)}
 footer .f-line1{font-size:15px;font-weight:900;color:#0f2952}
 footer .f-line2{font-size:13.5px;font-weight:700;color:#475569}
@@ -96,12 +93,10 @@ footer .f-line2{font-size:13.5px;font-weight:700;color:#475569}
 @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.top{padding:14px}.wrap{padding:0 8px}}
 @media(max-width:520px){.stats,.filters{grid-template-columns:1fr}.pagination-bar{flex-direction:column;align-items:stretch;text-align:center}}
 
-/* Sub-Tab Navigation for Super Admin */
 .sub-tabs{display:flex;gap:10px;margin-bottom:16px;background:#e9f0f8;padding:6px;border-radius:10px;width:fit-content}
 .sub-tab-btn{border:0;padding:9px 20px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;background:transparent;color:#526174;transition:all .2s}
 .sub-tab-btn.active{background:#102d63;color:#fff;box-shadow:0 3px 10px rgba(16,45,99,.15)}
 
-/* Incharge Management Grid */
 .incharge-header-card{background:#fff;border:1px solid #dbe3ee;border-radius:12px;padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;box-shadow:0 3px 12px rgba(15,35,70,.04)}
 .incharge-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:14px;margin-bottom:30px}
 .incharge-card{background:#fff;border:1px solid #dbe3ee;border-radius:12px;padding:16px;box-shadow:0 3px 12px rgba(15,35,70,.04);position:relative}
@@ -109,7 +104,6 @@ footer .f-line2{font-size:13.5px;font-weight:700;color:#475569}
 .lab-tag{display:inline-block;padding:3px 7px;border-radius:5px;background:#eff6ff;color:#1e40af;font-size:11px;font-weight:700;margin:2px;border:1px solid #bfdbfe}
 .lab-tag-empty{display:inline-block;padding:3px 7px;border-radius:5px;background:#fee2e2;color:#991b1b;font-size:11px;font-weight:700}
 
-/* Modal styles */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(7,26,61,.65);backdrop-filter:blur(3px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal-box{background:#fff;border-radius:16px;width:min(520px, 100%);max-height:90vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .modal-box h2{margin:0 0 6px;color:#102d63;font-size:20px}
@@ -164,6 +158,7 @@ footer .f-line2{font-size:13.5px;font-weight:700;color:#475569}
   </header>
 
   <main class="wrap">
+    <!-- Profile Card -->
     <div class="profile">
       <div>
         <strong id="adminName">—</strong><br>
@@ -195,21 +190,24 @@ footer .f-line2{font-size:13.5px;font-weight:700;color:#475569}
         <input id="dateFilter" type="date">
         <select id="labFilter"><option value="">All Labs</option></select>
         <select id="statusFilter">
-          <option value="">All Status</option>
-          <option>Pending</option>
-          <option>Approved</option>
-          <option>Cancelled</option>
-          <option>Completed</option>
+          <option value="">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Cancelled">Cancelled</option>
+          <option value="Completed">Completed</option>
         </select>
-        <input id="searchFilter" type="search" placeholder="Search student, ID, teacher, lab or remarks">
+        <input id="searchFilter" type="text" placeholder="Search applicant, ID, phone, teacher, remarks...">
       </div>
 
-      <!-- FULL-SCREEN RESPONSIVE TABLE -->
       <div class="table-card">
         <div class="table-header-bar">
-          <div class="table-title">📋 Laboratory Bookings Overview</div>
-          <div class="table-subtitle" id="tablePaginationSummary">Showing bookings</div>
+          <div>
+            <span class="table-title">Laboratory Reservations &amp; Approvals</span>
+            <div class="table-subtitle">Displaying 20 bookings per page</div>
+          </div>
+          <div id="tableSummary" style="font-size:12px;color:#1d4ed8;font-weight:800"></div>
         </div>
+
         <table class="table">
           <thead>
             <tr>
@@ -227,37 +225,36 @@ footer .f-line2{font-size:13.5px;font-weight:700;color:#475569}
               <th>Action</th>
             </tr>
           </thead>
-          <tbody id="bookingRows"></tbody>
+          <tbody id="bookingRows"><tr><td colspan="12" class="empty">Loading bookings...</td></tr></tbody>
         </table>
       </div>
 
-      <!-- PAGINATION CONTROLS (20 Bookings Per Page) -->
-      <div class="pagination-bar" id="paginationBar">
-        <div class="pagination-info" id="paginationInfo">Showing 0 of 0 bookings</div>
+      <div class="pagination-bar">
+        <div class="pagination-info" id="paginationInfo">Showing 0 - 0 of 0 bookings</div>
         <div class="pagination-controls" id="paginationControls"></div>
       </div>
     </div>
 
-    <!-- IN-CHARGE MANAGEMENT (SUPER ADMIN) -->
+    <!-- IN-CHARGES MANAGEMENT (SUPER ADMIN ONLY) -->
     <div id="inchargesSection" class="hidden">
       <div class="incharge-header-card">
         <div>
-          <h2 style="margin:0 0 4px;font-size:18px;color:#102d63">👑 Super Admin In-Charge Control</h2>
-          <p style="margin:0;font-size:13px;color:#718096">Add 7-10+ Lab In-Charges, set separate credentials, and assign laboratories.</p>
+          <h2 style="margin:0 0 4px;color:#102d63;font-size:18px">Laboratory In-Charge &amp; Admin Management</h2>
+          <div style="font-size:13px;color:#64748b">Create, edit, reset passwords, and toggle Full Lab View &amp; Approval on Any In-Charge.</div>
         </div>
-        <button class="action" style="background:#16834a;padding:10px 20px;font-size:13px;font-weight:800;border-radius:8px" onclick="openAddInChargeModal()">➕ ADD NEW IN-CHARGE</button>
+        <button class="action" style="background:#16834a;padding:10px 18px;font-size:13px;font-weight:bold" onclick="openAddInChargeModal()">
+          ➕ Add New In-Charge
+        </button>
       </div>
 
-      <div id="inchargeCardsContainer" class="incharge-grid"></div>
+      <div class="incharge-grid" id="inchargeCardsContainer"></div>
     </div>
 
-    <!-- STUDENT / TEACHER BOOKING FEATURE CONTROLS (SUPER ADMIN ONLY) -->
+    <!-- BOOKING FEATURE ON/OFF (SUPER ADMIN ONLY) -->
     <div id="bookingFeaturesSection" class="hidden">
       <div class="feature-control-card">
-        <h2 style="margin:0 0 6px;color:#102d63;font-size:20px">Student &amp; Teacher Booking Controls</h2>
-        <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5">ON করলে আগের মতো booking চলবে। OFF করলে ওই tab-এ “Progress in under development” দেখাবে। Officers Booking এই সেটিংসে পরিবর্তন হবে না।</p>
         <div class="feature-control-row">
-          <div><h3>🎓 Student Booking</h3><p>Student Booking tab চালু বা বন্ধ করো।</p><span id="studentFeatureStatus" class="feature-status on">LOADING…</span></div>
+          <div><h3>🎓 Student Booking</h3><p>Student Booking tab চালু বা বন্ধ করো। বন্ধ করলে শিক্ষার্থীরা মেসেজ দেখতে পাবে।</p><span id="studentFeatureStatus" class="feature-status on">LOADING…</span></div>
           <label class="feature-switch" aria-label="Student Booking ON/OFF"><input id="studentFeatureToggle" type="checkbox" disabled><span class="feature-slider"></span></label>
         </div>
         <div class="feature-control-row">
@@ -269,6 +266,7 @@ footer .f-line2{font-size:13.5px;font-weight:700;color:#475569}
     </div>
   </main>
 
+  <!-- TWO-LINE FOOTER -->
   <footer>
     <span class="f-line1">Design &amp; Developed by Md. Tareq Ben Musha &copy; 2026</span><br>
     <span class="f-line2">Department of Computer Science &amp; Engineering | Varendra University</span>
@@ -298,6 +296,15 @@ footer .f-line2{font-size:13.5px;font-weight:700;color:#475569}
       <input id="newAdminEmail" type="email" placeholder="e.g. shakil@vu.edu.bd">
     </div>
 
+    <!-- Manual ON/OFF Option for Full View & Approval on All Laboratories -->
+    <label style="display:flex;align-items:center;gap:10px;margin:12px 0;padding:10px 12px;background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;cursor:pointer">
+      <input type="checkbox" id="newAdminFullAccess" checked style="width:18px;height:18px;accent-color:#16a34a">
+      <div>
+        <b style="font-size:13px;color:#166534">🌐 Full View &amp; Approval on All Laboratories</b>
+        <div style="font-size:11px;color:#15803d">When enabled, this in-charge can view &amp; approve all 8 laboratories.</div>
+      </div>
+    </label>
+
     <label style="display:block;font-size:13px;font-weight:800;margin:14px 0 6px">Assign to Laboratory(ies):</label>
     <div style="font-size:12px;color:#718096;margin-bottom:8px">Select all labs this in-charge will manage (multi-select supported):</div>
     
@@ -317,6 +324,16 @@ footer .f-line2{font-size:13.5px;font-weight:700;color:#475569}
     <p>Select which laboratories this in-charge is responsible for:</p>
     
     <input type="hidden" id="editLabsUsername">
+    
+    <!-- Manual ON/OFF Option for Full View & Approval on All Laboratories -->
+    <label style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:10px 12px;background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;cursor:pointer">
+      <input type="checkbox" id="editFullAccessCheck" style="width:18px;height:18px;accent-color:#16a34a">
+      <div>
+        <b style="font-size:13px;color:#166534">🌐 Full View &amp; Approval on All Laboratories</b>
+        <div style="font-size:11px;color:#15803d">Toggle ON to give full view &amp; approval access across all 8 labs.</div>
+      </div>
+    </label>
+
     <div class="lab-checklist" id="editLabChecklist"></div>
 
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
@@ -377,13 +394,37 @@ const LAB_MAP = {
   8: { name: "Microprocessor & Interfacing Lab", code: "MIL-131" }
 };
 
-const PAGE_SIZE = 20;
-let currentPage = 1;
 let admin = null;
 let adminPasswordForFeatureControl = "";
 let bookings = [];
-let allInCharges = [];
 let labsData = [];
+let allInCharges = [];
+
+const PAGE_SIZE = 20;
+let currentPage = 1;
+
+const SESSION_KEY = "vu_cse_admin_session_v4";
+function saveSession(username, remember) {
+  const data = JSON.stringify({ username: username, at: Date.now() });
+  if (remember) {
+    localStorage.setItem(SESSION_KEY, data);
+    sessionStorage.removeItem(SESSION_KEY);
+  } else {
+    sessionStorage.setItem(SESSION_KEY, data);
+    localStorage.removeItem(SESSION_KEY);
+  }
+}
+function getSavedSession() {
+  const local = localStorage.getItem(SESSION_KEY);
+  if (local) { try { return JSON.parse(local); } catch(_) {} }
+  const sess = sessionStorage.getItem(SESSION_KEY);
+  if (sess) { try { return JSON.parse(sess); } catch(_) {} }
+  return null;
+}
+function clearSavedSession() {
+  localStorage.removeItem(SESSION_KEY);
+  sessionStorage.removeItem(SESSION_KEY);
+}
 
 const loginPage = document.getElementById("loginPage");
 const dashboard = document.getElementById("dashboard");
@@ -392,19 +433,48 @@ const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const loginBtn = document.getElementById("loginBtn");
 const loginError = document.getElementById("loginError");
+const paginationInfo = document.getElementById("paginationInfo");
+const paginationControls = document.getElementById("paginationControls");
+const tableSummary = document.getElementById("tableSummary");
 
-function showError(msg) { loginError.textContent = msg; loginError.classList.remove("hidden"); }
-function clearSavedSession() {
-  localStorage.removeItem("vu_lab_admin_session");
-  sessionStorage.removeItem("vu_lab_admin_session");
+function showError(msg) {
+  loginError.textContent = msg;
+  loginError.classList.remove("hidden");
 }
-function saveSession(username, remember) {
-  clearSavedSession();
-  const value = JSON.stringify({ username });
-  (remember ? localStorage : sessionStorage).setItem("vu_lab_admin_session", value);
+function clearError() {
+  loginError.textContent = "";
+  loginError.classList.add("hidden");
 }
-function clearError() { loginError.textContent = ""; loginError.classList.add("hidden"); }
-function esc(v) { return String(v ?? "").replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m])); }
+
+async function checkSavedSessionOnLoad() {
+  const saved = getSavedSession();
+  if (!saved || !saved.username) return;
+
+  try {
+    const { data: dbUser, error } = await sb.from("admin_users")
+      .select("id, username, display_name, role, email, password, assigned_lab_ids, can_manage_bookings, is_active")
+      .ilike("username", saved.username)
+      .maybeSingle();
+
+    if (!error && dbUser && dbUser.is_active) {
+      admin = {
+        id: dbUser.id,
+        username: dbUser.username,
+        display_name: dbUser.display_name,
+        role: dbUser.role,
+        email: dbUser.email,
+        assigned_lab_ids: dbUser.assigned_lab_ids || [],
+        can_manage_bookings: dbUser.can_manage_bookings !== false,
+        is_active: dbUser.is_active
+      };
+      initDashboard();
+    } else {
+      clearSavedSession();
+    }
+  } catch (_) {
+    clearSavedSession();
+  }
+}
 
 async function doLogin() {
   clearError();
@@ -417,7 +487,7 @@ async function doLogin() {
 
   try {
     const { data: dbUser, error: dbErr } = await sb.from("admin_users")
-      .select("id, username, display_name, role, email, password, assigned_lab_ids, is_active")
+      .select("id, username, display_name, role, email, password, assigned_lab_ids, can_manage_bookings, is_active")
       .ilike("username", u)
       .maybeSingle();
 
@@ -449,6 +519,7 @@ async function doLogin() {
     }
 
     adminPasswordForFeatureControl = p;
+
     admin = {
       id: dbUser.id,
       username: dbUser.username,
@@ -456,6 +527,7 @@ async function doLogin() {
       role: dbUser.role,
       email: dbUser.email,
       assigned_lab_ids: dbUser.assigned_lab_ids || [],
+      can_manage_bookings: dbUser.can_manage_bookings !== false,
       is_active: dbUser.is_active
     };
 
@@ -477,9 +549,10 @@ function initDashboard() {
   dashboard.classList.remove("hidden");
 
   const isSuper = admin.role === "super_admin";
+  const hasFull = isSuper || admin.can_manage_bookings === true;
   document.getElementById("adminName").textContent = admin.display_name || admin.username;
   document.getElementById("adminRole").textContent = isSuper ? "Super Admin" : "Lab In-charge";
-  document.getElementById("permissionText").textContent = "Full View & Approval on All Laboratories";
+  document.getElementById("permissionText").textContent = hasFull ? "Full View & Approval on All Laboratories: Active" : "Assigned Laboratories Only";
   document.getElementById("welcome").textContent = "Signed in as @" + admin.username + " (" + (admin.display_name || admin.username) + ")";
 
   const tabNav = document.getElementById("adminTabNav");
@@ -488,7 +561,9 @@ function initDashboard() {
   } else {
     tabNav.classList.add("hidden");
     const labCodes = (admin.assigned_lab_ids || []).map(id => LAB_MAP[id] ? LAB_MAP[id].code : `Lab ${id}`).join(", ");
-    document.getElementById("assignedLabsNotice").textContent = labCodes ? "Primary Assigned Labs: " + labCodes : "All Labs Access Active";
+    document.getElementById("assignedLabsNotice").textContent = hasFull ? 
+      "🌐 Full View & Approval Active Across All 8 Labs" : 
+      (labCodes ? "🔒 Assigned Labs: " + labCodes : "🔒 Assigned Labs Only");
   }
 
   loadLabs();
@@ -506,69 +581,77 @@ function switchAdminTab(tab) {
     incharges: ["tabInCharges", "inchargesSection"],
     features: ["tabBookingFeatures", "bookingFeaturesSection"]
   };
-  Object.values(tabs).forEach(([tabId, sectionId]) => {
-    document.getElementById(tabId)?.classList.toggle("active", tabId === tabs[tab][0]);
-    document.getElementById(sectionId)?.classList.toggle("hidden", sectionId !== tabs[tab][1]);
+  Object.entries(tabs).forEach(([key, [btnId, secId]]) => {
+    const btn = document.getElementById(btnId);
+    const sec = document.getElementById(secId);
+    if (btn && sec) {
+      if (key === tab) {
+        btn.classList.add("active");
+        sec.classList.remove("hidden");
+      } else {
+        btn.classList.remove("active");
+        sec.classList.add("hidden");
+      }
+    }
   });
-  if (tab === "incharges") loadInCharges();
-  if (tab === "features") loadBookingFeatureSettings();
 }
 
 let bookingFeatureSettings = { student_enabled: true, teacher_enabled: true };
 const studentFeatureToggle = document.getElementById("studentFeatureToggle");
 const teacherFeatureToggle = document.getElementById("teacherFeatureToggle");
+const studentFeatureStatus = document.getElementById("studentFeatureStatus");
+const teacherFeatureStatus = document.getElementById("teacherFeatureStatus");
 const bookingFeaturesMessage = document.getElementById("bookingFeaturesMessage");
 
 function renderBookingFeatureSettings() {
-  studentFeatureToggle.checked = bookingFeatureSettings.student_enabled;
-  teacherFeatureToggle.checked = bookingFeatureSettings.teacher_enabled;
-  const pairs = [
-    ["studentFeatureStatus", bookingFeatureSettings.student_enabled],
-    ["teacherFeatureStatus", bookingFeatureSettings.teacher_enabled]
-  ];
-  pairs.forEach(([id, enabled]) => {
-    const el = document.getElementById(id);
-    el.textContent = enabled ? "ON — BOOKING ENABLED" : "OFF — UNDER DEVELOPMENT";
-    el.className = "feature-status " + (enabled ? "on" : "off");
-  });
+  studentFeatureToggle.checked = Boolean(bookingFeatureSettings.student_enabled);
+  teacherFeatureToggle.checked = Boolean(bookingFeatureSettings.teacher_enabled);
+  studentFeatureStatus.textContent = bookingFeatureSettings.student_enabled ? "ON (সক্রিয়)" : "OFF (বন্ধ)";
+  studentFeatureStatus.className = "feature-status " + (bookingFeatureSettings.student_enabled ? "on" : "off");
+  teacherFeatureStatus.textContent = bookingFeatureSettings.teacher_enabled ? "ON (সক্রিয়)" : "OFF (বন্ধ)";
+  teacherFeatureStatus.className = "feature-status " + (bookingFeatureSettings.teacher_enabled ? "on" : "off");
 }
 
 async function loadBookingFeatureSettings() {
   if (admin?.role !== "super_admin") return;
-  studentFeatureToggle.disabled = true;
-  teacherFeatureToggle.disabled = true;
-  bookingFeaturesMessage.textContent = "সেটিংস লোড হচ্ছে…";
-  const { data, error } = await sb.from("booking_feature_settings")
-    .select("student_enabled,teacher_enabled").eq("id", 1).maybeSingle();
-  if (error || !data) {
-    bookingFeaturesMessage.textContent = "সেটিংস লোড করতে সমস্যা হয়েছে।";
-    return;
+  try {
+    const { data, error } = await sb.from("booking_feature_settings").select("student_enabled, teacher_enabled").order("id", { ascending: true }).limit(1).maybeSingle();
+    if (!error && data) {
+      bookingFeatureSettings = {
+        student_enabled: data.student_enabled !== false,
+        teacher_enabled: data.teacher_enabled !== false
+      };
+      bookingFeaturesMessage.textContent = "Supabase cloud সেটিংস লোড হয়েছে।";
+    }
+  } catch (err) {
+    bookingFeaturesMessage.textContent = "সেটিংস লোড ব্যর্থ: " + (err.message || "Error");
+  } finally {
+    renderBookingFeatureSettings();
+    studentFeatureToggle.disabled = false;
+    teacherFeatureToggle.disabled = false;
   }
-  bookingFeatureSettings = {
-    student_enabled: data.student_enabled !== false,
-    teacher_enabled: data.teacher_enabled !== false
-  };
-  renderBookingFeatureSettings();
-  studentFeatureToggle.disabled = false;
-  teacherFeatureToggle.disabled = false;
-  bookingFeaturesMessage.textContent = "পরিবর্তন করলে সঙ্গে সঙ্গে Supabase ও মোবাইল অ্যাপে save হবে। OFF করলে booking page-এ ‘Progress in under development’ দেখাবে।";
+}
+
+async function promptForFeaturePassword() {
+  if (adminPasswordForFeatureControl) return adminPasswordForFeatureControl;
+  const pass = prompt("Super Admin নিরাপত্তা নিশ্চিত করতে আপনার বর্তমান পাসওয়ার্ড লিখুন:");
+  if (pass) adminPasswordForFeatureControl = pass;
+  return pass || "";
 }
 
 async function saveBookingFeature(feature, enabled, toggle) {
-  if (admin?.role !== "super_admin") {
-    toggle.checked = !enabled;
-    bookingFeaturesMessage.textContent = "শুধু Super Admin এই সেটিংস পরিবর্তন করতে পারবেন।";
-    return;
-  }
-  let password = adminPasswordForFeatureControl;
-  if (!password) password = window.prompt("Super Admin password দিয়ে setting save করো:") || "";
+  if (admin?.role !== "super_admin") return;
+  const password = await promptForFeaturePassword();
   if (!password) {
     toggle.checked = !enabled;
+    bookingFeaturesMessage.textContent = "Password দেওয়া হয়নি; সেটিংস পরিবর্তন বাতিল।";
     return;
   }
+
   studentFeatureToggle.disabled = true;
   teacherFeatureToggle.disabled = true;
-  bookingFeaturesMessage.textContent = "সেভ হচ্ছে…";
+  bookingFeaturesMessage.textContent = "সেটিংস Supabase cloud-এ save হচ্ছে...";
+
   try {
     const { data, error } = await sb.rpc("set_booking_feature_enabled", {
       p_username: admin.username,
@@ -594,12 +677,19 @@ async function saveBookingFeature(feature, enabled, toggle) {
 studentFeatureToggle.addEventListener("change", () => saveBookingFeature("student", studentFeatureToggle.checked, studentFeatureToggle));
 teacherFeatureToggle.addEventListener("change", () => saveBookingFeature("teacher", teacherFeatureToggle.checked, teacherFeatureToggle));
 
+// Admins can view and filter laboratories according to access permissions
 async function loadLabs() {
   const { data } = await sb.from("labs").select("id,name").order("id");
   labsData = data || [];
   const s = document.getElementById("labFilter");
   s.innerHTML = '<option value="">All Labs</option>';
+  
+  const isSuper = admin?.role === "super_admin";
+  const hasFull = isSuper || admin?.can_manage_bookings === true;
+  const assigned = admin?.assigned_lab_ids || [];
+
   labsData.forEach(x => {
+    if (!hasFull && !assigned.includes(x.id)) return;
     const o = document.createElement("option");
     o.value = x.id;
     const code = LAB_MAP[x.id] ? ` (${LAB_MAP[x.id].code})` : "";
@@ -608,6 +698,7 @@ async function loadLabs() {
   });
 }
 
+// Bookings filtered according to Full Lab Access or Assigned Labs
 async function loadBookings() {
   const query = sb.from("bookings").select("*,labs(id,name),semesters(name)");
   const { data, error } = await query.order("booking_date", { ascending: true }).order("start_time", { ascending: true });
@@ -615,7 +706,15 @@ async function loadBookings() {
     document.getElementById("bookingRows").innerHTML = `<tr><td colspan="12" class="empty">Error loading bookings: ${esc(error.message)}</td></tr>`;
     return;
   }
-  bookings = data || [];
+  const isSuper = admin?.role === "super_admin";
+  const hasFull = isSuper || admin?.can_manage_bookings === true;
+  const assigned = admin?.assigned_lab_ids || [];
+
+  if (hasFull) {
+    bookings = data || [];
+  } else {
+    bookings = (data || []).filter(b => assigned.includes(b.lab_id));
+  }
   render();
 }
 
@@ -627,40 +726,48 @@ function goToPage(page) {
 }
 
 function render() {
-  const df = document.getElementById("dateFilter").value;
-  const lf = document.getElementById("labFilter").value;
-  const sf = document.getElementById("statusFilter").value;
-  const q = document.getElementById("searchFilter").value.toLowerCase().trim();
+  const dVal = document.getElementById("dateFilter").value;
+  const lVal = document.getElementById("labFilter").value;
+  const sVal = document.getElementById("statusFilter").value;
+  const qVal = document.getElementById("searchFilter").value.trim().toLowerCase();
   const now = new Date();
 
   const arr = bookings.filter(b => {
-    const hay = [b.student_name, b.student_id, b.mobile_number, b.course_teacher, b.booking_purpose, b.remarks, b.labs?.name, b.approved_by_name].join(" ").toLowerCase();
-    return (!df || b.booking_date === df) &&
-           (!lf || String(b.lab_id) === lf) &&
-           (!sf || ((b.status === "Approved" && b.booking_date && b.start_time && new Date(String(b.booking_date) + "T" + String(b.start_time)) < now) ? "Completed" : b.status) === sf) &&
-           (!q || hay.includes(q));
+    const startDateTime = b.booking_date && b.start_time ? new Date(String(b.booking_date) + "T" + String(b.start_time)) : null;
+    const isCompleted = b.status === "Approved" && startDateTime && !Number.isNaN(startDateTime.getTime()) && startDateTime < now;
+    const displayStatus = isCompleted ? "Completed" : (b.status || "Pending");
+
+    if (dVal && b.booking_date !== dVal) return false;
+    if (lVal && String(b.lab_id) !== String(lVal)) return false;
+    if (sVal && displayStatus !== sVal) return false;
+    if (qVal) {
+      const hay = [
+        b.student_name, b.student_id, b.teacher_name, b.designation, b.mobile_number,
+        b.officers_name, b.course_teacher, b.booking_purpose, b.remarks,
+        b.approved_by_name, b.cancelled_by_name,
+        b.labs?.name, LAB_MAP[b.lab_id]?.code, LAB_MAP[b.lab_id]?.name
+      ].filter(Boolean).join(" ").toLowerCase();
+      if (!hay.includes(qVal)) return false;
+    }
+    return true;
   });
 
+  const todayStr = new Date().toISOString().slice(0, 10);
   document.getElementById("totalCount").textContent = arr.length;
-  document.getElementById("pendingCount").textContent = arr.filter(x => x.status === "Pending").length;
+  document.getElementById("pendingCount").textContent = arr.filter(x => (x.status || "Pending") === "Pending").length;
   document.getElementById("approvedCount").textContent = arr.filter(x => x.status === "Approved").length;
-  const todayIso = new Date().toISOString().slice(0, 10);
-  document.getElementById("todayCount").textContent = arr.filter(x => x.booking_date === todayIso).length;
+  document.getElementById("todayCount").textContent = arr.filter(x => x.booking_date === todayStr).length;
 
   const rows = document.getElementById("bookingRows");
-  const paginationControls = document.getElementById("paginationControls");
-  const paginationInfo = document.getElementById("paginationInfo");
-  const tableSummary = document.getElementById("tablePaginationSummary");
-
   if (!arr.length) {
     rows.innerHTML = '<tr><td colspan="12" class="empty">No bookings found matching current filters.</td></tr>';
-    paginationControls.innerHTML = "";
     paginationInfo.textContent = "Showing 0 of 0 bookings";
-    if (tableSummary) tableSummary.textContent = "0 bookings found";
+    paginationControls.innerHTML = "";
+    if (tableSummary) tableSummary.textContent = "0 bookings";
     return;
   }
 
-  // 20 Bookings Per Page Pagination
+  // 20 BOOKINGS PER PAGE PAGINATION
   const totalRecords = arr.length;
   const totalPages = Math.ceil(totalRecords / PAGE_SIZE) || 1;
   if (currentPage > totalPages) currentPage = totalPages;
@@ -695,6 +802,7 @@ function render() {
   `;
   paginationControls.innerHTML = btnsHtml;
 
+  // Render Table Rows with Prominent Type, Applicant Name, and ID / Mobile
   rows.innerHTML = pagedItems.map(b => {
     const startDateTime = b.booking_date && b.start_time ? new Date(String(b.booking_date) + "T" + String(b.start_time)) : null;
     const isCompleted = b.status === "Approved" && startDateTime && !Number.isNaN(startDateTime.getTime()) && startDateTime < now;
@@ -708,71 +816,91 @@ function render() {
     const typeIcon = type === "teacher" ? "👨‍🏫" : type === "officers" ? "🏢" : "🎓";
     const labDisplay = LAB_MAP[b.lab_id] ? `${LAB_MAP[b.lab_id].name} (${LAB_MAP[b.lab_id].code})` : (b.labs?.name || "");
 
+    const applicantPrimary = type === "teacher"
+      ? (b.teacher_name || "—")
+      : type === "officers"
+        ? (b.officers_name || "—")
+        : (b.student_name || "—");
+
+    const idOrMobilePrimary = type === "teacher"
+      ? (b.mobile_number || "—")
+      : type === "officers"
+        ? (b.mobile_number || b.student_id || "OFFICER")
+        : (b.student_id || "—");
+
+    const semesterDisplay = type === "student" ? (b.semesters?.name || (b.semester_id ? `${b.semester_id}th` : "—")) : "—";
+    const courseTeacherDisplay = type === "student" ? (b.course_teacher || "—") : "—";
+    const purposeDisplay = b.booking_purpose || "—";
+
     return `
     <tr class="booking-row ${type}-booking">
-      <!-- 1. Type: Large & Bold -->
+      <!-- 1. Type (Large & Bold) -->
       <td>
         <span class="booking-type-badge booking-type-${type}">
           ${typeIcon} ${typeLabel}
         </span>
       </td>
 
-      <!-- 2. Applicant Name: Large & Bold -->
+      <!-- 2. Applicant Name (Large & Bold) -->
       <td>
-        <div style="font-size:15px;font-weight:900;color:#071d49;line-height:1.25;word-break:break-word">
-          ${esc(b.student_name)}
+        <div style="font-size:14.5px;font-weight:900;color:#0a1c3d;line-height:1.25">
+          ${esc(applicantPrimary)}
         </div>
-        ${b.designation ? `<div style="color:#1d4ed8;font-weight:800;font-size:11.5px;margin-top:3px;word-break:break-word">${esc(b.designation)}</div>` : ""}
+        ${type === "student" && b.student_section ? `
+          <div style="font-size:11px;color:#1e40af;font-weight:800;margin-top:2px">
+            Sec: <b>${esc(b.student_section)}</b>
+          </div>
+        ` : ""}
+        ${type === "teacher" && b.designation ? `
+          <div style="font-size:11px;color:#166534;font-weight:800;margin-top:2px">
+            ${esc(b.designation)}
+          </div>
+        ` : ""}
       </td>
 
-      <!-- 3. ID / Mobile: Large & Bold -->
+      <!-- 3. ID / Mobile (Large & Bold) -->
       <td>
-        <div style="font-family:monospace;font-size:14px;font-weight:900;color:#0f2952;letter-spacing:0.4px;word-break:break-all">
-          ${esc(b.student_id || "—")}
+        <div style="font-size:14px;font-weight:900;color:#0f2952;letter-spacing:0.3px;line-height:1.25">
+          ${esc(idOrMobilePrimary)}
         </div>
-        ${b.mobile_number ? `<div style="font-family:monospace;font-size:11.5px;font-weight:800;color:#047857;margin-top:2px">📞 ${esc(b.mobile_number)}</div>` : ""}
       </td>
 
       <!-- 4. Semester -->
-      <td><span style="font-size:11.5px;font-weight:700;color:#0f2952;word-break:break-word">${esc(b.semesters?.name || b.semester_id || "—")}</span></td>
+      <td>
+        <span style="font-weight:800;color:#334155;font-size:11.5px">${esc(semesterDisplay)}</span>
+      </td>
 
       <!-- 5. Lab Name -->
       <td>
-        <div style="padding:4px 5px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;font-size:11.5px;font-weight:800;color:#1e3a8a;line-height:1.25;word-break:break-word">
-          ${esc(labDisplay)}
-        </div>
+        <div style="font-size:12px;font-weight:800;color:#102d63">${esc(labDisplay)}</div>
       </td>
 
       <!-- 6. Date -->
       <td>
-        <div style="padding:4px 5px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:5px;font-size:11.5px;font-weight:800;color:#0f172a;line-height:1.2">
-          📅 ${esc(formatDateOnly(b.booking_date))}
-        </div>
+        <span style="font-weight:800;color:#1e293b;font-size:11.5px">${formatDateOnly(b.booking_date)}</span>
       </td>
 
       <!-- 7. Time Slot -->
       <td>
-        <div style="padding:4px 3px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:5px;font-size:11.5px;font-weight:800;color:#0284c7;line-height:1.25;text-align:center">
-          <div>${esc(formatTime(b.start_time))}</div>
-          <div style="font-size:10px;color:#64748b;font-weight:bold;margin:1px 0">to</div>
-          <div>${esc(formatTime(b.end_time))}</div>
+        <div style="font-size:11.5px;font-weight:800;color:#1e40af;line-height:1.2">
+          ${formatTime(b.start_time)}<br><span style="font-size:10px;color:#64748b;font-weight:700">to</span> ${formatTime(b.end_time)}
         </div>
       </td>
 
       <!-- 8. Course Teacher -->
       <td>
-        <div style="font-size:12px;font-weight:700;color:#1e293b;word-break:break-word;line-height:1.25">
-          ${esc(b.course_teacher || "—")}
-        </div>
+        <span style="font-size:11px;color:#334155;font-weight:700">${esc(courseTeacherDisplay)}</span>
       </td>
 
       <!-- 9. Purpose -->
-      <td><span style="font-size:11px;font-weight:700;color:#334155;word-break:break-word">${esc(b.booking_purpose || "—")}</span></td>
+      <td>
+        <span style="font-size:11px;color:#334155;font-weight:600">${esc(purposeDisplay)}</span>
+      </td>
 
-      <!-- 10. Status with Approver Name -->
+      <!-- 10. Status -->
       <td>
         <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
-          <span class="badge ${st}">${esc(displayStatus)}</span>
+          <span class="badge ${st}">${displayStatus}</span>
           ${b.status === "Approved" && b.approved_by_name ? `
             <div style="font-size:9.5px;font-weight:800;color:#166534;background:#dcfce7;border:1px solid #bbf7d0;border-radius:4px;padding:2px 4px;margin-top:2px;line-height:1.2;text-align:center;word-break:break-word">
               ✓ Approved by<br><b style="color:#0f5132">${esc(b.approved_by_name)}</b>
@@ -824,9 +952,19 @@ function formatTime(t) {
   return String(h).padStart(2, "0") + ":" + mi + " " + ap;
 }
 
+// Status change verification respecting Full Lab Access
 async function changeStatus(id, action) {
   const targetBooking = bookings.find(x => x.id === id);
   if (!targetBooking) return;
+
+  const isSuper = admin?.role === "super_admin";
+  const hasFull = isSuper || admin?.can_manage_bookings === true;
+  const assigned = admin?.assigned_lab_ids || [];
+
+  if (!hasFull && !assigned.includes(targetBooking.lab_id)) {
+    alert("Permission Denied: You do not have permission to manage this laboratory.");
+    return;
+  }
 
   const currentAdminName = admin?.display_name || admin?.username || "Administrator";
   const actionText = action === "approve" ? "Approve" : "Cancel";
@@ -863,7 +1001,7 @@ async function changeStatus(id, action) {
     }).eq("id", id);
 
     if (error) {
-      alert("Error saving cancellation: " + error.message);
+      alert("Error cancelling booking: " + error.message);
     } else {
       alert(`Booking cancelled by ${currentAdminName}.`);
       await loadBookings();
@@ -872,23 +1010,32 @@ async function changeStatus(id, action) {
 }
 
 async function saveRemark(id) {
-  const el = document.getElementById("remark-" + id);
-  if (!el) return;
-  const { error } = await sb.rpc("update_booking_remarks", { p_booking_id: id, p_remarks: el.value.trim() });
-  if (error) { alert(error.message); return; }
-  const b = bookings.find(x => String(x.id) === String(id));
-  if (b) b.remarks = el.value.trim();
-  alert("Remark saved successfully.");
-  render();
+  const input = document.getElementById("remark-" + id);
+  if (!input) return;
+  const val = input.value.trim();
+
+  try {
+    await sb.rpc("update_booking_remarks", { p_booking_id: id, p_remarks: val });
+  } catch (_) {}
+
+  const { error } = await sb.from("bookings").update({ remarks: val }).eq("id", id);
+  if (error) {
+    alert("Failed to save remark: " + error.message);
+  } else {
+    alert("✅ Remark saved successfully!");
+    const b = bookings.find(x => x.id === id);
+    if (b) b.remarks = val;
+  }
 }
 
-["dateFilter", "labFilter", "statusFilter", "searchFilter"].forEach(id => {
-  document.getElementById(id).addEventListener("input", () => {
-    currentPage = 1;
-    render();
-  });
-});
+function esc(s) {
+  return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
 
+document.getElementById("dateFilter").addEventListener("change", () => { currentPage = 1; render(); });
+document.getElementById("labFilter").addEventListener("change", () => { currentPage = 1; render(); });
+document.getElementById("statusFilter").addEventListener("change", () => { currentPage = 1; render(); });
+document.getElementById("searchFilter").addEventListener("input", () => { currentPage = 1; render(); });
 document.getElementById("refreshBtn").addEventListener("click", () => {
   loadBookings();
   if (admin.role === "super_admin") {
@@ -902,10 +1049,11 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   location.reload();
 });
 
+// ================= IN-CHARGE MANAGEMENT LOGIC =================
 async function loadInCharges() {
   if (admin?.role !== "super_admin") return;
   const { data, error } = await sb.from("admin_users")
-    .select("id, username, display_name, role, email, assigned_lab_ids, is_active")
+    .select("id, username, display_name, role, email, assigned_lab_ids, can_manage_bookings, is_active")
     .order("id");
   if (!error && data) {
     allInCharges = data;
@@ -922,6 +1070,7 @@ function renderInChargeCards() {
 
   container.innerHTML = allInCharges.map(user => {
     const isSuper = user.role === "super_admin";
+    const hasFull = isSuper || user.can_manage_bookings === true;
     const labTags = isSuper ? 
       '<span class="lab-tag" style="background:#fef3c7;color:#92400e;border-color:#fde68a">🌟 All 8 CSE Laboratories</span>' :
       (user.assigned_lab_ids && user.assigned_lab_ids.length > 0 ?
@@ -950,7 +1099,22 @@ function renderInChargeCards() {
       </div>
 
       ${!isSuper ? `
-      <div style="display:flex;gap:6px;margin-top:12px;border-top:1px solid #f1f5f9;padding-top:10px">
+      <!-- Dedicated Manual ON/OFF Option for Full View & Approval on All Laboratories -->
+      <div style="margin:10px 0;padding:8px 10px;background:${hasFull ? '#ecfdf5' : '#f8fafc'};border:1px solid ${hasFull ? '#a7f3d0' : '#e2e8f0'};border-radius:8px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <div>
+          <div style="font-size:11.5px;font-weight:800;color:${hasFull ? '#065f46' : '#334155'}">
+            🌐 Full View &amp; Approval on All Labs
+          </div>
+          <div style="font-size:10px;color:${hasFull ? '#047857' : '#64748b'}">
+            ${hasFull ? '✅ Active on all 8 labs' : '🔒 Restricted to assigned labs'}
+          </div>
+        </div>
+        <button class="action" style="padding:4px 10px;font-size:11px;font-weight:900;background:${hasFull ? '#059669' : '#64748b'}" onclick="toggleFullLabAccess('${user.username}', ${!hasFull})">
+          ${hasFull ? 'ON' : 'OFF'}
+        </button>
+      </div>
+
+      <div style="display:flex;gap:6px;margin-top:10px;border-top:1px solid #f1f5f9;padding-top:10px">
         <button class="action" style="background:#2864d0;flex:1.5;font-weight:800" onclick="openEditLabsModal('${user.username}')">✏️ Edit Labs</button>
         <button class="action" style="background:#64748b;flex:1;font-weight:800" onclick="toggleInChargeActive('${user.username}', ${!user.is_active})">
           ${user.is_active ? 'Off' : 'On'}
@@ -959,7 +1123,7 @@ function renderInChargeCards() {
       </div>
       ` : `
       <div style="margin-top:10px;padding:8px;background:rgba(254,243,199,.7);border:1px solid #fde68a;border-radius:8px;text-align:center">
-        <div style="font-size:11px;color:#92400e;font-weight:bold">👑 Primary Super Administrator</div>
+        <div style="font-size:11px;color:#92400e;font-weight:bold">👑 Primary Super Administrator (Full System Access)</div>
       </div>
       `}
     </div>`;
@@ -1000,6 +1164,7 @@ async function submitCreateInCharge() {
 
   const checkedBoxes = Array.from(document.querySelectorAll('input[name="addLabCheck"]:checked'));
   const labIds = checkedBoxes.map(cb => Number(cb.value));
+  const fullAccess = document.getElementById("newAdminFullAccess")?.checked ?? true;
 
   const { error } = await sb.from("admin_users").upsert({
     display_name: name,
@@ -1008,6 +1173,7 @@ async function submitCreateInCharge() {
     email: email,
     role: "lab_incharge",
     assigned_lab_ids: labIds,
+    can_manage_bookings: fullAccess,
     is_active: true
   }, { onConflict: "username" });
 
@@ -1028,6 +1194,11 @@ function openEditLabsModal(targetUsername) {
   document.getElementById("editLabsUsername").value = targetUsername;
   document.getElementById("editLabsModalTitle").textContent = `Reassign Labs for @${targetUsername}`;
 
+  const fullAccessCheck = document.getElementById("editFullAccessCheck");
+  if (fullAccessCheck) {
+    fullAccessCheck.checked = user.can_manage_bookings !== false;
+  }
+
   const assigned = user.assigned_lab_ids || [];
   const list = document.getElementById("editLabChecklist");
   list.innerHTML = Object.entries(LAB_MAP).map(([id, info]) => `
@@ -1047,13 +1218,31 @@ async function submitUpdateLabs() {
   const username = document.getElementById("editLabsUsername").value;
   const checkedBoxes = Array.from(document.querySelectorAll('input[name="editLabCheck"]:checked'));
   const labIds = checkedBoxes.map(cb => Number(cb.value));
+  const fullAccess = document.getElementById("editFullAccessCheck")?.checked ?? true;
 
-  const { error } = await sb.from("admin_users").update({ assigned_lab_ids: labIds }).eq("username", username);
+  const { error } = await sb.from("admin_users").update({ 
+    assigned_lab_ids: labIds,
+    can_manage_bookings: fullAccess
+  }).eq("username", username);
   if (error) alert("Update failed: " + error.message);
   else {
-    alert("✅ Laboratory assignments updated! Synced to phone and PC.");
+    alert("✅ Laboratory assignments & Full Access settings updated! Synced to phone and PC.");
     closeEditLabsModal();
     loadInCharges();
+  }
+}
+
+// Dedicated manual ON/OFF toggle for Full View & Approval on All Laboratories
+async function toggleFullLabAccess(username, targetStatus) {
+  if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
+  const { error } = await sb.from("admin_users").update({ can_manage_bookings: targetStatus }).eq("username", username);
+  if (error) {
+    alert("Update failed: " + error.message);
+  } else {
+    if (admin?.username === username) {
+      admin.can_manage_bookings = targetStatus;
+    }
+    await loadInCharges();
   }
 }
 
@@ -1072,118 +1261,105 @@ async function deleteInCharge(username) {
   else loadInCharges();
 }
 
+// ================= PASSWORD MANAGEMENT =================
 function openPasswordModal(selectedUsername) {
   if (!admin) return;
   const isSuper = admin.role === "super_admin";
-  const selectGroup = document.getElementById("passwordUserSelectGroup");
-  const select = document.getElementById("passwordUserSelect");
+  const userSelectGroup = document.getElementById("passwordUserSelectGroup");
+  const userSelect = document.getElementById("passwordUserSelect");
   const desc = document.getElementById("passwordModalDesc");
-  const errBox = document.getElementById("passwordError");
-  errBox.classList.add("hidden");
+  const targetUser = selectedUsername || admin.username;
 
-  if (isSuper && allInCharges && allInCharges.length > 0) {
-    selectGroup.classList.remove("hidden");
-    desc.textContent = "Super Admin: Select yourself or any in-charge to update password and credentials.";
-    select.innerHTML = allInCharges.map(u => `
-      <option value="${u.username}">${u.username === admin.username ? '👑 Myself (' + (u.display_name || u.username) + ')' : (u.display_name || u.username) + ' (@' + u.username + ') - In-Charge'}</option>
+  document.getElementById("passwordError").classList.add("hidden");
+  document.getElementById("passwordNew").value = "";
+
+  if (isSuper && allInCharges.length > 0) {
+    userSelectGroup.classList.remove("hidden");
+    desc.textContent = "Super Admin: Select any account to update credentials or reset password.";
+    userSelect.innerHTML = allInCharges.map(u => `
+      <option value="${esc(u.username)}" ${u.username === targetUser ? 'selected' : ''}>
+        ${u.role === 'super_admin' ? '👑 [Super Admin] ' : '👤 '}${esc(u.display_name || u.username)} (@${esc(u.username)})
+      </option>
     `).join("");
-
-    const target = selectedUsername || admin.username;
-    select.value = target;
-    onPasswordUserSelected(target);
+    onPasswordUserSelected(targetUser);
   } else {
-    selectGroup.classList.add("hidden");
-    desc.textContent = `Update login credentials for @${admin.username}:`;
+    userSelectGroup.classList.add("hidden");
+    desc.textContent = `Update credentials for your account (@${admin.username}).`;
     document.getElementById("passwordTargetUsername").value = admin.username;
-    document.getElementById("passwordDisplayName").value = admin.display_name || admin.username;
+    document.getElementById("passwordDisplayName").value = admin.display_name || "";
     document.getElementById("passwordUsername").value = admin.username;
-    document.getElementById("passwordNew").value = (admin.password && admin.password !== "••••••") ? admin.password : "";
   }
 
   document.getElementById("passwordModal").classList.remove("hidden");
+}
+
+function onPasswordUserSelected(username) {
+  const user = allInCharges.find(u => u.username === username) || admin;
+  if (!user) return;
+  document.getElementById("passwordTargetUsername").value = user.username;
+  document.getElementById("passwordDisplayName").value = user.display_name || "";
+  document.getElementById("passwordUsername").value = user.username;
 }
 
 function closePasswordModal() {
   document.getElementById("passwordModal").classList.add("hidden");
 }
 
-function onPasswordUserSelected(uname) {
-  const user = (allInCharges || []).find(u => u.username === uname);
-  if (!user) return;
-  document.getElementById("passwordTargetUsername").value = user.username;
-  document.getElementById("passwordDisplayName").value = user.display_name || user.username;
-  document.getElementById("passwordUsername").value = user.username;
-  document.getElementById("passwordNew").value = (user.password && user.password !== "••••••") ? user.password : "";
-}
-
 async function submitPasswordChange() {
-  const targetUsername = document.getElementById("passwordTargetUsername").value;
+  const origUsername = document.getElementById("passwordTargetUsername").value.trim().toLowerCase();
   const newName = document.getElementById("passwordDisplayName").value.trim();
   const newUsername = document.getElementById("passwordUsername").value.trim().toLowerCase();
-  const newPass = document.getElementById("passwordNew").value.trim();
-  const errBox = document.getElementById("passwordError");
+  const newPassword = document.getElementById("passwordNew").value.trim();
+  const errorBox = document.getElementById("passwordError");
 
-  if (!newName || !newUsername || !newPass) {
-    errBox.textContent = "Please fill in Name, Username, and Password.";
-    errBox.classList.remove("hidden");
+  if (!origUsername || !newName || !newUsername) {
+    errorBox.textContent = "Please fill in Display Name and Username.";
+    errorBox.classList.remove("hidden");
     return;
   }
 
-  if (admin.role !== "super_admin" && targetUsername !== admin.username) {
-    alert("Unauthorized: You can only update your own account credentials.");
+  const isSuper = admin?.role === "super_admin";
+  const isEditingSelf = admin?.username === origUsername;
+  if (!isSuper && !isEditingSelf) {
+    errorBox.textContent = "Unauthorized: You can only edit your own account.";
+    errorBox.classList.remove("hidden");
     return;
   }
 
-  const { error } = await sb.from("admin_users").update({
+  const updatePayload = {
     display_name: newName,
-    username: newUsername,
-    password: newPass
-  }).eq("username", targetUsername);
+    username: newUsername
+  };
+  if (newPassword) {
+    updatePayload.password = newPassword;
+  }
 
-  if (error) {
-    errBox.textContent = "Failed to update: " + error.message;
-    errBox.classList.remove("hidden");
-  } else {
-    alert(`✅ Successfully updated credentials!\nName: ${newName}\nUsername: @${newUsername}\nNew Password: ${newPass}\nSynced across Phone & PC.`);
-    if (admin && admin.username === targetUsername) {
+  try {
+    const { error } = await sb.from("admin_users")
+      .update(updatePayload)
+      .eq("username", origUsername);
+
+    if (error) throw error;
+
+    if (isEditingSelf) {
       admin.display_name = newName;
       admin.username = newUsername;
-      adminPasswordForFeatureControl = newPass;
-      saveSession(admin.username, localStorage.getItem("vu_lab_admin_session") !== null);
-      initDashboard();
+      document.getElementById("adminName").textContent = newName || newUsername;
+      document.getElementById("welcome").textContent = `Signed in as @${newUsername} (${newName})`;
+      saveSession(newUsername, true);
     }
+
+    alert(`✅ Password & credentials for @${newUsername} updated successfully! Synced across phone and PC.`);
     closePasswordModal();
-    if (admin.role === "super_admin") loadInCharges();
+    if (isSuper) await loadInCharges();
+  } catch (err) {
+    errorBox.textContent = "Update failed: " + (err.message || "Database error");
+    errorBox.classList.remove("hidden");
   }
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-  const saved = localStorage.getItem("vu_lab_admin_session") || sessionStorage.getItem("vu_lab_admin_session");
-  if (!saved) return;
-  try {
-    const parsed = JSON.parse(saved);
-    if (!parsed || !parsed.username) {
-      clearSavedSession();
-      return;
-    }
-
-    const { data: serverUser, error } = await sb.from("admin_users")
-      .select("id, username, display_name, role, email, password, assigned_lab_ids, is_active")
-      .ilike("username", parsed.username)
-      .maybeSingle();
-
-    if (!error && serverUser && serverUser.is_active) {
-      admin = serverUser;
-      adminPasswordForFeatureControl = serverUser.password || "";
-      initDashboard();
-    } else {
-      clearSavedSession();
-      showError("Session expired or user inactive. Please sign in again.");
-    }
-  } catch (_) {
-    clearSavedSession();
-  }
-});
+// Initial session check
+checkSavedSessionOnLoad();
 </script>
 </body>
 </html>
