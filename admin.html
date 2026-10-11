@@ -37,7 +37,7 @@
 .table-subtitle{font-size:12px;color:#64748b;font-weight:700}
 
 /* Table spans responsive width cleanly with 14px bold unified text */
-.table{width:100%!important;min-width:1380px!important;border-collapse:collapse!important;table-layout:fixed!important;margin:0!important}
+.table{width:100%!important;min-width:1420px!important;border-collapse:collapse!important;table-layout:fixed!important;margin:0!important}
 .table th,.table td{padding:10px 8px!important;border:1px solid #e2e8f0!important;text-align:center!important;vertical-align:middle!important;line-height:1.35;box-sizing:border-box!important;overflow:hidden!important;word-break:break-word!important;overflow-wrap:break-word!important;font-size:14px!important;font-weight:700!important}
 
 /* Clean unified 14px bold header row */
@@ -47,18 +47,18 @@
 .table td{font-size:14px!important;font-weight:700!important}
 
 /* Strict Proportional Widths Summing to 100% for 14px bold layout */
-.table th:nth-child(1), .table td:nth-child(1){width:8.5%}  /* Type - Large & Bold */
-.table th:nth-child(2), .table td:nth-child(2){width:13.5%} /* Applicant Name - Large & Bold */
-.table th:nth-child(3), .table td:nth-child(3){width:11.5%} /* ID / Mobile - Large & Bold */
-.table th:nth-child(4), .table td:nth-child(4){width:9.5%}  /* Semester - Prominent */
-.table th:nth-child(5), .table td:nth-child(5){width:13.5%} /* Lab Name */
-.table th:nth-child(6), .table td:nth-child(6){width:7.5%}  /* Date */
-.table th:nth-child(7), .table td:nth-child(7){width:8.5%}  /* Time Slot */
-.table th:nth-child(8), .table td:nth-child(8){width:11.5%} /* Course Teacher - Prominent */
-.table th:nth-child(9), .table td:nth-child(9){width:8.5%}  /* Purpose */
-.table th:nth-child(10), .table td:nth-child(10){width:9.5%}/* Status */
-.table th:nth-child(11), .table td:nth-child(11){width:8.5%}/* Remarks */
-.table th:nth-child(12), .table td:nth-child(12){width:7.5%}/* Action */
+.table th:nth-child(1), .table td:nth-child(1){width:7%}   /* Type - Large & Bold */
+.table th:nth-child(2), .table td:nth-child(2){width:12%}  /* Applicant Name - Large & Bold */
+.table th:nth-child(3), .table td:nth-child(3){width:11%}  /* ID / Mobile - Displays Designation (e.g. Executive) */
+.table th:nth-child(4), .table td:nth-child(4){width:8.5%} /* Semester - Prominent */
+.table th:nth-child(5), .table td:nth-child(5){width:13%}  /* Lab Name */
+.table th:nth-child(6), .table td:nth-child(6){width:10%;min-width:125px!important}  /* Date - Fully Visible, No Cut Off! */
+.table th:nth-child(7), .table td:nth-child(7){width:8.5%} /* Time Slot */
+.table th:nth-child(8), .table td:nth-child(8){width:10%}  /* Course Teacher - Prominent */
+.table th:nth-child(9), .table td:nth-child(9){width:8%}   /* Purpose */
+.table th:nth-child(10), .table td:nth-child(10){width:8%} /* Status */
+.table th:nth-child(11), .table td:nth-child(11){width:8%} /* Remarks */
+.table th:nth-child(12), .table td:nth-child(12){width:6%} /* Action */
 
 /* Booking row styling */
 .booking-row.student-booking td{background:#f8fafc!important}
@@ -169,15 +169,14 @@ footer .f-line2{font-size:14px;font-weight:700;color:#475569}
   </header>
 
   <main class="wrap">
-    <!-- Profile Card -->
+    <!-- Profile Card (Single clean line on right side) -->
     <div class="profile">
       <div>
         <strong id="adminName">—</strong><br>
         <small id="adminRole" style="font-weight:bold;color:#1d4ed8;font-size:13px">—</small>
       </div>
       <div style="text-align:right">
-        <small>System Access: <b id="permissionText" style="color:#166534">All Labs &amp; Full Approval Access</b></small>
-        <div id="assignedLabsNotice" style="font-size:12px;color:#166534;margin-top:2px;font-weight:600"></div>
+        <div style="font-size:13.5px;font-weight:800;color:#166534">System Access: <span id="permissionText">Full Administrative Access (All Labs &amp; Global Approvals)</span></div>
       </div>
     </div>
 
@@ -505,7 +504,7 @@ async function doLogin() {
 
     adminPasswordForFeatureControl = p;
     saveSession(admin.username, document.getElementById("rememberMe").checked);
-    showDashboard();
+    initDashboard();
 
   } catch (err) {
     console.error("Login error:", err);
@@ -516,38 +515,24 @@ async function doLogin() {
   }
 }
 
-function showDashboard() {
+function initDashboard() {
   loginPage.classList.add("hidden");
   dashboard.classList.remove("hidden");
-  document.getElementById("welcome").textContent = `Logged in as @${admin.username}`;
-  document.getElementById("adminName").textContent = admin.displayName;
-  
+
   const isSuper = admin.role === "super_admin";
   const hasFull = isSuper || admin.can_manage_bookings === true;
-  document.getElementById("adminRole").textContent = isSuper ? "Super Administrator" : "Laboratory In-Charge";
-  
-  const permText = document.getElementById("permissionText");
-  const labsNotice = document.getElementById("assignedLabsNotice");
-  
-  if (hasFull) {
-    permText.textContent = isSuper 
-      ? "Full Administrative Access (All Labs & Global Approvals)" 
-      : "Full View & Approval on All Laboratories (Granted)";
-    permText.style.color = "#166534";
-    labsNotice.textContent = "You can view and approve bookings across all 8 computer laboratories.";
-  } else {
-    permText.textContent = "Assigned Laboratories Only";
-    permText.style.color = "#1d4ed8";
-    const assignedNames = (admin.assigned_lab_ids || []).map(id => LAB_MAP[id]?.code || `Lab ${id}`).join(", ");
-    labsNotice.textContent = assignedNames ? `Authorized for: ${assignedNames}` : "No laboratories currently assigned.";
-  }
+  document.getElementById("adminName").textContent = admin.display_name || admin.username;
+  document.getElementById("adminRole").textContent = isSuper ? "Super Admin" : "Lab In-charge";
+  document.getElementById("permissionText").textContent = isSuper 
+    ? "Full Administrative Access (All Labs & Global Approvals)" 
+    : (hasFull ? "Full View & Approval on All Laboratories" : "Assigned Laboratories Only");
+  document.getElementById("welcome").textContent = "Signed in as @" + admin.username + " (" + (admin.display_name || admin.username) + ")";
 
-  // Super Admin Tabs
-  const adminTabNav = document.getElementById("adminTabNav");
+  const tabNav = document.getElementById("adminTabNav");
   if (isSuper) {
-    adminTabNav.classList.remove("hidden");
+    tabNav.classList.remove("hidden");
   } else {
-    adminTabNav.classList.add("hidden");
+    tabNav.classList.add("hidden");
   }
 
   loadLabsDropdown();
@@ -587,7 +572,6 @@ async function loadLabsDropdown() {
   const assigned = admin?.assigned_lab_ids || [];
 
   labsData.forEach(l => {
-    // Show all labs if Super Admin or Full Approval Access enabled, else show assigned labs
     if (hasFull || assigned.includes(l.id)) {
       const opt = document.createElement("option");
       opt.value = l.id;
@@ -715,6 +699,13 @@ function render() {
     const semesterDisplay = getSemesterDisplay(b);
     const teacherDisplay = getCourseTeacherDisplay(b);
 
+    let idMobileDisplay = b.student_id || "—";
+    if (type === "officers" || String(b.student_id).toUpperCase() === "OFFICER") {
+      idMobileDisplay = b.designation || "Executive";
+    } else if (type === "teacher" && b.designation && (!b.student_id || b.student_id === b.mobile_number)) {
+      idMobileDisplay = b.designation;
+    }
+
     return `
     <tr class="booking-row ${type}-booking">
       <!-- 1. Type: 14px and bold -->
@@ -724,18 +715,17 @@ function render() {
         </span>
       </td>
 
-      <!-- 2. Applicant Name: 14px and extra bold -->
+      <!-- 2. Applicant Name: 14px and extra bold (Clean, no designation below) -->
       <td>
         <div style="font-size:14px;font-weight:900;color:#071d49;line-height:1.3;word-break:break-word">
           ${esc(b.student_name || "—")}
         </div>
-        ${b.designation ? `<div style="color:#1d4ed8;font-weight:800;font-size:13px;margin-top:2px;word-break:break-word">${esc(b.designation)}</div>` : ""}
       </td>
 
-      <!-- 3. ID / Mobile: 14px and bold -->
+      <!-- 3. ID / Mobile: 14px and bold (Displays Executive instead of OFFICER) -->
       <td>
-        <div style="font-size:14px;font-weight:900;color:#0f2952;letter-spacing:0.3px;word-break:break-all">
-          ${esc(b.student_id || "—")}
+        <div style="font-size:14px;font-weight:900;color:#0f2952;letter-spacing:0.3px;word-break:break-word">
+          ${esc(idMobileDisplay)}
         </div>
         ${b.mobile_number ? `<div style="font-size:13px;font-weight:800;color:#047857;margin-top:2px">📞 ${esc(b.mobile_number)}</div>` : ""}
       </td>
@@ -754,9 +744,9 @@ function render() {
         </div>
       </td>
 
-      <!-- 6. Date: 14px and bold -->
+      <!-- 6. Date: 14px and bold (Fully visible, no cut-off) -->
       <td>
-        <div style="padding:5px 6px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:5px;font-size:14px;font-weight:800;color:#0f172a;line-height:1.3;white-space:nowrap">
+        <div style="display:inline-block;padding:6px 8px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;font-size:14px;font-weight:800;color:#0f172a;line-height:1.25;white-space:nowrap">
           📅 ${esc(formatDateOnly(b.booking_date))}
         </div>
       </td>
@@ -1330,7 +1320,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             can_manage_bookings: dbUser.can_manage_bookings !== false,
             is_active: true
           };
-          showDashboard();
+          initDashboard();
         }
       }
     } catch (_) {}
