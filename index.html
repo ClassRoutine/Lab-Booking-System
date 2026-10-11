@@ -97,7 +97,7 @@ footer strong{color:#294e92}
     <button type="button" class="booking-tab" id="officersTab" role="tab" aria-selected="false">🏢 Officers Booking</button>
   </div>
   <div class="mode-note" id="modeNote">Students: fill in your student details, choose a lab and time, then submit your booking.</div>
-  <div id="featureDisabledMessage" class="feature-disabled" role="status">Currently Under Development</div>
+  <div id="featureDisabledMessage" class="feature-disabled" role="status">Progress in under development</div>
   <div class="form-heading">
     <h2>Student Laboratory Booking</h2>
     <p>Please provide the required information below</p>
@@ -242,8 +242,10 @@ footer strong{color:#294e92}
 </main>
 
 <footer>
-    <p><strong>Design &amp; Developed by Md. Tareq Ben Musha © 2026</strong></p>
-    <p><strong>Department of Computer Science &amp; Engineering | Varendra University</strong></p>
+  <strong>Department of Computer Science &amp; Engineering</strong><br>
+  Varendra University<br><br>
+  Lab Booking System © 2026<br>
+  LAST A DEVELOP BY Md.Tareq Ben Musha
 </footer>
 
 <script>
@@ -306,7 +308,7 @@ function setBookingMode(mode) {
   disabledMessage.classList.toggle("show", featureDisabled);
   document.querySelector(".form-heading").style.display = featureDisabled ? "none" : "block";
   bookingForm.style.display = featureDisabled ? "none" : "block";
-  disabledMessage.textContent = "Currently Under Development";
+  disabledMessage.textContent = "Progress in under development";
 
   [studentTab, teacherTab, officersTab].forEach((tab, i) => {
     const active = [isStudent, isTeacher, isOfficer][i];
@@ -581,7 +583,7 @@ bookingForm.addEventListener("submit", async function(event) {
   event.preventDefault();
 
   if ((bookingMode === "student" && !bookingFeatures.student_enabled) || (bookingMode === "teacher" && !bookingFeatures.teacher_enabled)) {
-    showMessage("Currently Under Development", "error");
+    showMessage("Progress in under development", "error");
     return;
   }
 
@@ -666,7 +668,7 @@ bookingForm.addEventListener("submit", async function(event) {
       return;
     }
 
-    showMessage("✅ Booking submitted successfully! Your booking is now Pending.", "success");
+    const submittedMode = bookingMode;
     bookingForm.reset();
     selectedSlot = null;
     slotsContainer.innerHTML = "";
@@ -674,7 +676,14 @@ bookingForm.addEventListener("submit", async function(event) {
     customSlotPreview.textContent = "Example: 09:00 AM – 01:00 PM";
     clearCustomSlotError();
     bookingDate.min = localToday;
-    setBookingMode(bookingMode);
+    setBookingMode(submittedMode);
+
+    // Show the correct success message after the form reset (setBookingMode clears old messages).
+    if (submittedMode === "officers") {
+      showMessage("Your booking request has been submitted successfully.", "success");
+    } else {
+      showMessage("Your booking request has been submitted successfully and is awaiting approval.", "success");
+    }
   } catch (err) {
     console.error("Unexpected booking error:", err);
     showMessage("❌ An unexpected error occurred. Please try again.", "error");
