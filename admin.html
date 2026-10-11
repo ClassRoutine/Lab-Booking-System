@@ -31,35 +31,32 @@
 .filters input,.filters select{width:100%;padding:10px;border:1px solid #d2dae7;border-radius:8px;background:#fff;font-size:13px}
 
 /* ================= FULL-SCREEN FIT TABLE SYSTEM ================= */
-.table-card{background:#fff;border:1px solid #dbeafe;border-radius:12px;overflow-x:auto;width:100%;max-width:100%;box-shadow:0 2px 12px rgba(15,35,70,.04);box-sizing:border-box}
-.table-header-bar{padding:14px 18px;border-bottom:1.5px solid #e2e8f0;background:#f8fafc}
+.table-card{background:#fff;border:1px solid #dbeafe;border-radius:12px 12px 0 0;overflow-x:auto;width:100%;max-width:100%;box-shadow:0 2px 12px rgba(15,35,70,.04);box-sizing:border-box}
+.table-header-bar{padding:14px 18px;border-bottom:1.5px solid #e2e8f0;background:#f8fafc;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 .table-title{font-weight:900;color:#102d63;font-size:16px}
+.table-subtitle{font-size:12px;color:#64748b;font-weight:700}
 
-/* Table spans 100% width cleanly so right side is never cut off */
 .table{width:100%!important;min-width:100%!important;border-collapse:collapse!important;table-layout:fixed!important;margin:0!important}
 .table th,.table td{padding:8px 4px!important;border:1px solid #e2e8f0!important;text-align:center!important;vertical-align:middle!important;line-height:1.3;box-sizing:border-box!important;overflow:hidden!important;word-break:break-word!important;overflow-wrap:break-word!important}
 
-/* Clean unified header row */
 .table th{background:#173d83!important;color:#fff!important;font-size:11px!important;font-weight:900!important;position:sticky;top:0;z-index:2;letter-spacing:0.3px;text-transform:uppercase;border-top:none!important}
-/* Make the Type, Applicant Name, and ID / Mobile headings larger and extra bold */
 .table th:nth-child(1),.table th:nth-child(2),.table th:nth-child(3){font-size:13px!important;font-weight:900!important;letter-spacing:0.2px}
 .table td{font-size:12px!important;font-weight:700!important}
 
-/* Strict Proportional Widths Summing to 100% - Course Teacher, Purpose, Status, Remarks, Action compact; other columns spacious */
-.table th:nth-child(1), .table td:nth-child(1){width:5%}    /* Type */
-.table th:nth-child(2), .table td:nth-child(2){width:13%}   /* Applicant Name (Spacious) */
-.table th:nth-child(3), .table td:nth-child(3){width:9%}    /* ID / Mobile */
-.table th:nth-child(4), .table td:nth-child(4){width:6%}    /* Semester */
-.table th:nth-child(5), .table td:nth-child(5){width:17%}   /* Lab Name (Spacious) */
-.table th:nth-child(6), .table td:nth-child(6){width:8%}    /* Date */
-.table th:nth-child(7), .table td:nth-child(7){width:8%}    /* Time Slot */
-.table th:nth-child(8), .table td:nth-child(8){width:7%}    /* Course Teacher (Compact) */
-.table th:nth-child(9), .table td:nth-child(9){width:6.5%}  /* Purpose (Compact) */
-.table th:nth-child(10), .table td:nth-child(10){width:5.5%}/* Status (Compact) */
-.table th:nth-child(11), .table td:nth-child(11){width:8%}  /* Remarks (Compact) */
-.table th:nth-child(12), .table td:nth-child(12){width:7%}  /* Action (Compact) */
+/* Column Proportions Summing to 100% */
+.table th:nth-child(1), .table td:nth-child(1){width:6.5%}  /* Type */
+.table th:nth-child(2), .table td:nth-child(2){width:14.5%} /* Applicant Name */
+.table th:nth-child(3), .table td:nth-child(3){width:10.5%} /* ID / Mobile */
+.table th:nth-child(4), .table td:nth-child(4){width:5.5%}  /* Semester */
+.table th:nth-child(5), .table td:nth-child(5){width:15%}   /* Lab Name */
+.table th:nth-child(6), .table td:nth-child(6){width:7.5%}  /* Date */
+.table th:nth-child(7), .table td:nth-child(7){width:7.5%}  /* Time Slot */
+.table th:nth-child(8), .table td:nth-child(8){width:7%}    /* Course Teacher */
+.table th:nth-child(9), .table td:nth-child(9){width:6%}    /* Purpose */
+.table th:nth-child(10), .table td:nth-child(10){width:7.5%}/* Status */
+.table th:nth-child(11), .table td:nth-child(11){width:6.5%}/* Remarks */
+.table th:nth-child(12), .table td:nth-child(12){width:6%}  /* Action */
 
-/* Booking row styling */
 .booking-row.student-booking td{background:#f8fafc!important}
 .booking-row.student-booking:hover td{background:#eff6ff!important}
 .booking-row.teacher-booking td{background:#f0fdf4!important}
@@ -67,10 +64,10 @@
 .booking-row.officers-booking td{background:#fffbeb!important}
 .booking-row.officers-booking:hover td{background:#fef3c7!important}
 
-.booking-type-badge{display:inline-block;padding:4px 7px;border-radius:999px;font-size:11px;font-weight:800}
-.booking-type-student{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
-.booking-type-teacher{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
-.booking-type-officers{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.booking-type-badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:13px;font-weight:900;letter-spacing:0.3px}
+.booking-type-student{background:#dbeafe;color:#1d4ed8;border:1.5px solid #bfdbfe}
+.booking-type-teacher{background:#dcfce7;color:#166534;border:1.5px solid #bbf7d0}
+.booking-type-officers{background:#fef3c7;color:#92400e;border:1.5px solid #fde68a}
 
 .badge{display:inline-block;padding:4px 7px;border-radius:999px;font-size:10px;font-weight:900}
 .pending{background:#fff7d6;color:#8a6200}
@@ -81,10 +78,23 @@
 .approve{background:#16834a}
 .cancel{background:#c73535}
 .empty{text-align:center;padding:35px;color:#718096}
-footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weight:700;padding:22px 14px;border-top:1px solid #e2e8f0;margin-top:20px;letter-spacing:0.2px}
+
+/* Pagination Bar (20 bookings per page) */
+.pagination-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#fff;border:1px solid #dbeafe;border-top:none;border-radius:0 0 12px 12px;flex-wrap:wrap;gap:10px;box-shadow:0 2px 12px rgba(15,35,70,.04)}
+.pagination-info{font-size:13px;font-weight:800;color:#334155}
+.pagination-controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.page-btn{border:1px solid #cbd5e1;background:#fff;color:#1e293b;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:800;cursor:pointer;transition:all .15s}
+.page-btn:hover:not(:disabled){background:#f1f5f9;border-color:#94a3b8}
+.page-btn.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8;box-shadow:0 2px 6px rgba(29,78,216,.25)}
+.page-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Two-line Footer */
+footer{text-align:center;color:#475569;font-size:14px;line-height:1.8;font-weight:700;padding:24px 16px;border-top:1.5px solid #cbd5e1;margin-top:28px;background:#fff;border-radius:12px;letter-spacing:0.3px;box-shadow:0 2px 8px rgba(15,35,70,.03)}
+footer .f-line1{font-size:15px;font-weight:900;color:#0f2952}
+footer .f-line2{font-size:13.5px;font-weight:700;color:#475569}
 
 @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.top{padding:14px}.wrap{padding:0 8px}}
-@media(max-width:520px){.stats,.filters{grid-template-columns:1fr}}
+@media(max-width:520px){.stats,.filters{grid-template-columns:1fr}.pagination-bar{flex-direction:column;align-items:stretch;text-align:center}}
 
 /* Sub-Tab Navigation for Super Admin */
 .sub-tabs{display:flex;gap:10px;margin-bottom:16px;background:#e9f0f8;padding:6px;border-radius:10px;width:fit-content}
@@ -132,7 +142,8 @@ footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weigh
         <label for="password">Password</label>
         <input id="password" name="password" type="password" placeholder="Enter password" autocomplete="current-password" required>
       </div>
-      <label class="remember-row"><input id="rememberMe" type="checkbox"> <span>Remember me on this device</span></label>\n      <button id="loginBtn" class="login-btn" type="button">LOGIN TO DASHBOARD</button>
+      <label class="remember-row"><input id="rememberMe" type="checkbox"> <span>Remember me on this device</span></label>
+      <button id="loginBtn" class="login-btn" type="button">LOGIN TO DASHBOARD</button>
       <div id="loginError" class="error hidden"></div>
     </form>
   </div>
@@ -140,7 +151,6 @@ footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weigh
 
 <!-- MAIN DASHBOARD -->
 <section id="dashboard" class="dashboard hidden">
-  <!-- TOP BAR: Single central place for Password management -->
   <header class="top">
     <div>
       <h1>🏢 Lab Booking Dashboard</h1>
@@ -154,14 +164,13 @@ footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weigh
   </header>
 
   <main class="wrap">
-    <!-- Clean Profile Card without redundant buttons -->
     <div class="profile">
       <div>
         <strong id="adminName">—</strong><br>
         <small id="adminRole" style="font-weight:bold;color:#1d4ed8;font-size:13px">—</small>
       </div>
       <div style="text-align:right">
-        <small>Permission: <b id="permissionText">—</b></small>
+        <small>System Access: <b id="permissionText" style="color:#166534">All Labs &amp; Full Approval Access</b></small>
         <div id="assignedLabsNotice" style="font-size:12px;color:#166534;margin-top:2px;font-weight:600"></div>
       </div>
     </div>
@@ -199,6 +208,7 @@ footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weigh
       <div class="table-card">
         <div class="table-header-bar">
           <div class="table-title">📋 Laboratory Bookings Overview</div>
+          <div class="table-subtitle" id="tablePaginationSummary">Showing bookings</div>
         </div>
         <table class="table">
           <thead>
@@ -219,6 +229,12 @@ footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weigh
           </thead>
           <tbody id="bookingRows"></tbody>
         </table>
+      </div>
+
+      <!-- PAGINATION CONTROLS (20 Bookings Per Page) -->
+      <div class="pagination-bar" id="paginationBar">
+        <div class="pagination-info" id="paginationInfo">Showing 0 of 0 bookings</div>
+        <div class="pagination-controls" id="paginationControls"></div>
       </div>
     </div>
 
@@ -253,7 +269,10 @@ footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weigh
     </div>
   </main>
 
-  <footer><span>Design &amp; Developed by Md. Tareq Ben Musha &copy; 2026</span><br><span>Department of Computer Science &amp; Engineering | Varendra University</span></footer>
+  <footer>
+    <span class="f-line1">Design &amp; Developed by Md. Tareq Ben Musha &copy; 2026</span><br>
+    <span class="f-line2">Department of Computer Science &amp; Engineering | Varendra University</span>
+  </footer>
 </section>
 
 <!-- MODAL: ADD NEW IN-CHARGE -->
@@ -307,13 +326,12 @@ footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weigh
   </div>
 </div>
 
-<!-- ================= MODAL: CHANGE PASSWORD (SINGLE CENTRAL PLACE) ================= -->
+<!-- MODAL: CHANGE PASSWORD -->
 <div id="passwordModal" class="modal-overlay hidden">
   <div class="modal-box">
     <h2>🔑 Change Password</h2>
     <p id="passwordModalDesc">Update account credentials and login password.</p>
 
-    <!-- Super Admin user selection (only shown when super admin) -->
     <div id="passwordUserSelectGroup" class="field hidden" style="margin-bottom:14px">
       <label style="font-weight:800;font-size:13px;color:#1e3a8a">Select Account to Change Password *</label>
       <select id="passwordUserSelect" style="width:100%;padding:11px;border:2px solid #2563eb;border-radius:8px;font-size:13px;font-weight:bold;background:#eff6ff" onchange="onPasswordUserSelected(this.value)">
@@ -359,6 +377,8 @@ const LAB_MAP = {
   8: { name: "Microprocessor & Interfacing Lab", code: "MIL-131" }
 };
 
+const PAGE_SIZE = 20;
+let currentPage = 1;
 let admin = null;
 let adminPasswordForFeatureControl = "";
 let bookings = [];
@@ -396,7 +416,6 @@ async function doLogin() {
   loginBtn.textContent = "VERIFYING CREDENTIALS...";
 
   try {
-    // Strict Database verification - absolutely no client-side bypasses or arbitrary fallbacks
     const { data: dbUser, error: dbErr } = await sb.from("admin_users")
       .select("id, username, display_name, role, email, password, assigned_lab_ids, is_active")
       .ilike("username", u)
@@ -406,7 +425,6 @@ async function doLogin() {
     if (!dbUser) throw new Error("Invalid username or password.");
     if (!dbUser.is_active) throw new Error("This account is inactive. Please contact the Super Administrator.");
 
-    // Server Authentication: Try Supabase Auth first, then strict DB verification
     const email = dbUser.email || `${u}@vu.edu.bd`;
     let isVerified = false;
 
@@ -420,7 +438,6 @@ async function doLogin() {
       }
     } catch (_) {}
 
-    // Strict password match if Auth session is not configured yet (exact match required)
     if (!isVerified) {
       if (dbUser.password && dbUser.password === p) {
         isVerified = true;
@@ -431,10 +448,7 @@ async function doLogin() {
       throw new Error("Incorrect password. Please verify your credentials.");
     }
 
-    // Keep password in memory only for the protected feature-setting RPC; never store it in localStorage.
     adminPasswordForFeatureControl = p;
-
-    // Set sanitized profile in memory without exposing raw passwords
     admin = {
       id: dbUser.id,
       username: dbUser.username,
@@ -465,8 +479,8 @@ function initDashboard() {
   const isSuper = admin.role === "super_admin";
   document.getElementById("adminName").textContent = admin.display_name || admin.username;
   document.getElementById("adminRole").textContent = isSuper ? "Super Admin" : "Lab In-charge";
-  document.getElementById("permissionText").textContent = isSuper ? "Manage all 8 laboratories" : "Manage assigned laboratory bookings";
-  document.getElementById("welcome").textContent = "Signed in as @" + admin.username;
+  document.getElementById("permissionText").textContent = "Full View & Approval on All Laboratories";
+  document.getElementById("welcome").textContent = "Signed in as @" + admin.username + " (" + (admin.display_name || admin.username) + ")";
 
   const tabNav = document.getElementById("adminTabNav");
   if (isSuper) {
@@ -474,7 +488,7 @@ function initDashboard() {
   } else {
     tabNav.classList.add("hidden");
     const labCodes = (admin.assigned_lab_ids || []).map(id => LAB_MAP[id] ? LAB_MAP[id].code : `Lab ${id}`).join(", ");
-    document.getElementById("assignedLabsNotice").textContent = "Assigned Labs: " + (labCodes || "None");
+    document.getElementById("assignedLabsNotice").textContent = labCodes ? "Primary Assigned Labs: " + labCodes : "All Labs Access Active";
   }
 
   loadLabs();
@@ -527,7 +541,7 @@ async function loadBookingFeatureSettings() {
   const { data, error } = await sb.from("booking_feature_settings")
     .select("student_enabled,teacher_enabled").eq("id", 1).maybeSingle();
   if (error || !data) {
-    bookingFeaturesMessage.textContent = "সেটিংস টেবিল পাওয়া যায়নি। একবার booking_feature_settings.sql ফাইলের SQL Supabase SQL Editor-এ Run করতে হবে।";
+    bookingFeaturesMessage.textContent = "সেটিংস লোড করতে সমস্যা হয়েছে।";
     return;
   }
   bookingFeatureSettings = {
@@ -537,7 +551,7 @@ async function loadBookingFeatureSettings() {
   renderBookingFeatureSettings();
   studentFeatureToggle.disabled = false;
   teacherFeatureToggle.disabled = false;
-  bookingFeaturesMessage.textContent = "পরিবর্তন করলে সঙ্গে সঙ্গে Supabase-এ save হবে। OFF করলে booking page-এ ‘Progress in under development’ দেখাবে।";
+  bookingFeaturesMessage.textContent = "পরিবর্তন করলে সঙ্গে সঙ্গে Supabase ও মোবাইল অ্যাপে save হবে। OFF করলে booking page-এ ‘Progress in under development’ দেখাবে।";
 }
 
 async function saveBookingFeature(feature, enabled, toggle) {
@@ -571,7 +585,7 @@ async function saveBookingFeature(feature, enabled, toggle) {
     bookingFeaturesMessage.textContent = (feature === "student" ? "Student Booking" : "Teacher Booking") + (enabled ? " ON করা হয়েছে।" : " OFF করা হয়েছে।");
   } catch (err) {
     toggle.checked = !enabled;
-    bookingFeaturesMessage.textContent = "Save হয়নি: " + (err.message || "Supabase error") + " — SQL setup file একবার Run করা আছে কি না যাচাই করো।";
+    bookingFeaturesMessage.textContent = "Save হয়নি: " + (err.message || "Supabase error");
   } finally {
     studentFeatureToggle.disabled = false;
     teacherFeatureToggle.disabled = false;
@@ -586,9 +600,6 @@ async function loadLabs() {
   const s = document.getElementById("labFilter");
   s.innerHTML = '<option value="">All Labs</option>';
   labsData.forEach(x => {
-    if (admin.role !== "super_admin" && admin.assigned_lab_ids && admin.assigned_lab_ids.length > 0) {
-      if (!admin.assigned_lab_ids.includes(x.id)) return;
-    }
     const o = document.createElement("option");
     o.value = x.id;
     const code = LAB_MAP[x.id] ? ` (${LAB_MAP[x.id].code})` : "";
@@ -598,19 +609,7 @@ async function loadLabs() {
 }
 
 async function loadBookings() {
-  let query = sb.from("bookings").select("*,labs(id,name),semesters(name)");
-
-  // Server-Side Security: In-Charges only fetch their assigned labs from the database
-  if (admin && admin.role !== "super_admin") {
-    const assignedIds = admin.assigned_lab_ids || [];
-    if (assignedIds.length === 0) {
-      bookings = [];
-      render();
-      return;
-    }
-    query = query.in("lab_id", assignedIds);
-  }
-
+  const query = sb.from("bookings").select("*,labs(id,name),semesters(name)");
   const { data, error } = await query.order("booking_date", { ascending: true }).order("start_time", { ascending: true });
   if (error) {
     document.getElementById("bookingRows").innerHTML = `<tr><td colspan="12" class="empty">Error loading bookings: ${esc(error.message)}</td></tr>`;
@@ -618,6 +617,13 @@ async function loadBookings() {
   }
   bookings = data || [];
   render();
+}
+
+function goToPage(page) {
+  currentPage = page;
+  render();
+  const tableCard = document.querySelector(".table-card");
+  if (tableCard) tableCard.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function render() {
@@ -628,10 +634,7 @@ function render() {
   const now = new Date();
 
   const arr = bookings.filter(b => {
-    if (admin.role !== "super_admin" && admin.assigned_lab_ids && admin.assigned_lab_ids.length > 0) {
-      if (!admin.assigned_lab_ids.includes(b.lab_id)) return false;
-    }
-    const hay = [b.student_name, b.student_id, b.course_teacher, b.booking_purpose, b.remarks, b.labs?.name].join(" ").toLowerCase();
+    const hay = [b.student_name, b.student_id, b.mobile_number, b.course_teacher, b.booking_purpose, b.remarks, b.labs?.name, b.approved_by_name].join(" ").toLowerCase();
     return (!df || b.booking_date === df) &&
            (!lf || String(b.lab_id) === lf) &&
            (!sf || ((b.status === "Approved" && b.booking_date && b.start_time && new Date(String(b.booking_date) + "T" + String(b.start_time)) < now) ? "Completed" : b.status) === sf) &&
@@ -645,12 +648,54 @@ function render() {
   document.getElementById("todayCount").textContent = arr.filter(x => x.booking_date === todayIso).length;
 
   const rows = document.getElementById("bookingRows");
+  const paginationControls = document.getElementById("paginationControls");
+  const paginationInfo = document.getElementById("paginationInfo");
+  const tableSummary = document.getElementById("tablePaginationSummary");
+
   if (!arr.length) {
     rows.innerHTML = '<tr><td colspan="12" class="empty">No bookings found matching current filters.</td></tr>';
+    paginationControls.innerHTML = "";
+    paginationInfo.textContent = "Showing 0 of 0 bookings";
+    if (tableSummary) tableSummary.textContent = "0 bookings found";
     return;
   }
 
-  rows.innerHTML = arr.map(b => {
+  // 20 Bookings Per Page Pagination
+  const totalRecords = arr.length;
+  const totalPages = Math.ceil(totalRecords / PAGE_SIZE) || 1;
+  if (currentPage > totalPages) currentPage = totalPages;
+  if (currentPage < 1) currentPage = 1;
+
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = Math.min(startIndex + PAGE_SIZE, totalRecords);
+  const pagedItems = arr.slice(startIndex, endIndex);
+
+  paginationInfo.textContent = `Showing ${startIndex + 1} - ${endIndex} of ${totalRecords} bookings (Page ${currentPage} of ${totalPages})`;
+  if (tableSummary) tableSummary.textContent = `Showing ${startIndex + 1} - ${endIndex} of ${totalRecords} bookings`;
+
+  let btnsHtml = `
+    <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(1)" title="First Page">|◀</button>
+    <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">◀ Prev</button>
+  `;
+
+  const maxVisiblePages = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+  if (endPage - startPage + 1 < maxVisiblePages) {
+    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+  }
+
+  for (let p = startPage; p <= endPage; p++) {
+    btnsHtml += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
+  }
+
+  btnsHtml += `
+    <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">Next ▶</button>
+    <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${totalPages})" title="Last Page">▶|</button>
+  `;
+  paginationControls.innerHTML = btnsHtml;
+
+  rows.innerHTML = pagedItems.map(b => {
     const startDateTime = b.booking_date && b.start_time ? new Date(String(b.booking_date) + "T" + String(b.start_time)) : null;
     const isCompleted = b.status === "Approved" && startDateTime && !Number.isNaN(startDateTime.getTime()) && startDateTime < now;
     const displayStatus = isCompleted ? "Completed" : (b.status || "Pending");
@@ -665,48 +710,96 @@ function render() {
 
     return `
     <tr class="booking-row ${type}-booking">
-      <td><span class="booking-type-badge booking-type-${type}" style="font-size:10px;padding:3px 5px">${typeIcon} ${typeLabel}</span></td>
+      <!-- 1. Type: Large & Bold -->
       <td>
-        <div style="font-size:12px;font-weight:800;color:#0f2952;line-height:1.2;word-break:break-word">${esc(b.student_name)}</div>
-        ${b.designation ? `<div style="color:#2563eb;font-weight:700;font-size:10px;margin-top:2px;word-break:break-word">${esc(b.designation)}</div>` : ""}
+        <span class="booking-type-badge booking-type-${type}">
+          ${typeIcon} ${typeLabel}
+        </span>
       </td>
-      <td><span style="font-family:monospace;font-size:12px;font-weight:800;color:#0f2952;word-break:break-all">${esc(b.student_id)}</span></td>
-      <td><span style="font-size:11px;font-weight:700;color:#0f2952;word-break:break-word">${esc(b.semesters?.name || b.semester_id || "—")}</span></td>
+
+      <!-- 2. Applicant Name: Large & Bold -->
       <td>
-        <div style="padding:3px 4px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;font-size:11px;font-weight:800;color:#1e3a8a;line-height:1.25;word-break:break-word">
+        <div style="font-size:15px;font-weight:900;color:#071d49;line-height:1.25;word-break:break-word">
+          ${esc(b.student_name)}
+        </div>
+        ${b.designation ? `<div style="color:#1d4ed8;font-weight:800;font-size:11.5px;margin-top:3px;word-break:break-word">${esc(b.designation)}</div>` : ""}
+      </td>
+
+      <!-- 3. ID / Mobile: Large & Bold -->
+      <td>
+        <div style="font-family:monospace;font-size:14px;font-weight:900;color:#0f2952;letter-spacing:0.4px;word-break:break-all">
+          ${esc(b.student_id || "—")}
+        </div>
+        ${b.mobile_number ? `<div style="font-family:monospace;font-size:11.5px;font-weight:800;color:#047857;margin-top:2px">📞 ${esc(b.mobile_number)}</div>` : ""}
+      </td>
+
+      <!-- 4. Semester -->
+      <td><span style="font-size:11.5px;font-weight:700;color:#0f2952;word-break:break-word">${esc(b.semesters?.name || b.semester_id || "—")}</span></td>
+
+      <!-- 5. Lab Name -->
+      <td>
+        <div style="padding:4px 5px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;font-size:11.5px;font-weight:800;color:#1e3a8a;line-height:1.25;word-break:break-word">
           ${esc(labDisplay)}
         </div>
       </td>
+
+      <!-- 6. Date -->
       <td>
-        <div style="padding:3px 4px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:5px;font-size:11px;font-weight:800;color:#0f172a;line-height:1.2">
+        <div style="padding:4px 5px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:5px;font-size:11.5px;font-weight:800;color:#0f172a;line-height:1.2">
           📅 ${esc(formatDateOnly(b.booking_date))}
         </div>
       </td>
+
+      <!-- 7. Time Slot -->
       <td>
-        <div style="padding:3px 2px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:5px;font-size:11px;font-weight:800;color:#0284c7;line-height:1.25;text-align:center">
+        <div style="padding:4px 3px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:5px;font-size:11.5px;font-weight:800;color:#0284c7;line-height:1.25;text-align:center">
           <div>${esc(formatTime(b.start_time))}</div>
           <div style="font-size:10px;color:#64748b;font-weight:bold;margin:1px 0">to</div>
           <div>${esc(formatTime(b.end_time))}</div>
         </div>
       </td>
+
+      <!-- 8. Course Teacher -->
       <td>
         <div style="font-size:12px;font-weight:700;color:#1e293b;word-break:break-word;line-height:1.25">
           ${esc(b.course_teacher || "—")}
         </div>
       </td>
+
+      <!-- 9. Purpose -->
       <td><span style="font-size:11px;font-weight:700;color:#334155;word-break:break-word">${esc(b.booking_purpose || "—")}</span></td>
-      <td><span class="badge ${st}" style="font-size:10px;padding:3px 6px">${esc(displayStatus)}</span></td>
+
+      <!-- 10. Status with Approver Name -->
+      <td>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+          <span class="badge ${st}">${esc(displayStatus)}</span>
+          ${b.status === "Approved" && b.approved_by_name ? `
+            <div style="font-size:9.5px;font-weight:800;color:#166534;background:#dcfce7;border:1px solid #bbf7d0;border-radius:4px;padding:2px 4px;margin-top:2px;line-height:1.2;text-align:center;word-break:break-word">
+              ✓ Approved by<br><b style="color:#0f5132">${esc(b.approved_by_name)}</b>
+            </div>
+          ` : ""}
+          ${b.status === "Cancelled" && b.cancelled_by_name ? `
+            <div style="font-size:9.5px;font-weight:800;color:#991b1b;background:#fee2e2;border:1px solid #fecaca;border-radius:4px;padding:2px 4px;margin-top:2px;line-height:1.2;text-align:center;word-break:break-word">
+              ✗ Cancelled by<br><b style="color:#842029">${esc(b.cancelled_by_name)}</b>
+            </div>
+          ` : ""}
+        </div>
+      </td>
+
+      <!-- 11. Remarks -->
       <td>
         <div style="display:flex;flex-direction:column;gap:3px;align-items:center">
           <input type="text" id="remark-${b.id}" value="${esc(b.remarks || "")}" placeholder="Remark..." style="width:100%;font-size:11px;padding:3px 4px;border:1px solid #cbd5e1;border-radius:4px;box-sizing:border-box">
           <button class="action" style="background:#475569;width:100%;padding:3px 2px;font-size:10px" onclick="saveRemark(${b.id})">Save</button>
         </div>
       </td>
+
+      <!-- 12. Action -->
       <td>
         ${can ? `
         <div style="display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center">
-          <button class="action approve" style="width:100%;padding:4px 2px;font-size:10px" onclick="changeStatus(${b.id}, 'approve')">Approve</button>
-          <button class="action cancel" style="width:100%;padding:4px 2px;font-size:10px" onclick="changeStatus(${b.id}, 'cancel')">Cancel</button>
+          <button class="action approve" style="width:100%;padding:4px 2px;font-size:10.5px" onclick="changeStatus(${b.id}, 'approve')">Approve</button>
+          <button class="action cancel" style="width:100%;padding:4px 2px;font-size:10.5px" onclick="changeStatus(${b.id}, 'cancel')">Cancel</button>
         </div>
         ` : `<span style="color:#94a3b8;font-size:11px;font-weight:bold">—</span>`}
       </td>
@@ -735,19 +828,47 @@ async function changeStatus(id, action) {
   const targetBooking = bookings.find(x => x.id === id);
   if (!targetBooking) return;
 
-  // Authorization check: Verify In-Charge has permission for this laboratory
-  if (admin && admin.role !== "super_admin") {
-    const assigned = admin.assigned_lab_ids || [];
-    if (!assigned.includes(targetBooking.lab_id)) {
-      alert("Unauthorized: You do not have permission to modify bookings for this laboratory.");
-      return;
+  const currentAdminName = admin?.display_name || admin?.username || "Administrator";
+  const actionText = action === "approve" ? "Approve" : "Cancel";
+  if (!confirm(`${actionText} this lab booking?\nAction will be recorded as: ${actionText}d by ${currentAdminName}`)) return;
+
+  const nowIso = new Date().toISOString();
+
+  if (action === "approve") {
+    try {
+      await sb.rpc("approve_booking", { p_booking_id: id });
+    } catch (_) {}
+
+    const { error } = await sb.from("bookings").update({
+      status: "Approved",
+      approved_by_name: currentAdminName,
+      approved_at: nowIso
+    }).eq("id", id);
+
+    if (error) {
+      alert("Error saving approval: " + error.message);
+    } else {
+      alert(`✅ Booking approved successfully by ${currentAdminName}!`);
+      await loadBookings();
+    }
+  } else {
+    try {
+      await sb.rpc("cancel_booking", { p_booking_id: id });
+    } catch (_) {}
+
+    const { error } = await sb.from("bookings").update({
+      status: "Cancelled",
+      cancelled_by_name: currentAdminName,
+      cancelled_at: nowIso
+    }).eq("id", id);
+
+    if (error) {
+      alert("Error saving cancellation: " + error.message);
+    } else {
+      alert(`Booking cancelled by ${currentAdminName}.`);
+      await loadBookings();
     }
   }
-
-  if (!confirm(action === "approve" ? "Approve this lab booking?" : "Cancel this lab booking?")) return;
-  const { error } = await sb.rpc(action === "approve" ? "approve_booking" : "cancel_booking", { p_booking_id: id });
-  if (error) alert(error.message);
-  else await loadBookings();
 }
 
 async function saveRemark(id) {
@@ -762,12 +883,25 @@ async function saveRemark(id) {
 }
 
 ["dateFilter", "labFilter", "statusFilter", "searchFilter"].forEach(id => {
-  document.getElementById(id).addEventListener("input", render);
+  document.getElementById(id).addEventListener("input", () => {
+    currentPage = 1;
+    render();
+  });
 });
-document.getElementById("refreshBtn").addEventListener("click", () => { loadBookings(); if (admin.role === "super_admin") loadInCharges(); });
-document.getElementById("logoutBtn").addEventListener("click", () => { adminPasswordForFeatureControl = ""; clearSavedSession(); location.reload(); });
 
-// ================= IN-CHARGE MANAGEMENT LOGIC =================
+document.getElementById("refreshBtn").addEventListener("click", () => {
+  loadBookings();
+  if (admin.role === "super_admin") {
+    loadInCharges();
+    loadBookingFeatureSettings();
+  }
+});
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  adminPasswordForFeatureControl = "";
+  clearSavedSession();
+  location.reload();
+});
+
 async function loadInCharges() {
   if (admin?.role !== "super_admin") return;
   const { data, error } = await sb.from("admin_users")
@@ -795,7 +929,7 @@ function renderInChargeCards() {
           const l = LAB_MAP[id];
           return `<span class="lab-tag">${l ? l.code : 'Lab ' + id}</span>`;
         }).join("") :
-        '<span class="lab-tag-empty">No Labs Assigned</span>'
+        '<span class="lab-tag-empty">General CSE Access</span>'
       );
 
     return `
@@ -938,7 +1072,6 @@ async function deleteInCharge(username) {
   else loadInCharges();
 }
 
-// ================= PASSWORD MANAGEMENT (SINGLE UNIFIED PLACE) =================
 function openPasswordModal(selectedUsername) {
   if (!admin) return;
   const isSuper = admin.role === "super_admin";
@@ -996,7 +1129,6 @@ async function submitPasswordChange() {
     return;
   }
 
-  // Security authorization guard: Only Super Admin can change other users' passwords
   if (admin.role !== "super_admin" && targetUsername !== admin.username) {
     alert("Unauthorized: You can only update your own account credentials.");
     return;
@@ -1016,6 +1148,7 @@ async function submitPasswordChange() {
     if (admin && admin.username === targetUsername) {
       admin.display_name = newName;
       admin.username = newUsername;
+      adminPasswordForFeatureControl = newPass;
       saveSession(admin.username, localStorage.getItem("vu_lab_admin_session") !== null);
       initDashboard();
     }
@@ -1024,7 +1157,6 @@ async function submitPasswordChange() {
   }
 }
 
-// Server-Side Session Re-Verification: Never blindly trust localStorage on reload
 window.addEventListener("DOMContentLoaded", async () => {
   const saved = localStorage.getItem("vu_lab_admin_session") || sessionStorage.getItem("vu_lab_admin_session");
   if (!saved) return;
@@ -1035,14 +1167,14 @@ window.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Always re-authenticate with the server database to ensure active status and legitimate role
     const { data: serverUser, error } = await sb.from("admin_users")
-      .select("id, username, display_name, role, email, assigned_lab_ids, is_active")
+      .select("id, username, display_name, role, email, password, assigned_lab_ids, is_active")
       .ilike("username", parsed.username)
       .maybeSingle();
 
     if (!error && serverUser && serverUser.is_active) {
       admin = serverUser;
+      adminPasswordForFeatureControl = serverUser.password || "";
       initDashboard();
     } else {
       clearSavedSession();
