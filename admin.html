@@ -13,7 +13,7 @@
 .login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#071a3d,#1d4e9e);padding:20px}.login-card{width:min(420px,100%);background:#fff;border-radius:20px;padding:34px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
 .brand{text-align:center;color:#173d83;font-weight:800;letter-spacing:1px;font-size:14px}.login-card h1{text-align:center;margin:8px 0 5px;font-size:27px;color:#122b5c}.login-card p{text-align:center;color:#718096;margin:0 0 26px;font-size:13px}.field{margin:15px 0;position:relative;z-index:2}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}
 .field input{display:block;position:relative;z-index:3;width:100%;padding:13px 14px;border:1px solid #cfd8e6;border-radius:10px;outline:none;background:#fff!important;color:#172033!important;caret-color:#172033!important;-webkit-text-fill-color:#172033!important}.field input::placeholder{color:#8a94a6!important;opacity:1}.field input:focus{border-color:#2868d8;box-shadow:0 0 0 3px rgba(40,104,216,.12)}
-.login-btn{width:100%;border:0;border-radius:10px;padding:14px;background:#2864d0;color:#fff;font-weight:800;cursor:pointer;margin-top:8px}.login-btn:disabled{opacity:.6;cursor:not-allowed}.error{margin-top:14px;background:#fee2e2;color:#991b1b;border:1px solid #fecaca;padding:11px;border-radius:9px;font-size:13px;text-align:center}
+.remember-row{display:flex;align-items:center;gap:8px;margin:8px 0 12px;font-size:13px;color:#475569}.remember-row input{width:16px;height:16px;accent-color:#2864d0;cursor:pointer}.login-btn{width:100%;border:0;border-radius:10px;padding:14px;background:#2864d0;color:#fff;font-weight:800;cursor:pointer;margin-top:8px}.login-btn:disabled{opacity:.6;cursor:not-allowed}.error{margin-top:14px;background:#fee2e2;color:#991b1b;border:1px solid #fecaca;padding:11px;border-radius:9px;font-size:13px;text-align:center}
 
 .dashboard{min-height:100vh}
 .top{background:linear-gradient(135deg,#071a3d,#17458f);color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
@@ -126,13 +126,13 @@ footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weigh
     <form id="loginForm" autocomplete="on">
       <div class="field">
         <label for="username">Username</label>
-        <input id="username" name="username" type="text" placeholder="e.g. tareq2001 or incharge username" autocomplete="username" spellcheck="false" required>
+        <input id="username" name="username" type="text" autocomplete="username" spellcheck="false" autocapitalize="none" required>
       </div>
       <div class="field">
         <label for="password">Password</label>
         <input id="password" name="password" type="password" placeholder="Enter password" autocomplete="current-password" required>
       </div>
-      <button id="loginBtn" class="login-btn" type="button">LOGIN TO DASHBOARD</button>
+      <label class="remember-row"><input id="rememberMe" type="checkbox"> <span>Remember me on this device</span></label>\n      <button id="loginBtn" class="login-btn" type="button">LOGIN TO DASHBOARD</button>
       <div id="loginError" class="error hidden"></div>
     </form>
   </div>
@@ -272,7 +272,7 @@ footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weigh
     </div>
     <div class="field">
       <label>Password *</label>
-      <input id="newAdminPassword" type="text" placeholder="Set login password" value="123456" required>
+      <input id="newAdminPassword" type="password" placeholder="Set login password" autocomplete="new-password" required>
     </div>
     <div class="field">
       <label>Email (Optional)</label>
@@ -332,7 +332,7 @@ footer{text-align:center;color:#475569;font-size:13px;line-height:1.8;font-weigh
     </div>
     <div class="field">
       <label>New Password *</label>
-      <input id="passwordNew" type="text" placeholder="Enter new password" required>
+      <input id="passwordNew" type="password" placeholder="Enter new password" autocomplete="new-password" required>
     </div>
     <div id="passwordError" class="error hidden" style="margin-top:8px"></div>
 
@@ -374,6 +374,15 @@ const loginBtn = document.getElementById("loginBtn");
 const loginError = document.getElementById("loginError");
 
 function showError(msg) { loginError.textContent = msg; loginError.classList.remove("hidden"); }
+function clearSavedSession() {
+  localStorage.removeItem("vu_lab_admin_session");
+  sessionStorage.removeItem("vu_lab_admin_session");
+}
+function saveSession(username, remember) {
+  clearSavedSession();
+  const value = JSON.stringify({ username });
+  (remember ? localStorage : sessionStorage).setItem("vu_lab_admin_session", value);
+}
 function clearError() { loginError.textContent = ""; loginError.classList.add("hidden"); }
 function esc(v) { return String(v ?? "").replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m])); }
 
@@ -436,7 +445,7 @@ async function doLogin() {
       is_active: dbUser.is_active
     };
 
-    localStorage.setItem("vu_lab_admin_session", JSON.stringify({ username: admin.username }));
+    saveSession(admin.username, document.getElementById("rememberMe").checked);
     initDashboard();
   } catch (err) {
     showError(err.message || "Login failed.");
@@ -756,7 +765,7 @@ async function saveRemark(id) {
   document.getElementById(id).addEventListener("input", render);
 });
 document.getElementById("refreshBtn").addEventListener("click", () => { loadBookings(); if (admin.role === "super_admin") loadInCharges(); });
-document.getElementById("logoutBtn").addEventListener("click", () => { adminPasswordForFeatureControl = ""; localStorage.removeItem("vu_lab_admin_session"); location.reload(); });
+document.getElementById("logoutBtn").addEventListener("click", () => { adminPasswordForFeatureControl = ""; clearSavedSession(); location.reload(); });
 
 // ================= IN-CHARGE MANAGEMENT LOGIC =================
 async function loadInCharges() {
@@ -795,7 +804,7 @@ function renderInChargeCards() {
         <div>
           <b style="font-size:15px;color:#102d63">${esc(user.display_name)}</b>
           <div style="font-size:12px;color:#718096;margin-top:2px">
-            Username: <b>@${esc(user.username)}</b> &bull; <span style="color:#059669;font-weight:700">🔒 Encrypted Access</span>
+            Username: <b>@${esc(user.username)}</b> &bull; <span style="color:#059669;font-weight:700">🔐 Account Access</span>
           </div>
         </div>
         <span class="badge ${user.is_active ? 'approved' : 'cancelled'}">${user.is_active ? 'Active' : 'Inactive'}</span>
@@ -827,7 +836,7 @@ function openAddInChargeModal() {
   if (admin?.role !== "super_admin") { alert("Unauthorized: Super Administrator privileges required."); return; }
   document.getElementById("newAdminName").value = "";
   document.getElementById("newAdminUsername").value = "";
-  document.getElementById("newAdminPassword").value = "123456";
+  document.getElementById("newAdminPassword").value = "";
   document.getElementById("newAdminEmail").value = "";
 
   const list = document.getElementById("addLabChecklist");
@@ -1007,7 +1016,7 @@ async function submitPasswordChange() {
     if (admin && admin.username === targetUsername) {
       admin.display_name = newName;
       admin.username = newUsername;
-      localStorage.setItem("vu_lab_admin_session", JSON.stringify({ username: admin.username }));
+      saveSession(admin.username, localStorage.getItem("vu_lab_admin_session") !== null);
       initDashboard();
     }
     closePasswordModal();
@@ -1017,12 +1026,12 @@ async function submitPasswordChange() {
 
 // Server-Side Session Re-Verification: Never blindly trust localStorage on reload
 window.addEventListener("DOMContentLoaded", async () => {
-  const saved = localStorage.getItem("vu_lab_admin_session");
+  const saved = localStorage.getItem("vu_lab_admin_session") || sessionStorage.getItem("vu_lab_admin_session");
   if (!saved) return;
   try {
     const parsed = JSON.parse(saved);
     if (!parsed || !parsed.username) {
-      localStorage.removeItem("vu_lab_admin_session");
+      clearSavedSession();
       return;
     }
 
@@ -1036,11 +1045,11 @@ window.addEventListener("DOMContentLoaded", async () => {
       admin = serverUser;
       initDashboard();
     } else {
-      localStorage.removeItem("vu_lab_admin_session");
+      clearSavedSession();
       showError("Session expired or user inactive. Please sign in again.");
     }
   } catch (_) {
-    localStorage.removeItem("vu_lab_admin_session");
+    clearSavedSession();
   }
 });
 </script>
