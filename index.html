@@ -26,7 +26,7 @@ main{max-width:850px;margin:35px auto 60px;padding:0 18px}
 .booking-tab:hover{border-color:#286ce0;transform:translateY(-1px)}
 .booking-tab.active{background:linear-gradient(135deg,#1455c7,#286ce0);color:#fff;border-color:#286ce0;box-shadow:0 5px 14px rgba(39,100,216,.18)}
 .mode-note{padding:12px 14px;background:#eef5ff;border:1px solid #d6e5ff;color:#234578;border-radius:10px;font-size:13px;margin-bottom:20px;line-height:1.5}
-.form-heading{text-align:center;margin-bottom:28px}
+.feature-disabled{display:none;margin:24px 0;padding:28px 18px;border:1px dashed #94a3b8;border-radius:14px;background:#f8fafc;text-align:center;color:#334155;font-weight:800;font-size:18px}.feature-disabled.show{display:block}.form-heading{text-align:center;margin-bottom:28px}
 .form-heading h2{color:#102d63;font-size:27px;margin-bottom:7px}
 .form-heading p{color:#718096;font-size:14px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 16px}
@@ -97,6 +97,7 @@ footer strong{color:#294e92}
     <button type="button" class="booking-tab" id="officersTab" role="tab" aria-selected="false">🏢 Officers Booking</button>
   </div>
   <div class="mode-note" id="modeNote">Students: fill in your student details, choose a lab and time, then submit your booking.</div>
+  <div id="featureDisabledMessage" class="feature-disabled" role="status">Progress in under development</div>
   <div class="form-heading">
     <h2>Student Laboratory Booking</h2>
     <p>Please provide the required information below</p>
@@ -290,6 +291,7 @@ const officersBookingPurpose = document.getElementById("officersBookingPurpose")
 let selectedSlot = null;
 let timeSlots = [];
 let bookingMode = "student";
+let bookingFeatures = { student_enabled: true, teacher_enabled: true };
 
 function updateSubmitButton() {
   submitBtn.textContent = bookingMode === "student" ? "BOOK LAB NOW" :
@@ -301,6 +303,12 @@ function setBookingMode(mode) {
   const isStudent = mode === "student";
   const isTeacher = mode === "teacher";
   const isOfficer = mode === "officers";
+  const featureDisabled = (isStudent && !bookingFeatures.student_enabled) || (isTeacher && !bookingFeatures.teacher_enabled);
+  const disabledMessage = document.getElementById("featureDisabledMessage");
+  disabledMessage.classList.toggle("show", featureDisabled);
+  document.querySelector(".form-heading").style.display = featureDisabled ? "none" : "block";
+  bookingForm.style.display = featureDisabled ? "none" : "block";
+  disabledMessage.textContent = "Progress in under development";
 
   [studentTab, teacherTab, officersTab].forEach((tab, i) => {
     const active = [isStudent, isTeacher, isOfficer][i];
@@ -352,6 +360,7 @@ function setBookingMode(mode) {
     "Please provide the required information below";
 
   updateSubmitButton();
+  submitBtn.disabled = featureDisabled;
   message.className = "";
   message.textContent = "";
 }
@@ -573,6 +582,11 @@ bookingDate.addEventListener("change", loadBookedSlots);
 bookingForm.addEventListener("submit", async function(event) {
   event.preventDefault();
 
+  if ((bookingMode === "student" && !bookingFeatures.student_enabled) || (bookingMode === "teacher" && !bookingFeatures.teacher_enabled)) {
+    showMessage("Progress in under development", "error");
+    return;
+  }
+
   if (!selectedSlot) {
     showMessage("Please select an available time slot or create a custom time slot.", "error");
     return;
@@ -672,11 +686,25 @@ bookingForm.addEventListener("submit", async function(event) {
   }
 });
 
+/* Publicly readable booking feature settings; updates are restricted by Supabase RLS/RPC. */
+async function loadBookingFeatures() {
+  const { data, error } = await supabaseClient.from("booking_feature_settings")
+    .select("student_enabled,teacher_enabled").eq("id", 1).maybeSingle();
+  if (error) {
+    console.warn("Could not load booking feature settings; using default enabled state.", error.message);
+    return;
+  }
+  if (data) bookingFeatures = { student_enabled: data.student_enabled !== false, teacher_enabled: data.teacher_enabled !== false };
+}
+
 /* Initialize */
 async function initialize() {
+  await loadBookingFeatures();
   setBookingMode("student");
   await Promise.all([loadSemesters(), loadLabs(), loadTimeSlots()]);
+  // Refresh feature state periodically only when the page is reloaded; users can refresh to see changes.
 }
+
 initialize();
 </script>
 </body>
