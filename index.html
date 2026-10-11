@@ -97,7 +97,7 @@ footer strong{color:#294e92}
     <button type="button" class="booking-tab" id="officersTab" role="tab" aria-selected="false">🏢 Officers Booking</button>
   </div>
   <div class="mode-note" id="modeNote">Students: fill in your student details, choose a lab and time, then submit your booking.</div>
-  <div id="featureDisabledMessage" class="feature-disabled" role="status">Progress in under development</div>
+  <div id="featureDisabledMessage" class="feature-disabled" role="status">Currently Under Development</div>
   <div class="form-heading">
     <h2>Student Laboratory Booking</h2>
     <p>Please provide the required information below</p>
@@ -308,7 +308,7 @@ function setBookingMode(mode) {
   disabledMessage.classList.toggle("show", featureDisabled);
   document.querySelector(".form-heading").style.display = featureDisabled ? "none" : "block";
   bookingForm.style.display = featureDisabled ? "none" : "block";
-  disabledMessage.textContent = "Progress in under development";
+  disabledMessage.textContent = "Currently Under Development";
 
   [studentTab, teacherTab, officersTab].forEach((tab, i) => {
     const active = [isStudent, isTeacher, isOfficer][i];
@@ -583,7 +583,7 @@ bookingForm.addEventListener("submit", async function(event) {
   event.preventDefault();
 
   if ((bookingMode === "student" && !bookingFeatures.student_enabled) || (bookingMode === "teacher" && !bookingFeatures.teacher_enabled)) {
-    showMessage("Progress in under development", "error");
+    showMessage("Currently Under Development", "error");
     return;
   }
 
