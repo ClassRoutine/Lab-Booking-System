@@ -634,18 +634,38 @@ function switchAdminTab(tab) {
 
 async function loadLabsDropdown() {
   const lf = document.getElementById("labFilter");
+  if (!lf) return;
+
+  // Always provide the known eight labs immediately, so the dropdown still
+  // works if the Supabase labs lookup is empty or unavailable.
   lf.innerHTML = '<option value="">All Labs</option>';
-  const { data } = await sb.from("labs").select("id, name, code").order("id");
-  labsData = data || [];
-  
+
   const isSuper = admin?.role === "super_admin";
   const hasFull = isSuper || admin?.can_manage_bookings === true;
-  const assigned = admin?.assigned_lab_ids || [];
+  const assigned = (admin?.assigned_lab_ids || []).map(id => String(id));
 
-  labsData.forEach(l => {
-    if (hasFull || assigned.includes(l.id)) {
+  let sourceLabs = Object.entries(LAB_MAP).map(([id, lab]) => ({
+    id: Number(id), name: lab.name, code: lab.code
+  }));
+
+  // Use database names/codes when available, but retain LAB_MAP as a fallback.
+  try {
+    const { data, error } = await sb.from("labs").select("id, name, code").order("id");
+    if (!error && Array.isArray(data) && data.length) {
+      const dbById = new Map(data.map(l => [String(l.id), l]));
+      sourceLabs = sourceLabs.map(l => ({ ...l, ...(dbById.get(String(l.id)) || {}) }));
+      data.forEach(l => {
+        if (!sourceLabs.some(existing => String(existing.id) === String(l.id))) sourceLabs.push(l);
+      });
+    }
+  } catch (e) {
+    // Keep the static eight-lab list if the lookup fails.
+  }
+
+  sourceLabs.sort((a, b) => Number(a.id) - Number(b.id)).forEach(l => {
+    if (hasFull || assigned.includes(String(l.id))) {
       const opt = document.createElement("option");
-      opt.value = l.id;
+      opt.value = String(l.id);
       opt.textContent = `${l.name} (${l.code || 'Lab ' + l.id})`;
       lf.appendChild(opt);
     }
