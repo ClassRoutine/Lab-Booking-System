@@ -8,6 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <title>Admin Dashboard | Lab Booking System | Department of CSE</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}button,input,select{font:inherit}input{pointer-events:auto;user-select:text;-webkit-user-select:text}.hidden{display:none!important}
 .login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#071a3d,#1d4e9e);padding:20px}.login-card{width:min(420px,100%);background:#fff;border-radius:20px;padding:34px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
@@ -213,7 +214,11 @@ footer .f-line2{font-size:14px;font-weight:700;color:#475569}
       <div class="table-card">
         <div class="table-header-bar">
           <div class="table-title">📋 Laboratory Bookings Overview</div>
-          <div class="table-subtitle" id="tablePaginationSummary">Showing bookings</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+            <div class="table-subtitle" id="tablePaginationSummary">Showing bookings</div>
+            <button type="button" class="action" style="background:#16834a;padding:9px 12px" onclick="exportBookingsToExcel('filtered')">⬇ Export Filtered Excel</button>
+            <button type="button" class="action" style="background:#1d4ed8;padding:9px 12px" onclick="exportBookingsToExcel('all')">⬇ Export All Accessible Excel</button>
+          </div>
         </div>
         <table class="table">
           <thead>
@@ -810,6 +815,78 @@ function render() {
       </td>
     </tr>`;
   }).join("");
+}
+
+// ================= EXCEL EXPORT =================
+// Exports only bookings already loaded for the signed-in admin, so assigned-lab access remains respected.
+function getBookingsMatchingCurrentFilters() {
+  const df = document.getElementById("dateFilter").value;
+  const lf = document.getElementById("labFilter").value;
+  const sf = document.getElementById("statusFilter").value;
+  const q = document.getElementById("searchFilter").value.toLowerCase().trim();
+  const now = new Date();
+  return bookings.filter(b => {
+    const semName = getSemesterDisplay(b);
+    const ctName = getCourseTeacherDisplay(b);
+    const hay = [b.student_name, b.student_id, b.mobile_number, b.course_teacher, ctName, semName, b.booking_purpose, b.remarks, b.labs?.name, b.approved_by_name].join(" ").toLowerCase();
+    const startDateTime = b.booking_date && b.start_time ? new Date(String(b.booking_date) + "T" + String(b.start_time)) : null;
+    const isCompleted = b.status === "Approved" && startDateTime && !Number.isNaN(startDateTime.getTime()) && startDateTime < now;
+    const displayStatus = isCompleted ? "Completed" : (b.status || "Pending");
+    return (!df || b.booking_date === df) &&
+      (!lf || String(b.lab_id) === lf) &&
+      (!sf || displayStatus === sf) &&
+      (!q || hay.includes(q));
+  });
+}
+
+function exportBookingsToExcel(mode) {
+  if (typeof XLSX === "undefined") {
+    alert("Excel export library could not load. Please check your internet connection and try again.");
+    return;
+  }
+  const records = mode === "filtered" ? getBookingsMatchingCurrentFilters() : bookings.slice();
+  if (!records.length) {
+    alert(mode === "filtered" ? "No bookings match the current filters." : "There are no accessible bookings to export.");
+    return;
+  }
+  const now = new Date();
+  const rows = records.map(b => {
+    const startDateTime = b.booking_date && b.start_time ? new Date(String(b.booking_date) + "T" + String(b.start_time)) : null;
+    const isCompleted = b.status === "Approved" && startDateTime && !Number.isNaN(startDateTime.getTime()) && startDateTime < now;
+    const rawType = String(b.booking_type || "student").toLowerCase();
+    const type = rawType === "teacher" ? "Teacher" : (rawType === "officers" || rawType === "officer" ? "Officers" : "Student");
+    const labName = b.labs?.name || (LAB_MAP[b.lab_id]?.name || "");
+    return {
+      "Booking Submitted At": b.created_at ? new Date(b.created_at).toLocaleString("en-GB") : "",
+      "Booking Type": type,
+      "Applicant Name": b.student_name || "",
+      "Student ID / Mobile": b.student_id || b.mobile_number || "",
+      "Mobile Number": b.mobile_number || "",
+      "Designation": b.designation || "",
+      "Semester": getSemesterDisplay(b),
+      "Lab Name": labName,
+      "Lab Code": LAB_MAP[b.lab_id]?.code || "",
+      "Booking Date": b.booking_date || "",
+      "Start Time": b.start_time ? formatTime(b.start_time) : "",
+      "End Time": b.end_time ? formatTime(b.end_time) : "",
+      "Course Teacher": getCourseTeacherDisplay(b),
+      "Booking Purpose": b.booking_purpose || "",
+      "Status": isCompleted ? "Completed" : (b.status || "Pending"),
+      "Remarks": b.remarks || "",
+      "Approved By": b.approved_by_name || "",
+      "Cancelled By": b.cancelled_by_name || ""
+    };
+  });
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws["!cols"] = [
+    {wch:22},{wch:14},{wch:26},{wch:20},{wch:18},{wch:18},{wch:18},{wch:42},{wch:14},
+    {wch:15},{wch:15},{wch:15},{wch:26},{wch:32},{wch:14},{wch:36},{wch:24},{wch:24}
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Bookings");
+  const today = new Date().toISOString().slice(0, 10);
+  const suffix = mode === "filtered" ? "filtered" : "all-accessible";
+  XLSX.writeFile(wb, `Lab_Bookings_${suffix}_${today}.xlsx`);
 }
 
 function formatDateOnly(d) {
