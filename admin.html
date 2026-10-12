@@ -31,35 +31,36 @@
 .filters{background:#fff;border:1px solid #e1e7f0;border-radius:12px;padding:14px;display:grid;grid-template-columns:1.1fr 1fr 1fr 2fr;gap:10px;margin-bottom:16px}
 .filters input,.filters select{width:100%;padding:10px;border:1px solid #d2dae7;border-radius:8px;background:#fff;font-size:13px}
 
-/* ================= FULL-SCREEN FIT TABLE SYSTEM ================= */
-.table-card{background:#fff;border:1px solid #dbeafe;border-radius:12px 12px 0 0;overflow-x:auto;width:100%;max-width:100%;box-shadow:0 2px 12px rgba(15,35,70,.04);box-sizing:border-box}
-.table-header-bar{padding:14px 18px;border-bottom:1.5px solid #e2e8f0;background:#f8fafc;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-.table-title{font-weight:900;color:#102d63;font-size:16px}
-.table-subtitle{font-size:12px;color:#64748b;font-weight:700}
-
-/* Table spans responsive width cleanly with 14px bold unified text */
-.table{width:100%!important;min-width:1420px!important;border-collapse:collapse!important;table-layout:fixed!important;margin:0!important}
-.table th,.table td{padding:10px 8px!important;border:1px solid #e2e8f0!important;text-align:center!important;vertical-align:middle!important;line-height:1.35;box-sizing:border-box!important;overflow:hidden!important;word-break:break-word!important;overflow-wrap:break-word!important;font-size:14px!important;font-weight:700!important}
-
-/* Clean unified 14px bold header row */
-.table th{background:#173d83!important;color:#fff!important;font-size:14px!important;font-weight:900!important;position:sticky;top:0;z-index:2;letter-spacing:0.3px;text-transform:uppercase;border-top:none!important;padding:12px 8px!important}
-/* Make the Type, Applicant Name, and ID / Mobile headings larger and extra bold */
-.table th:nth-child(1),.table th:nth-child(2),.table th:nth-child(3){font-size:14px!important;font-weight:900!important;letter-spacing:0.3px}
-.table td{font-size:14px!important;font-weight:700!important}
-
-/* Strict Proportional Widths Summing to 100% for 14px bold layout */
-.table th:nth-child(1), .table td:nth-child(1){width:7%}   /* Type - Large & Bold */
-.table th:nth-child(2), .table td:nth-child(2){width:12%}  /* Applicant Name - Large & Bold */
-.table th:nth-child(3), .table td:nth-child(3){width:11%}  /* ID / Mobile - Displays Designation (e.g. Executive) */
-.table th:nth-child(4), .table td:nth-child(4){width:8.5%} /* Semester - Prominent */
-.table th:nth-child(5), .table td:nth-child(5){width:13%}  /* Lab Name */
-.table th:nth-child(6), .table td:nth-child(6){width:10%;min-width:125px!important}  /* Date - Fully Visible, No Cut Off! */
-.table th:nth-child(7), .table td:nth-child(7){width:8.5%} /* Time Slot */
-.table th:nth-child(8), .table td:nth-child(8){width:10%}  /* Course Teacher - Prominent */
-.table th:nth-child(9), .table td:nth-child(9){width:8%}   /* Purpose */
-.table th:nth-child(10), .table td:nth-child(10){width:8%} /* Status */
-.table th:nth-child(11), .table td:nth-child(11){width:8%} /* Remarks */
-.table th:nth-child(12), .table td:nth-child(12){width:6%} /* Action */
+/* ================= RESPONSIVE FIT-TO-SCREEN TABLE ================= */
+.table-card{background:#fff;border:1px solid #dbeafe;border-radius:12px 12px 0 0;overflow-x:hidden;width:100%;max-width:100%;box-shadow:0 2px 12px rgba(15,35,70,.04);box-sizing:border-box}
+.table-header-bar{padding:12px 14px;border-bottom:1.5px solid #e2e8f0;background:#f8fafc;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;min-width:0}
+.table-title{font-weight:900;color:#102d63;font-size:clamp(12px,1.15vw,16px)}
+.table-subtitle{font-size:clamp(10px,.85vw,12px);color:#64748b;font-weight:700}
+/* Keep all 12 columns inside the available monitor width. */
+.table{width:100%!important;min-width:0!important;max-width:100%!important;border-collapse:collapse!important;table-layout:fixed!important;margin:0!important}
+.table th,.table td{padding:7px 4px!important;border:1px solid #e2e8f0!important;text-align:center!important;vertical-align:middle!important;line-height:1.2;box-sizing:border-box!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;font-size:clamp(9px,.78vw,12px)!important;font-weight:700!important}
+.table th{background:#173d83!important;color:#fff!important;font-size:clamp(9px,.78vw,12px)!important;font-weight:900!important;position:sticky;top:0;z-index:2;letter-spacing:0;text-transform:uppercase;border-top:none!important;padding:9px 3px!important}
+.table th:nth-child(1),.table th:nth-child(2),.table th:nth-child(3){font-size:clamp(9px,.78vw,12px)!important;font-weight:900!important;letter-spacing:0}
+.table td{font-size:clamp(9px,.78vw,12px)!important;font-weight:700!important}
+/* Proportional widths total 100%, including the Action column. */
+.table th:nth-child(1),.table td:nth-child(1){width:6%}
+.table th:nth-child(2),.table td:nth-child(2){width:10%}
+.table th:nth-child(3),.table td:nth-child(3){width:9%}
+.table th:nth-child(4),.table td:nth-child(4){width:6%}
+.table th:nth-child(5),.table td:nth-child(5){width:12%}
+.table th:nth-child(6),.table td:nth-child(6){width:8%}
+.table th:nth-child(7),.table td:nth-child(7){width:8%}
+.table th:nth-child(8),.table td:nth-child(8){width:9%}
+.table th:nth-child(9),.table td:nth-child(9){width:8%}
+.table th:nth-child(10),.table td:nth-child(10){width:7%}
+.table th:nth-child(11),.table td:nth-child(11){width:7%}
+.table th:nth-child(12),.table td:nth-child(12){width:10%}
+/* Compact badges and action controls so they fit in narrow columns. */
+.booking-type-badge{display:inline-block;padding:3px 4px;border-radius:999px;font-size:clamp(8px,.68vw,10px);font-weight:900;letter-spacing:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{display:inline-block;padding:3px 5px;border-radius:999px;font-size:clamp(8px,.68vw,10px);font-weight:900;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.action{border:0;border-radius:5px;padding:4px 5px;color:#fff;font-size:clamp(8px,.68vw,10px);font-weight:800;cursor:pointer;margin:1px;white-space:nowrap;max-width:100%}
+@media(max-width:1100px){.table th,.table td{padding:5px 2px!important;font-size:10px!important}.table th{font-size:10px!important}.booking-type-badge,.badge,.action{font-size:9px!important;padding:3px 3px!important}}
+@media(max-width:850px){.table th,.table td{padding:4px 1px!important;font-size:9px!important}.table th{font-size:9px!important}.table-title{font-size:13px}.booking-type-badge,.badge,.action{font-size:8px!important;padding:2px 2px!important}}
 
 /* Booking row styling */
 .booking-row.student-booking td{background:#f8fafc!important}
