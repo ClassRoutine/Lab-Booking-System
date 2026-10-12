@@ -8,7 +8,9 @@
 <meta http-equiv="Expires" content="0">
 <title>Admin Dashboard | Lab Booking System | Department of CSE</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}button,input,select{font:inherit}input{pointer-events:auto;user-select:text;-webkit-user-select:text}.hidden{display:none!important}
 .login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#071a3d,#1d4e9e);padding:20px}.login-card{width:min(420px,100%);background:#fff;border-radius:20px;padding:34px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
@@ -282,8 +284,10 @@ footer .f-line2{font-size:14px;font-weight:700;color:#475569}
           <div class="table-title">📋 Laboratory Bookings Overview</div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end">
             <div class="table-subtitle" id="tablePaginationSummary">Showing bookings</div>
-            <button type="button" class="action" style="background:#16834a;padding:9px 12px" onclick="exportBookingsToExcel('filtered')">⬇ Export Filtered Excel</button>
-            <button type="button" class="action" style="background:#1d4ed8;padding:9px 12px" onclick="exportBookingsToExcel('all')">⬇ Export All Accessible Excel</button>
+            <button type="button" class="action" style="background:#16834a;padding:9px 12px" onclick="exportBookingsToExcel('filtered')">⬇ Filtered Excel</button>
+            <button type="button" class="action" style="background:#1d4ed8;padding:9px 12px" onclick="exportBookingsToExcel('all')">⬇ All Accessible Excel</button>
+            <button type="button" class="action" style="background:#b91c1c;padding:9px 12px" onclick="exportBookingsToPDF('filtered')">⬇ Filtered PDF</button>
+            <button type="button" class="action" style="background:#7c3aed;padding:9px 12px" onclick="exportBookingsToPDF('all')">⬇ All Accessible PDF</button>
           </div>
         </div>
         <table class="table">
@@ -903,76 +907,83 @@ function render() {
   }).join("");
 }
 
-// ================= EXCEL EXPORT =================
-// Exports only bookings already loaded for the signed-in admin, so assigned-lab access remains respected.
+// ================= STYLED EXCEL + PDF EXPORT =================
 function getBookingsMatchingCurrentFilters() {
-  const df = document.getElementById("dateFilter").value;
-  const lf = document.getElementById("labFilter").value;
-  const sf = document.getElementById("statusFilter").value;
-  const q = document.getElementById("searchFilter").value.toLowerCase().trim();
-  const now = new Date();
-  return bookings.filter(b => {
-    const semName = getSemesterDisplay(b);
-    const ctName = getCourseTeacherDisplay(b);
-    const hay = [b.student_name, b.student_id, b.mobile_number, b.course_teacher, ctName, semName, b.booking_purpose, b.remarks, b.labs?.name, b.approved_by_name].join(" ").toLowerCase();
-    const startDateTime = b.booking_date && b.start_time ? new Date(String(b.booking_date) + "T" + String(b.start_time)) : null;
-    const isCompleted = b.status === "Approved" && startDateTime && !Number.isNaN(startDateTime.getTime()) && startDateTime < now;
-    const displayStatus = isCompleted ? "Completed" : (b.status || "Pending");
-    return (!df || b.booking_date === df) &&
-      (!lf || String(b.lab_id) === lf) &&
-      (!sf || displayStatus === sf) &&
-      (!q || hay.includes(q));
+  const df=document.getElementById("dateFilter").value, lf=document.getElementById("labFilter").value;
+  const sf=document.getElementById("statusFilter").value, q=document.getElementById("searchFilter").value.toLowerCase().trim();
+  const now=new Date();
+  return bookings.filter(b=>{
+    const hay=[b.student_name,b.student_id,b.mobile_number,b.course_teacher,getCourseTeacherDisplay(b),getSemesterDisplay(b),b.booking_purpose,b.remarks,b.labs?.name,b.approved_by_name].join(" ").toLowerCase();
+    const dt=b.booking_date&&b.start_time?new Date(String(b.booking_date)+"T"+String(b.start_time)):null;
+    const st=b.status==="Approved"&&dt&&!Number.isNaN(dt.getTime())&&dt<now?"Completed":(b.status||"Pending");
+    return (!df||b.booking_date===df)&&(!lf||String(b.lab_id)===lf)&&(!sf||st===sf)&&(!q||hay.includes(q));
   });
 }
-
-function exportBookingsToExcel(mode) {
-  if (typeof XLSX === "undefined") {
-    alert("Excel export library could not load. Please check your internet connection and try again.");
-    return;
-  }
-  const records = mode === "filtered" ? getBookingsMatchingCurrentFilters() : bookings.slice();
-  if (!records.length) {
-    alert(mode === "filtered" ? "No bookings match the current filters." : "There are no accessible bookings to export.");
-    return;
-  }
-  const now = new Date();
-  const rows = records.map(b => {
-    const startDateTime = b.booking_date && b.start_time ? new Date(String(b.booking_date) + "T" + String(b.start_time)) : null;
-    const isCompleted = b.status === "Approved" && startDateTime && !Number.isNaN(startDateTime.getTime()) && startDateTime < now;
-    const rawType = String(b.booking_type || "student").toLowerCase();
-    const type = rawType === "teacher" ? "Teacher" : (rawType === "officers" || rawType === "officer" ? "Officers" : "Student");
-    const labName = b.labs?.name || (LAB_MAP[b.lab_id]?.name || "");
-    return {
-      "Booking Submitted At": b.created_at ? new Date(b.created_at).toLocaleString("en-GB") : "",
-      "Booking Type": type,
-      "Applicant Name": b.student_name || "",
-      "Student ID / Mobile": b.student_id || b.mobile_number || "",
-      "Mobile Number": b.mobile_number || "",
-      "Designation": b.designation || "",
-      "Semester": getSemesterDisplay(b),
-      "Lab Name": labName,
-      "Lab Code": LAB_MAP[b.lab_id]?.code || "",
-      "Booking Date": b.booking_date || "",
-      "Start Time": b.start_time ? formatTime(b.start_time) : "",
-      "End Time": b.end_time ? formatTime(b.end_time) : "",
-      "Course Teacher": getCourseTeacherDisplay(b),
-      "Booking Purpose": b.booking_purpose || "",
-      "Status": isCompleted ? "Completed" : (b.status || "Pending"),
-      "Remarks": b.remarks || "",
-      "Approved By": b.approved_by_name || "",
-      "Cancelled By": b.cancelled_by_name || ""
-    };
+function getExportRecords(mode){
+  const source=mode==="filtered"?getBookingsMatchingCurrentFilters():bookings.slice();
+  if(!source.length){alert(mode==="filtered"?"No bookings match the current filters.":"There are no accessible bookings to export.");return null;}
+  const now=new Date();
+  return source.map(b=>{
+    const dt=b.booking_date&&b.start_time?new Date(String(b.booking_date)+"T"+String(b.start_time)):null;
+    const status=b.status==="Approved"&&dt&&!Number.isNaN(dt.getTime())&&dt<now?"Completed":(b.status||"Pending");
+    const t=String(b.booking_type||"student").toLowerCase();
+    return {type:t==="teacher"?"Teacher Booking":(t==="officers"||t==="officer"?"Officer Booking":"Student Booking"),
+      submitted:b.created_at?new Date(b.created_at).toLocaleString("en-GB"):"",name:b.student_name||"",id:b.student_id||"",
+      mobile:b.mobile_number||"",designation:b.designation||"",semester:getSemesterDisplay(b),
+      lab:b.labs?.name||(LAB_MAP[b.lab_id]?.name||""),labCode:LAB_MAP[b.lab_id]?.code||"",
+      date:b.booking_date?formatDateOnly(b.booking_date):"",start:b.start_time?formatTime(b.start_time):"",
+      end:b.end_time?formatTime(b.end_time):"",teacher:getCourseTeacherDisplay(b),purpose:b.booking_purpose||"",
+      status,remarks:b.remarks||"",approvedBy:b.approved_by_name||"",cancelledBy:b.cancelled_by_name||""};
   });
-  const ws = XLSX.utils.json_to_sheet(rows);
-  ws["!cols"] = [
-    {wch:22},{wch:14},{wch:26},{wch:20},{wch:18},{wch:18},{wch:18},{wch:42},{wch:14},
-    {wch:15},{wch:15},{wch:15},{wch:26},{wch:32},{wch:14},{wch:36},{wch:24},{wch:24}
-  ];
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Bookings");
-  const today = new Date().toISOString().slice(0, 10);
-  const suffix = mode === "filtered" ? "filtered" : "all-accessible";
-  XLSX.writeFile(wb, `Lab_Bookings_${suffix}_${today}.xlsx`);
+}
+function getExportMeta(mode){
+  const lab=document.getElementById("labFilter"), status=document.getElementById("statusFilter"), date=document.getElementById("dateFilter").value;
+  return {lab:mode==="filtered"&&lab.value?lab.options[lab.selectedIndex].text:"All Accessible Labs",
+    status:mode==="filtered"&&status.value?status.value:"All Statuses",
+    date:mode==="filtered"&&date?formatDateOnly(date):"All Dates"};
+}
+function exportBookingsToExcel(mode){
+  if(typeof XLSX==="undefined"){alert("Excel report library did not load. Check your internet connection.");return;}
+  const recs=getExportRecords(mode);if(!recs)return;const meta=getExportMeta(mode);
+  const headers=["Booking Type","Applicant Name","Purpose","Student ID","Mobile Number","Designation","Semester","Lab Name","Lab Code","Booking Date","Start Time","End Time","Course Teacher","Status","Remarks","Booking Submitted At","Approved By","Cancelled By"];
+  const data=recs.map(r=>[r.type,r.name,r.purpose,r.id,r.mobile,r.designation,r.semester,r.lab,r.labCode,r.date,r.start,r.end,r.teacher,r.status,r.remarks,r.submitted,r.approvedBy,r.cancelledBy]);
+  const ws=XLSX.utils.aoa_to_sheet([["VARENDRA UNIVERSITY"],["LAB BOOKING REPORT"],["Department of Computer Science & Engineering"],["Generated: "+new Date().toLocaleString("en-GB")],[`Lab: ${meta.lab}`,`Date: ${meta.date}`,`Status: ${meta.status}`,`Total Bookings: ${recs.length}`],[],headers,...data]);
+  const last=headers.length-1;
+  ws["!merges"]=[0,1,2,3].map(r=>({s:{r,c:0},e:{r,c:last}}));
+  ws["!cols"]=[17,25,30,17,17,16,16,38,14,18,15,15,25,15,32,23,22,22].map(wch=>({wch}));
+  ws["!rows"]=[{hpt:28},{hpt:25},{hpt:21},{hpt:19},{hpt:24},{hpt:8},{hpt:30},...data.map(()=>({hpt:30}))];
+  const border={top:{style:"thin",color:{rgb:"D5E1DC"}},bottom:{style:"thin",color:{rgb:"D5E1DC"}},left:{style:"thin",color:{rgb:"D5E1DC"}},right:{style:"thin",color:{rgb:"D5E1DC"}}};
+  for(let c=0;c<=last;c++){
+    for(const r of [0,1,2,3]){const a=XLSX.utils.encode_cell({r,c});if(ws[a])ws[a].s={font:{name:"Aptos",sz:r===0?18:(r===1?15:10),bold:r<2,color:{rgb:"FFFFFF"}},fill:{fgColor:{rgb:"15396F"}},alignment:{horizontal:"center",vertical:"center"}};}
+    const h=XLSX.utils.encode_cell({r:6,c});if(ws[h])ws[h].s={font:{name:"Aptos",sz:10,bold:true,color:{rgb:"FFFFFF"}},fill:{fgColor:{rgb:"278344"}},alignment:{horizontal:"center",vertical:"center",wrapText:true},border};
+  }
+  for(let c=0;c<4;c++){const a=XLSX.utils.encode_cell({r:4,c});if(ws[a])ws[a].s={font:{bold:true,color:{rgb:"15396F"}},fill:{fgColor:{rgb:"EAF3EC"}},alignment:{vertical:"center"},border};}
+  recs.forEach((r,i)=>{const row=7+i, base=r.type==="Officer Booking"?"FFF0C2":r.type==="Teacher Booking"?"EAF2FF":(i%2?"F5F9FC":"FFFFFF");
+    for(let c=0;c<headers.length;c++){const a=XLSX.utils.encode_cell({r:row,c});if(!ws[a])continue;
+      let fill=base;if(c===13)fill=r.status==="Approved"?"DDF5E5":r.status==="Completed"?"C9F2D7":r.status==="Pending"?"FFF0C2":r.status==="Cancelled"?"FCE0E0":base;
+      ws[a].s={font:{name:"Aptos",sz:10,color:{rgb:"243447"},bold:c===0||c===13},fill:{fgColor:{rgb:fill}},alignment:{vertical:"center",wrapText:true,horizontal:[0,6,8,9,10,11,13].includes(c)?"center":"left"},border};
+    }
+  });
+  ws["!autofilter"]={ref:`A7:${XLSX.utils.encode_col(last)}${6+data.length+1}`};
+  ws["!freeze"]={xSplit:0,ySplit:7,topLeftCell:"A8",activePane:"bottomLeft",state:"frozen"};
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Lab Booking Report");
+  wb.Props={Title:"Lab Booking Report",Author:"Department of Computer Science & Engineering",Company:"Varendra University"};
+  XLSX.writeFile(wb,`Lab_Booking_Report_${mode}_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+function exportBookingsToPDF(mode){
+  if(!window.jspdf||!window.jspdf.jsPDF){alert("PDF report library did not load. Check your internet connection.");return;}
+  const recs=getExportRecords(mode);if(!recs)return;const meta=getExportMeta(mode),{jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a3"}),w=doc.internal.pageSize.getWidth();
+  doc.setFillColor(21,57,111);doc.rect(0,0,w,34,"F");doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");
+  doc.setFontSize(18);doc.text("VARENDRA UNIVERSITY",w/2,10,{align:"center"});doc.setFontSize(14);doc.text("LAB BOOKING REPORT",w/2,18,{align:"center"});
+  doc.setFont("helvetica","normal");doc.setFontSize(10);doc.text("Department of Computer Science & Engineering",w/2,25,{align:"center"});
+  doc.setFontSize(8);doc.text(`Generated: ${new Date().toLocaleString("en-GB")} | Lab: ${meta.lab} | Date: ${meta.date} | Status: ${meta.status} | Bookings: ${recs.length}`,8,42);
+  const headers=["Booking Type","Applicant Name","Purpose","Student ID","Mobile","Designation","Semester","Lab Name","Lab Code","Booking Date","Start","End","Course Teacher","Status","Remarks"];
+  const body=recs.map(r=>[r.type,r.name,r.purpose,r.id,r.mobile,r.designation,r.semester,r.lab,r.labCode,r.date,r.start,r.end,r.teacher,r.status,r.remarks]);
+  doc.autoTable({head:[headers],body,startY:47,theme:"grid",styles:{font:"helvetica",fontSize:7,cellPadding:2,overflow:"linebreak",valign:"middle",textColor:[36,52,71],lineColor:[213,225,220],lineWidth:.15},headStyles:{fillColor:[39,131,68],textColor:255,fontStyle:"bold",halign:"center"},margin:{left:8,right:8,bottom:14},
+    didParseCell:d=>{if(d.section!=="body")return;const r=recs[d.row.index];if(r.type==="Officer Booking")d.cell.styles.fillColor=[255,240,194];else if(r.type==="Teacher Booking")d.cell.styles.fillColor=[234,242,255];if(d.column.index===13){if(r.status==="Approved")d.cell.styles.fillColor=[221,245,229];else if(r.status==="Completed")d.cell.styles.fillColor=[201,242,215];else if(r.status==="Pending")d.cell.styles.fillColor=[255,240,194];else if(r.status==="Cancelled")d.cell.styles.fillColor=[252,224,224];}},
+    didDrawPage:()=>{doc.setFontSize(8);doc.setTextColor(90,100,115);doc.text("Department of CSE | Varendra University",8,doc.internal.pageSize.getHeight()-6);doc.text(`Page ${doc.internal.getCurrentPageInfo().pageNumber}`,w-8,doc.internal.pageSize.getHeight()-6,{align:"right"});}});
+  doc.save(`Lab_Booking_Report_${mode}_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
 function formatDateOnly(d) {
