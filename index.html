@@ -73,10 +73,39 @@ footer strong{color:#294e92}
  .custom-time-grid{grid-template-columns:1fr}
 }
 @media(max-width:520px){.admin-login-strip{padding:10px}.admin-login-strip a{width:100%;max-width:360px}.booking-tabs{gap:6px}.booking-tab{font-size:12px;padding:12px 4px}}
+
+/* Premium polish + accessible dark mode */
+:root{color-scheme:light}
+body{background:linear-gradient(180deg,#eef4ff 0%,#f7f9fd 42%,#eef3fb 100%)}
+.booking-card{box-shadow:0 18px 48px rgba(16,42,92,.12);border-color:#d8e4f5}
+.booking-tab{min-height:48px}
+input,select,textarea{transition:border-color .18s,box-shadow .18s,background .18s}
+.theme-toggle{position:absolute;right:22px;top:18px;display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.38);background:rgba(255,255,255,.13);color:#fff;border-radius:999px;padding:9px 13px;font-weight:800;font-size:12px;cursor:pointer;backdrop-filter:blur(8px)}
+.theme-toggle:hover{background:rgba(255,255,255,.24)}
+header{position:relative;padding-top:35px}
+body.dark-mode{background:#0b1220!important;color:#e5edf9!important;color-scheme:dark}
+body.dark-mode .admin-login-strip{background:#111c30;border-color:#263750}
+body.dark-mode .booking-card{background:#111c30;border-color:#263750;box-shadow:0 18px 48px rgba(0,0,0,.28)}
+body.dark-mode .booking-tab{background:#1b2a43;border-color:#344763;color:#e2eaf8}
+body.dark-mode .booking-tab.active{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border-color:#3b82f6}
+body.dark-mode .mode-note{background:#172b49;border-color:#294c7a;color:#d6e7ff}
+body.dark-mode .form-heading h2,body.dark-mode .slot-title,body.dark-mode label{color:#e6eefb}
+body.dark-mode .form-heading p,body.dark-mode .slot-info,body.dark-mode .custom-slot-help,body.dark-mode footer{color:#a9bad2}
+body.dark-mode input,body.dark-mode select,body.dark-mode textarea{background:#0c1628;color:#e5edf9;border-color:#354965}
+body.dark-mode input::placeholder,body.dark-mode textarea::placeholder{color:#93a4bd}
+body.dark-mode .slot{background:#17243a;border-color:#354965;color:#e5edf9}
+body.dark-mode .slot.booked{background:#3a1d2a;color:#fecdd3;border-color:#7f1d1d}
+body.dark-mode .slot.selected,body.dark-mode .custom-slot-preview{background:#19365f;color:#dbeafe;border-color:#3b82f6}
+body.dark-mode .custom-slot-panel{background:#13213a;border-color:#354965}
+body.dark-mode footer strong{color:#93c5fd}
+body.dark-mode .feature-disabled{background:#17243a;color:#e5edf9;border-color:#475569}
+@media(max-width:650px){.theme-toggle{top:10px;right:10px;padding:7px 10px;font-size:11px}header{padding-top:55px}}
+
 </style>
 </head>
 <body>
 <header>
+  <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">🌙 Dark Mode</button>
   <div class="header-center">
     <div class="university">VARENDRA UNIVERSITY</div>
     <div class="department">Department of Computer Science &amp; Engineering</div>
@@ -241,16 +270,12 @@ footer strong{color:#294e92}
 </div>
 </main>
 
-
-<div class="footer-credit">
-  
-<div class="footer-credit" style="text-align: center; padding: 12px 10px; font-size: 13px; line-height: 1.8;">
-  <div>Design &amp; Developed by Md. Tareq Ben Musha © 2026</div>
-  <div>Department of Computer Science &amp; Engineering | Varendra University</div>
-</div>
-
-</div>
-
+<footer>
+  <strong>Department of Computer Science &amp; Engineering</strong><br>
+  Varendra University<br><br>
+  Lab Booking System © 2026<br>
+  LAST A DEVELOP BY Md.Tareq Ben Musha
+</footer>
 
 <script>
 /* Supabase configuration */
@@ -717,6 +742,26 @@ async function initialize() {
 }
 
 initialize();
+
+/* Theme toggle: remembers this browser preference; does not touch Supabase data. */
+(function(){
+  const key='cse-lab-booking-theme';
+  const btn=document.getElementById('themeToggle');
+  function applyTheme(mode){
+    const dark=mode==='dark';
+    document.body.classList.toggle('dark-mode',dark);
+    document.documentElement.style.colorScheme=dark?'dark':'light';
+    if(btn){btn.textContent=dark?'☀️ Light Mode':'🌙 Dark Mode';btn.setAttribute('aria-pressed',String(dark));}
+  }
+  let saved='light';
+  try{saved=localStorage.getItem(key)||'light';}catch(e){}
+  applyTheme(saved);
+  if(btn)btn.addEventListener('click',function(){
+    const next=document.body.classList.contains('dark-mode')?'light':'dark';
+    applyTheme(next);try{localStorage.setItem(key,next);}catch(e){}
+  });
+})();
+
 </script>
 </body>
 </html>
