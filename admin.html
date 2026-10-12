@@ -661,7 +661,7 @@ async function loadLabsDropdown() {
   const assigned = (admin?.assigned_lab_ids || []).map(id => String(id));
 
   let sourceLabs = Object.entries(LAB_MAP).map(([id, lab]) => ({
-    id: Number(id), name: lab.name, code: lab.code
+    id: Number(id), name: lab.name
   }));
 
   // Use database names/codes when available, but retain LAB_MAP as a fallback.
