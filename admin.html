@@ -62,6 +62,7 @@
 .badge{display:inline-block;padding:3px 5px;border-radius:999px;font-size:clamp(8px,.68vw,10px);font-weight:900;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .action{border:0;border-radius:5px;padding:4px 5px;color:#fff;font-size:clamp(8px,.68vw,10px);font-weight:800;cursor:pointer;margin:1px;white-space:nowrap;max-width:100%}
 @media(max-width:1100px){.table th,.table td{padding:5px 2px!important;font-size:10px!important}.table th{font-size:10px!important}.booking-type-badge,.badge,.action{font-size:9px!important;padding:3px 3px!important}}
+@media(max-width:650px){.live-clock{align-items:flex-start;min-width:0;border-right:0;padding:4px 0;width:100%}.live-clock-time{font-size:20px}}
 @media(max-width:850px){.table th,.table td{padding:4px 1px!important;font-size:9px!important}.table th{font-size:9px!important}.table-title{font-size:13px}.booking-type-badge,.badge,.action{font-size:8px!important;padding:2px 2px!important}}
 
 /* Booking row styling */
@@ -196,6 +197,13 @@ footer .f-line2{font-size:14px;font-weight:700;color:#475569}
  .table-header-bar>div:last-child{justify-content:flex-start!important;width:100%;}
 }
 
+
+/* Premium blue-white polish */
+:root{color-scheme:light}
+body{background:linear-gradient(180deg,#edf4ff 0%,#f4f7fb 55%,#eaf1fb 100%)}
+.profile,.stat,.filters,.table-card,.pagination-bar{box-shadow:0 5px 18px rgba(15,35,70,.045)}
+.stat,.profile,.filters{border-color:#d8e4f5}
+.live-clock{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;min-width:165px;padding:5px 12px;border-right:1px solid rgba(255,255,255,.28);line-height:1.25}.live-clock-time{font-size:22px;font-weight:900;letter-spacing:.6px;font-variant-numeric:tabular-nums}.live-clock-date{font-size:11px;opacity:.9;margin-top:3px;font-weight:700}
 </style>
 </head>
 <body>
@@ -230,8 +238,12 @@ footer .f-line2{font-size:14px;font-weight:700;color:#475569}
       <h1>🏢 Lab Booking Dashboard</h1>
       <small id="welcome"></small>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <button id="refreshBtn" class="logout" type="button">↻ Refresh</button>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+      <div class="live-clock" aria-label="Bangladesh local date and time">
+        <span class="live-clock-time" id="dashboardClock">--:--:--</span>
+        <span class="live-clock-date" id="dashboardClockDate">Loading Bangladesh time…</span>
+      </div>
+<button id="refreshBtn" class="logout" type="button">↻ Refresh</button>
       <button id="changePassBtn" class="logout" type="button" style="background:#2563eb;color:#fff;border-color:#3b82f6" onclick="openPasswordModal()">🔑 Change Password</button>
       <button id="logoutBtn" class="logout" type="button">Logout</button>
     </div>
@@ -1510,6 +1522,20 @@ window.addEventListener("DOMContentLoaded", async () => {
     } catch (_) {}
   }
 });
+
+
+/* Live Bangladesh clock in the dashboard top-right. */
+(function(){
+  const timeEl=document.getElementById('dashboardClock');
+  const dateEl=document.getElementById('dashboardClockDate');
+  function updateBangladeshClock(){
+    const now=new Date();
+    if(timeEl) timeEl.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).format(now);
+    if(dateEl) dateEl.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dhaka',weekday:'short',day:'2-digit',month:'short',year:'numeric'}).format(now)+' · Bangladesh (UTC+6)';
+  }
+  updateBangladeshClock();
+  setInterval(updateBangladeshClock,1000);
+})();
 </script>
 </body>
 </html>
