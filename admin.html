@@ -874,10 +874,13 @@ function render() {
         <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
           <span class="badge ${st}" style="font-size:14px;font-weight:800;padding:5px 9px">${esc(displayStatus)}</span>
           ${b.status === "Approved" && b.approved_by_name ? `
-            <div style="font-size:13px;font-weight:800;color:#166534;background:#dcfce7;border:1px solid #bbf7d0;border-radius:5px;padding:3px 6px;margin-top:2px;line-height:1.25;text-align:center;word-break:break-word">
-              ✓ Approved by<br><b style="color:#0f5132;font-size:14px">${esc(b.approved_by_name)}</b>
+            <div style="font-size:11px;font-weight:700;color:#166534;background:#dcfce7;border:1px solid #bbf7d0;border-radius:5px;padding:3px 5px;margin-top:2px;line-height:1.2;text-align:center;word-break:break-word">
+              ✓ Approved by<br><b style="color:#0f5132;font-size:12px">${esc(b.approved_by_name)}</b>
             </div>
           ` : ""}
+          ${b.created_at ? `
+            <div title="Booking submitted date and time" style="font-size:10px;font-weight:600;color:#475569;line-height:1.25;text-align:center;white-space:normal;margin-top:1px">🕒 Submitted: ${esc(formatApprovalDateTime(b.created_at))}</div>
+          ` : `<div title="Submission time is not available in the database" style="font-size:9px;color:#94a3b8;line-height:1.2;text-align:center">Submit time unavailable</div>`}
           ${b.status === "Cancelled" && b.cancelled_by_name ? `
             <div style="font-size:13px;font-weight:800;color:#991b1b;background:#fee2e2;border:1px solid #fecaca;border-radius:5px;padding:3px 6px;margin-top:2px;line-height:1.25;text-align:center;word-break:break-word">
               ✗ Cancelled by<br><b style="color:#842029;font-size:14px">${esc(b.cancelled_by_name)}</b>
@@ -933,7 +936,7 @@ function getExportRecords(mode){
       lab:b.labs?.name||(LAB_MAP[b.lab_id]?.name||""),labCode:LAB_MAP[b.lab_id]?.code||"",
       date:b.booking_date?formatDateOnly(b.booking_date):"",start:b.start_time?formatTime(b.start_time):"",
       end:b.end_time?formatTime(b.end_time):"",teacher:getCourseTeacherDisplay(b),purpose:b.booking_purpose||"",
-      status,remarks:b.remarks||"",approvedBy:b.approved_by_name||"",cancelledBy:b.cancelled_by_name||""};
+      status,remarks:b.remarks||"",approvedAt:b.approved_at?formatApprovalDateTime(b.approved_at):"",approvedBy:b.approved_by_name||"",cancelledBy:b.cancelled_by_name||""};
   });
 }
 function getExportMeta(mode){
@@ -945,12 +948,12 @@ function getExportMeta(mode){
 function exportBookingsToExcel(mode){
   if(typeof XLSX==="undefined"){alert("Excel report library did not load. Check your internet connection.");return;}
   const recs=getExportRecords(mode);if(!recs)return;const meta=getExportMeta(mode);
-  const headers=["Booking Type","Applicant Name","Purpose","Student ID","Mobile Number","Designation","Semester","Lab Name","Lab Code","Booking Date","Start Time","End Time","Course Teacher","Status","Remarks","Booking Submitted At","Approved By","Cancelled By"];
-  const data=recs.map(r=>[r.type,r.name,r.purpose,r.id,r.mobile,r.designation,r.semester,r.lab,r.labCode,r.date,r.start,r.end,r.teacher,r.status,r.remarks,r.submitted,r.approvedBy,r.cancelledBy]);
+  const headers=["Booking Type","Applicant Name","Purpose","Student ID","Mobile Number","Designation","Semester","Lab Name","Lab Code","Booking Date","Start Time","End Time","Course Teacher","Status","Remarks","Booking Submitted At","Approved At","Approved By","Cancelled By"];
+  const data=recs.map(r=>[r.type,r.name,r.purpose,r.id,r.mobile,r.designation,r.semester,r.lab,r.labCode,r.date,r.start,r.end,r.teacher,r.status,r.remarks,r.submitted,r.approvedAt,r.approvedBy,r.cancelledBy]);
   const ws=XLSX.utils.aoa_to_sheet([["VARENDRA UNIVERSITY"],["LAB BOOKING REPORT"],["Department of Computer Science & Engineering"],["Generated: "+new Date().toLocaleString("en-GB")],[`Lab: ${meta.lab}`,`Date: ${meta.date}`,`Status: ${meta.status}`,`Total Bookings: ${recs.length}`],[],headers,...data]);
   const last=headers.length-1;
   ws["!merges"]=[0,1,2,3].map(r=>({s:{r,c:0},e:{r,c:last}}));
-  ws["!cols"]=[17,25,30,17,17,16,16,38,14,18,15,15,25,15,32,23,22,22].map(wch=>({wch}));
+  ws["!cols"]=[17,25,30,17,17,16,16,38,14,18,15,15,25,15,32,23,22,22,22].map(wch=>({wch}));
   ws["!rows"]=[{hpt:28},{hpt:25},{hpt:21},{hpt:19},{hpt:24},{hpt:8},{hpt:30},...data.map(()=>({hpt:30}))];
   const border={top:{style:"thin",color:{rgb:"D5E1DC"}},bottom:{style:"thin",color:{rgb:"D5E1DC"}},left:{style:"thin",color:{rgb:"D5E1DC"}},right:{style:"thin",color:{rgb:"D5E1DC"}}};
   for(let c=0;c<=last;c++){
@@ -978,12 +981,19 @@ function exportBookingsToPDF(mode){
   doc.setFontSize(18);doc.text("VARENDRA UNIVERSITY",w/2,10,{align:"center"});doc.setFontSize(14);doc.text("LAB BOOKING REPORT",w/2,18,{align:"center"});
   doc.setFont("helvetica","normal");doc.setFontSize(10);doc.text("Department of Computer Science & Engineering",w/2,25,{align:"center"});
   doc.setFontSize(8);doc.text(`Generated: ${new Date().toLocaleString("en-GB")} | Lab: ${meta.lab} | Date: ${meta.date} | Status: ${meta.status} | Bookings: ${recs.length}`,8,42);
-  const headers=["Booking Type","Applicant Name","Purpose","Student ID","Mobile","Designation","Semester","Lab Name","Lab Code","Booking Date","Start","End","Course Teacher","Status","Remarks"];
-  const body=recs.map(r=>[r.type,r.name,r.purpose,r.id,r.mobile,r.designation,r.semester,r.lab,r.labCode,r.date,r.start,r.end,r.teacher,r.status,r.remarks]);
+  const headers=["Booking Type","Applicant Name","Purpose","Student ID","Mobile","Designation","Semester","Lab Name","Lab Code","Booking Date","Start","End","Course Teacher","Status","Approved At","Approved By","Remarks"];
+  const body=recs.map(r=>[r.type,r.name,r.purpose,r.id,r.mobile,r.designation,r.semester,r.lab,r.labCode,r.date,r.start,r.end,r.teacher,r.status,r.approvedAt,r.approvedBy,r.remarks]);
   doc.autoTable({head:[headers],body,startY:47,theme:"grid",styles:{font:"helvetica",fontSize:7,cellPadding:2,overflow:"linebreak",valign:"middle",textColor:[36,52,71],lineColor:[213,225,220],lineWidth:.15},headStyles:{fillColor:[39,131,68],textColor:255,fontStyle:"bold",halign:"center"},margin:{left:8,right:8,bottom:14},
     didParseCell:d=>{if(d.section!=="body")return;const r=recs[d.row.index];if(r.type==="Officer Booking")d.cell.styles.fillColor=[255,240,194];else if(r.type==="Teacher Booking")d.cell.styles.fillColor=[234,242,255];if(d.column.index===13){if(r.status==="Approved")d.cell.styles.fillColor=[221,245,229];else if(r.status==="Completed")d.cell.styles.fillColor=[201,242,215];else if(r.status==="Pending")d.cell.styles.fillColor=[255,240,194];else if(r.status==="Cancelled")d.cell.styles.fillColor=[252,224,224];}},
     didDrawPage:()=>{doc.setFontSize(8);doc.setTextColor(90,100,115);doc.text("Department of CSE | Varendra University",8,doc.internal.pageSize.getHeight()-6);doc.text(`Page ${doc.internal.getCurrentPageInfo().pageNumber}`,w-8,doc.internal.pageSize.getHeight()-6,{align:"right"});}});
   doc.save(`Lab_Booking_Report_${mode}_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+function formatApprovalDateTime(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "Asia/Dhaka" });
 }
 
 function formatDateOnly(d) {
