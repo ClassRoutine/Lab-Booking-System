@@ -149,20 +149,20 @@ footer .f-line2{font-size:14px;font-weight:700;color:#475569}
 }
 .table th{font-size:clamp(9px,.72vw,12px)!important;letter-spacing:0!important;}
 .table td{font-size:clamp(10px,.78vw,12px)!important;}
-/* 13 columns: keep Section separate from Applicant Name; allow horizontal scrolling on narrow screens. */
-.table{min-width:1100px!important;}
+/* Responsive 13-column layout: readable text, a wider Remarks field, and safe horizontal scrolling on small screens. */
+.table{min-width:1200px!important;width:100%!important;table-layout:fixed!important}
 .table th:nth-child(1),.table td:nth-child(1){width:6%!important}
 .table th:nth-child(2),.table td:nth-child(2){width:10%!important}
-.table th:nth-child(3),.table td:nth-child(3){width:8%!important}
-.table th:nth-child(4),.table td:nth-child(4){width:7%!important}
-.table th:nth-child(5),.table td:nth-child(5){width:6%!important}
-.table th:nth-child(6),.table td:nth-child(6){width:11%!important}
-.table th:nth-child(7),.table td:nth-child(7){width:11%!important}
+.table th:nth-child(3),.table td:nth-child(3){width:7%!important}
+.table th:nth-child(4),.table td:nth-child(4){width:6%!important}
+.table th:nth-child(5),.table td:nth-child(5){width:5%!important}
+.table th:nth-child(6),.table td:nth-child(6){width:10%!important}
+.table th:nth-child(7),.table td:nth-child(7){width:8%!important}
 .table th:nth-child(8),.table td:nth-child(8){width:8%!important}
-.table th:nth-child(9),.table td:nth-child(9){width:10%!important}
-.table th:nth-child(10),.table td:nth-child(10){width:9%!important}
+.table th:nth-child(9),.table td:nth-child(9){width:9%!important}
+.table th:nth-child(10),.table td:nth-child(10){width:8%!important}
 .table th:nth-child(11),.table td:nth-child(11){width:7%!important}
-.table th:nth-child(12),.table td:nth-child(12){width:4%!important}
+.table th:nth-child(12),.table td:nth-child(12){width:12%!important}
 .table th:nth-child(13),.table td:nth-child(13){width:4%!important}
 /* Prevent inline styles in booking cells from forcing oversized text or spilling into neighbours. */
 .table td:nth-child(2)>div,.table td:nth-child(3)>div,.table td:nth-child(4)>div,
@@ -206,6 +206,53 @@ body{background:linear-gradient(180deg,#edf4ff 0%,#f4f7fb 55%,#eaf1fb 100%)}
 .profile,.stat,.filters,.table-card,.pagination-bar{box-shadow:0 5px 18px rgba(15,35,70,.045)}
 .stat,.profile,.filters{border-color:#d8e4f5}
 .live-clock{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;min-width:165px;padding:5px 12px;border-right:1px solid rgba(255,255,255,.28);line-height:1.25}.live-clock-time{font-size:22px;font-weight:900;letter-spacing:.6px;font-variant-numeric:tabular-nums}.live-clock-date{font-size:11px;opacity:.9;margin-top:3px;font-weight:700}
+
+/* Text wrapping and responsive dashboard refinements */
+.booking-cell-text{
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:3;
+  overflow:hidden!important;
+  overflow-wrap:anywhere!important;
+  white-space:normal!important;
+  line-height:1.3!important;
+  max-width:100%!important;
+  font-size:clamp(10px,.82vw,13px)!important;
+}
+.table td:nth-child(12){padding:7px 8px!important;vertical-align:top!important}
+.table td:nth-child(12)>div{width:100%;min-width:0;align-items:stretch!important}
+.table td:nth-child(12) textarea{display:block;width:100%!important;min-height:58px;font-size:clamp(11px,.8vw,13px)!important;line-height:1.35}
+.table td:nth-child(12) button{width:100%!important;max-width:100%;font-size:clamp(10px,.75vw,12px)!important}
+.table-card{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+.table{border-collapse:separate!important;border-spacing:0}
+@media(min-width:1500px){
+  .table{min-width:0!important}
+  .table th,.table td{padding:9px 7px!important}
+  .booking-cell-text{font-size:13px!important}
+}
+@media(max-width:1200px){
+  .wrap{padding-left:10px!important;padding-right:10px!important}
+  .table{min-width:1200px!important}
+  .table-header-bar{align-items:flex-start}
+}
+@media(max-width:760px){
+  .top{align-items:flex-start}
+  .top>div:last-child{justify-content:flex-start!important}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sub-tabs{width:100%;flex-wrap:wrap}
+  .sub-tab-btn{flex:1 1 auto;padding:9px 10px}
+  .table-card{border-radius:10px}
+}
+@media(max-width:480px){
+  .wrap{padding:0 6px!important}
+  .stats,.filters{grid-template-columns:minmax(0,1fr)}
+  .profile{align-items:flex-start}
+  .profile>div:last-child{text-align:left!important}
+  .pagination-bar{padding:10px}
+  footer{font-size:12px;padding:18px 8px}
+  footer .f-line1,footer .f-line2{font-size:12px}
+}
 </style>
 </head>
 <body>
@@ -844,7 +891,7 @@ function render() {
 
       <!-- 2. Applicant Name: 14px and extra bold (Clean, no designation below) -->
       <td>
-        <div style="font-size:14px;font-weight:900;color:#071d49;line-height:1.3;word-break:break-word">
+        <div class="booking-cell-text applicant-text" style="font-weight:900;color:#071d49">
           ${esc(b.student_name || "—")}
         </div>
       </td>
@@ -896,14 +943,14 @@ function render() {
 
       <!-- 9. Course Teacher: 14px and bold (Prominent) -->
       <td>
-        <div style="font-size:14px;font-weight:800;color:#1e293b;word-break:break-word;line-height:1.3">
+        <div class="booking-cell-text teacher-text" style="font-weight:800;color:#1e293b">
           👨‍🏫 ${esc(teacherDisplay)}
         </div>
       </td>
 
       <!-- 10. Purpose: 14px and bold -->
       <td>
-        <div style="font-size:14px;font-weight:700;color:#334155;word-break:break-word;line-height:1.3">
+        <div class="booking-cell-text purpose-text" style="font-weight:700;color:#334155">
           ${esc(b.booking_purpose || "—")}
         </div>
       </td>
@@ -931,7 +978,7 @@ function render() {
       <!-- 11. Remarks: 14px and bold -->
       <td>
         <div style="display:flex;flex-direction:column;gap:4px;align-items:center">
-          <input type="text" id="remark-${b.id}" value="${esc(b.remarks || "")}" placeholder="Remark..." style="width:100%;font-size:13px;font-weight:700;padding:5px 6px;border:1px solid #cbd5e1;border-radius:5px;box-sizing:border-box">
+          <textarea id="remark-${b.id}" rows="2" placeholder="Enter remarks..." style="width:100%;min-width:0;min-height:54px;resize:vertical;font:inherit;font-size:12px;font-weight:600;padding:7px;border:1px solid #cbd5e1;border-radius:5px;box-sizing:border-box">${esc(b.remarks || "")}</textarea>
           <button class="action" style="background:#475569;width:100%;padding:5px 4px;font-size:13px;font-weight:800" onclick="saveRemark(${b.id})">Save</button>
         </div>
       </td>
