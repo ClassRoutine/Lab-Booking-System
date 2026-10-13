@@ -491,13 +491,24 @@ const SEMESTER_NAMES = {
 };
 
 function getSemesterDisplay(b) {
-  if (b.semesters && b.semesters.name) return b.semesters.name;
-  if (b.semester_name && String(b.semester_name).trim()) return String(b.semester_name).trim();
-  if (b.semester && String(b.semester).trim()) return String(b.semester).trim();
-  const sid = Number(b.semester_id);
-  if (sid && SEMESTER_NAMES[sid]) return SEMESTER_NAMES[sid];
-  if (sid) return `${sid}th Semester`;
-  return "1st Semester";
+  let semester = "";
+  if (b.semesters && b.semesters.name) semester = String(b.semesters.name).trim();
+  else if (b.semester_name && String(b.semester_name).trim()) semester = String(b.semester_name).trim();
+  else if (b.semester && String(b.semester).trim()) semester = String(b.semester).trim();
+  else {
+    const sid = Number(b.semester_id);
+    if (sid && SEMESTER_NAMES[sid]) semester = SEMESTER_NAMES[sid];
+    else if (sid) semester = `${sid}th Semester`;
+    else semester = "1st Semester";
+  }
+
+  // Show the section beside the semester, e.g. "1st Semester (D)".
+  const sectionValue = b.student_section ?? b.section ?? b.section_name ?? b.studentSection ?? b.student_section_name;
+  const section = String(sectionValue ?? "").trim();
+  if (section && section.toLowerCase() !== "null" && section !== "-" && !semester.includes(`(${section})`)) {
+    return `${semester} (${section})`;
+  }
+  return semester;
 }
 
 function getCourseTeacherDisplay(b) {
@@ -666,7 +677,7 @@ async function loadLabsDropdown() {
 
   // Use database names/codes when available, but retain LAB_MAP as a fallback.
   try {
-    const { data, error } = await sb.from("labs").select("id, name, code").order("id");
+    const { data, error } = await sb.from("labs").select("id, name").order("id");
     if (!error && Array.isArray(data) && data.length) {
       const dbById = new Map(data.map(l => [String(l.id), l]));
       sourceLabs = sourceLabs.map(l => ({ ...l, ...(dbById.get(String(l.id)) || {}) }));
