@@ -189,6 +189,7 @@ body.dark-mode .feature-disabled{background:#17243a;color:#e5edf9;border-color:#
         <label for="officersSection">🏷️ Student Section</label>
         <select id="officersSection">
           <option value="">Select Student Section</option>
+          <option value="None">None</option>
           <option value="A">Section A</option><option value="B">Section B</option>
           <option value="C">Section C</option><option value="D">Section D</option>
           <option value="E">Section E</option><option value="F">Section F</option>
@@ -327,6 +328,21 @@ function updateSubmitButton() {
     bookingMode === "teacher" ? "SUBMIT TEACHER BOOKING" : "SUBMIT OFFICERS BOOKING";
 }
 
+function isOptionalOfficerPurpose() {
+  return bookingMode === "officers" &&
+    ["Cleaning Purpose", "Maintenance Purpose"].includes(officersBookingPurpose.value);
+}
+
+function updateOfficerPurposeRequirements() {
+  const optionalPurpose = isOptionalOfficerPurpose();
+  const isOfficer = bookingMode === "officers";
+
+  // Cleaning/Maintenance bookings may use None (or leave these fields empty).
+  semester.required = !isOfficer || !optionalPurpose;
+  studentSectionOfficer.required = isOfficer && !optionalPurpose;
+  officersCourseTeacher.required = isOfficer && !optionalPurpose;
+}
+
 function setBookingMode(mode) {
   bookingMode = mode;
   const isStudent = mode === "student";
@@ -368,11 +384,12 @@ function setBookingMode(mode) {
     el.style.display = isOfficer ? "none" : "flex";
   });
 
-  // Semester, lab and date are required for all booking types.
+  // Semester is normally required; Cleaning/Maintenance officers may choose None.
   semester.required = true;
   lab.required = true;
   bookingDate.required = true;
   officersBookingPurpose.required = isOfficer;
+  updateOfficerPurposeRequirements();
 
   modeNote.textContent = isStudent
     ? "Students: fill in your student details, choose a lab and time, then submit your booking."
@@ -397,6 +414,7 @@ function setBookingMode(mode) {
 studentTab.addEventListener("click", () => setBookingMode("student"));
 teacherTab.addEventListener("click", () => setBookingMode("teacher"));
 officersTab.addEventListener("click", () => setBookingMode("officers"));
+officersBookingPurpose.addEventListener("change", updateOfficerPurposeRequirements);
 
 /* Minimum booking date */
 const now = new Date();
@@ -417,7 +435,7 @@ async function loadSemesters() {
     showMessage("Unable to load semesters.", "error");
     return;
   }
-  semester.innerHTML = '<option value="">Select Semester</option>';
+  semester.innerHTML = '<option value="">Select Semester</option><option value="none">None</option>';
   (data || []).forEach(item => {
     const option = document.createElement("option");
     option.value = item.id;
@@ -634,16 +652,31 @@ bookingForm.addEventListener("submit", async function(event) {
     return;
   }
 
+  const optionalOfficerPurpose = isOptionalOfficerPurpose();
+
   if (bookingMode === "officers" &&
       (!officersName.value || !officersDesignation.value ||
-       !studentSectionOfficer.value || !officersCourseTeacher.value.trim() ||
-       !officersBookingPurpose.value)) {
-    showMessage("Please select Officer Name, Designation, Student Section and Booking Purpose, and enter Course Teacher Name.", "error");
+       !officersBookingPurpose.value ||
+       (!optionalOfficerPurpose &&
+        (!studentSectionOfficer.value || !officersCourseTeacher.value.trim())))) {
+    showMessage(optionalOfficerPurpose
+      ? "Please select Officer Name, Designation and Booking Purpose."
+      : "Please select Officer Name, Designation, Student Section and Booking Purpose, and enter Course Teacher Name.", "error");
     return;
   }
 
-  if (!semester.value) {
-    showMessage("Please select the students' semester.", "error");
+  if (!semester.value && !(bookingMode === "officers" && optionalOfficerPurpose)) {
+    showMessage("Please select the students' semester, or choose None for Cleaning/Maintenance Purpose.", "error");
+    return;
+  }
+
+  if (bookingMode === "officers" && semester.value === "none" && !optionalOfficerPurpose) {
+    showMessage("None can only be selected for Cleaning Purpose or Maintenance Purpose.", "error");
+    return;
+  }
+
+  if (bookingMode === "officers" && studentSectionOfficer.value === "None" && !optionalOfficerPurpose) {
+    showMessage("None can only be selected for Cleaning Purpose or Maintenance Purpose.", "error");
     return;
   }
   if (!lab.value) {
@@ -665,9 +698,10 @@ bookingForm.addEventListener("submit", async function(event) {
         : bookingMode === "officers" ? officersName.value : studentName.value.trim(),
       p_student_id: bookingMode === "teacher" ? mobileNumber.value.trim()
         : bookingMode === "officers" ? "OFFICER" : studentId.value.trim(),
-      p_semester_id: Number(semester.value),
+      p_semester_id: bookingMode === "officers" && optionalOfficerPurpose &&
+        (!semester.value || semester.value === "none") ? null : Number(semester.value),
       p_course_teacher: bookingMode === "teacher" ? designation.value.trim()
-        : bookingMode === "officers" ? officersCourseTeacher.value.trim() : courseTeacher.value.trim(),
+        : bookingMode === "officers" ? (officersCourseTeacher.value.trim() || null) : courseTeacher.value.trim(),
       p_lab_id: Number(lab.value),
       p_booking_date: bookingDate.value,
       p_start_time: selectedSlot.start_time,
@@ -680,7 +714,7 @@ bookingForm.addEventListener("submit", async function(event) {
         : bookingMode === "officers" ? officersDesignation.value : null,
       p_mobile_number: bookingMode === "teacher" ? mobileNumber.value.trim() : null,
       p_student_section: bookingMode === "teacher" ? studentSection.value.trim()
-        : bookingMode === "officers" ? studentSectionOfficer.value : null,
+        : bookingMode === "officers" ? (studentSectionOfficer.value && studentSectionOfficer.value !== "None" ? studentSectionOfficer.value : null) : null,
       p_officers_name: bookingMode === "officers" ? officersName.value : null,
       p_remarks: bookingMode === "officers" ? officersRemarks.value.trim() : null
     });
