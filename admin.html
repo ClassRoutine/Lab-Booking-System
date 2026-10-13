@@ -149,19 +149,21 @@ footer .f-line2{font-size:14px;font-weight:700;color:#475569}
 }
 .table th{font-size:clamp(9px,.72vw,12px)!important;letter-spacing:0!important;}
 .table td{font-size:clamp(10px,.78vw,12px)!important;}
-/* Balanced column widths: narrower applicant/semester, wider date, and a protected time slot. */
+/* 13 columns: keep Section separate from Applicant Name; allow horizontal scrolling on narrow screens. */
+.table{min-width:1100px!important;}
 .table th:nth-child(1),.table td:nth-child(1){width:6%!important}
 .table th:nth-child(2),.table td:nth-child(2){width:10%!important}
 .table th:nth-child(3),.table td:nth-child(3){width:8%!important}
-.table th:nth-child(4),.table td:nth-child(4){width:6%!important}
-.table th:nth-child(5),.table td:nth-child(5){width:11%!important}
+.table th:nth-child(4),.table td:nth-child(4){width:7%!important}
+.table th:nth-child(5),.table td:nth-child(5){width:6%!important}
 .table th:nth-child(6),.table td:nth-child(6){width:11%!important}
-.table th:nth-child(7),.table td:nth-child(7){width:8%!important}
-.table th:nth-child(8),.table td:nth-child(8){width:10%!important}
-.table th:nth-child(9),.table td:nth-child(9){width:9%!important}
-.table th:nth-child(10),.table td:nth-child(10){width:7%!important}
+.table th:nth-child(7),.table td:nth-child(7){width:11%!important}
+.table th:nth-child(8),.table td:nth-child(8){width:8%!important}
+.table th:nth-child(9),.table td:nth-child(9){width:10%!important}
+.table th:nth-child(10),.table td:nth-child(10){width:9%!important}
 .table th:nth-child(11),.table td:nth-child(11){width:7%!important}
-.table th:nth-child(12),.table td:nth-child(12){width:7%!important}
+.table th:nth-child(12),.table td:nth-child(12){width:4%!important}
+.table th:nth-child(13),.table td:nth-child(13){width:4%!important}
 /* Prevent inline styles in booking cells from forcing oversized text or spilling into neighbours. */
 .table td:nth-child(2)>div,.table td:nth-child(3)>div,.table td:nth-child(4)>div,
 .table td:nth-child(5)>div,.table td:nth-child(8)>div,.table td:nth-child(9)>div{
@@ -309,6 +311,7 @@ body{background:linear-gradient(180deg,#edf4ff 0%,#f4f7fb 55%,#eaf1fb 100%)}
               <th>Applicant Name</th>
               <th>ID / Mobile</th>
               <th>Semester</th>
+              <th>Section</th>
               <th>Lab Name</th>
               <th>Date</th>
               <th>Time Slot</th>
@@ -491,24 +494,30 @@ const SEMESTER_NAMES = {
 };
 
 function getSemesterDisplay(b) {
-  let semester = "";
-  if (b.semesters && b.semesters.name) semester = String(b.semesters.name).trim();
-  else if (b.semester_name && String(b.semester_name).trim()) semester = String(b.semester_name).trim();
-  else if (b.semester && String(b.semester).trim()) semester = String(b.semester).trim();
-  else {
-    const sid = Number(b.semester_id);
-    if (sid && SEMESTER_NAMES[sid]) semester = SEMESTER_NAMES[sid];
-    else if (sid) semester = `${sid}th Semester`;
-    else semester = "1st Semester";
-  }
+  // Officers may intentionally choose None for Cleaning/Maintenance.
+  const type = String(b.booking_type || "student").toLowerCase();
+  const purpose = String(b.booking_purpose || "").trim().toLowerCase();
+  const optionalOfficerPurpose = type === "officers" &&
+    ["cleaning purpose", "maintenance purpose"].includes(purpose);
+  const hasSemesterId = b.semester_id !== null && b.semester_id !== undefined && String(b.semester_id).trim() !== "";
+  if (optionalOfficerPurpose && !hasSemesterId) return "None";
+  if (b.semesters && b.semesters.name) return b.semesters.name;
+  if (b.semester_name && String(b.semester_name).trim()) return String(b.semester_name).trim();
+  if (b.semester && String(b.semester).trim()) return String(b.semester).trim();
+  const sid = Number(b.semester_id);
+  if (hasSemesterId && sid && SEMESTER_NAMES[sid]) return SEMESTER_NAMES[sid];
+  if (hasSemesterId && sid) return `${sid}th Semester`;
+  return "—";
+}
 
-  // Show the section beside the semester, e.g. "1st Semester (D)".
-  const sectionValue = b.student_section ?? b.section ?? b.section_name ?? b.studentSection ?? b.student_section_name;
-  const section = String(sectionValue ?? "").trim();
-  if (section && section.toLowerCase() !== "null" && section !== "-" && !semester.includes(`(${section})`)) {
-    return `${semester} (${section})`;
-  }
-  return semester;
+function getSectionDisplay(b) {
+  const type = String(b.booking_type || "student").toLowerCase();
+  const purpose = String(b.booking_purpose || "").trim().toLowerCase();
+  const optionalOfficerPurpose = type === "officers" &&
+    ["cleaning purpose", "maintenance purpose"].includes(purpose);
+  const section = String(b.student_section ?? "").trim();
+  if (!section || section.toLowerCase() === "none") return optionalOfficerPurpose ? "None" : "—";
+  return section.toUpperCase().startsWith("SECTION ") ? section : `Section ${section}`;
 }
 
 function getCourseTeacherDisplay(b) {
@@ -677,7 +686,7 @@ async function loadLabsDropdown() {
 
   // Use database names/codes when available, but retain LAB_MAP as a fallback.
   try {
-    const { data, error } = await sb.from("labs").select("id, name").order("id");
+    const { data, error } = await sb.from("labs").select("id, name, code").order("id");
     if (!error && Array.isArray(data) && data.length) {
       const dbById = new Map(data.map(l => [String(l.id), l]));
       sourceLabs = sourceLabs.map(l => ({ ...l, ...(dbById.get(String(l.id)) || {}) }));
@@ -855,21 +864,28 @@ function render() {
         </div>
       </td>
 
-      <!-- 5. Lab Name: 14px and bold -->
+      <!-- 5. Section: dedicated column, separate from applicant name -->
+      <td>
+        <div style="font-size:12px;font-weight:800;color:#92400e;line-height:1.3;word-break:break-word;text-align:center">
+          ${type === "officers" ? esc(getSectionDisplay(b)) : "—"}
+        </div>
+      </td>
+
+      <!-- 6. Lab Name: 14px and bold -->
       <td>
         <div style="padding:6px 6px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;font-size:14px;font-weight:800;color:#1e3a8a;line-height:1.3;word-break:break-word">
           ${esc(labDisplay)}
         </div>
       </td>
 
-      <!-- 6. Date: 14px and bold (Fully visible, no cut-off) -->
+      <!-- 7. Date: 14px and bold (Fully visible, no cut-off) -->
       <td>
         <div style="display:inline-block;padding:6px 8px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;font-size:14px;font-weight:800;color:#0f172a;line-height:1.25;white-space:nowrap">
           📅 ${esc(formatDateOnly(b.booking_date))}
         </div>
       </td>
 
-      <!-- 7. Time Slot: 14px and bold -->
+      <!-- 8. Time Slot: 14px and bold -->
       <td>
         <div style="padding:5px 4px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:5px;font-size:14px;font-weight:800;color:#0284c7;line-height:1.3;text-align:center">
           <div>${esc(formatTime(b.start_time))}</div>
@@ -878,14 +894,14 @@ function render() {
         </div>
       </td>
 
-      <!-- 8. Course Teacher: 14px and bold (Prominent) -->
+      <!-- 9. Course Teacher: 14px and bold (Prominent) -->
       <td>
         <div style="font-size:14px;font-weight:800;color:#1e293b;word-break:break-word;line-height:1.3">
           👨‍🏫 ${esc(teacherDisplay)}
         </div>
       </td>
 
-      <!-- 9. Purpose: 14px and bold -->
+      <!-- 10. Purpose: 14px and bold -->
       <td>
         <div style="font-size:14px;font-weight:700;color:#334155;word-break:break-word;line-height:1.3">
           ${esc(b.booking_purpose || "—")}
