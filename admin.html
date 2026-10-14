@@ -617,7 +617,7 @@ async function doLogin() {
   try {
     // Strict Database verification - absolutely no client-side bypasses or arbitrary fallbacks
     const { data: dbUser, error: dbErr } = await sb.from("admin_users")
-      .select("id, username, display_name, role, email, password, assigned_lab_ids, lab_id, can_manage_bookings, is_active")
+      .select("id, username, display_name, role, email, auth_user_id, assigned_lab_ids, lab_id, can_manage_bookings, is_active")
       .ilike("username", u)
       .maybeSingle();
 
@@ -637,20 +637,38 @@ async function doLogin() {
       return;
     }
 
-    // STRICT PASSWORD VERIFICATION
-    if (String(dbUser.password || "") !== String(p)) {
-      showError("Invalid password. Only your recent password set in the database is allowed.");
+    // Authenticate against Supabase Auth so Row Level Security recognizes this as
+    // a real authenticated user. Checking a password stored in admin_users alone
+    // does not create a Supabase Auth session.
+    if (!dbUser.email || !dbUser.auth_user_id) {
+      showError("This admin account is not fully linked to Supabase Auth. Please contact the Super Admin.");
       return;
     }
 
-    // Authentication verified strictly from Supabase Database
+    const { data: authData, error: authError } = await sb.auth.signInWithPassword({
+      email: dbUser.email,
+      password: p
+    });
+
+    if (authError || !authData?.user || !authData?.session) {
+      console.error("Supabase Auth sign-in failed:", authError);
+      showError("Supabase authentication failed. Please check your Admin email/password or Auth account setup.");
+      return;
+    }
+
+    if (String(authData.user.id) !== String(dbUser.auth_user_id)) {
+      await sb.auth.signOut();
+      showError("This username is linked to a different Supabase Auth account. Please contact the Super Admin.");
+      return;
+    }
+
+    // Supabase Auth session established and verified against the linked admin record.
     admin = {
       id: dbUser.id,
       username: dbUser.username,
       displayName: dbUser.display_name || dbUser.username,
       role: dbUser.role || "lab_incharge",
       email: dbUser.email || "",
-      password: dbUser.password,
       assigned_lab_ids: (() => {
         let ids = dbUser.assigned_lab_ids;
         if (typeof ids === "string") {
@@ -1473,6 +1491,14 @@ async function submitPasswordChange() {
   const targetUsername = isSuper ? document.getElementById("passwordTargetUser").value : admin.username;
   const isTargetSelf = targetUsername === admin.username;
 
+  // A browser client must not change another user's Supabase Auth password.
+  // That operation requires a trusted server-side Admin API, never a service key in HTML.
+  if (!isTargetSelf) {
+    errBox.textContent = "For security, changing another admin's password must be handled by the Super Admin through the secure Supabase Auth administration process. This page cannot safely change another user's Auth password.";
+    errBox.classList.remove("hidden");
+    return;
+  }
+
   // Strict verification against actual database record
   try {
     const { data: serverUser, error: fetchErr } = await sb.from("admin_users")
@@ -1492,21 +1518,28 @@ async function submitPasswordChange() {
       return;
     }
 
-    // Update target user's password directly in database
+    // Update the current user's real Supabase Auth password first.
+    const { error: authPasswordErr } = await sb.auth.updateUser({ password: newPass });
+    if (authPasswordErr) {
+      errBox.textContent = "Supabase Auth password update failed: " + authPasswordErr.message;
+      errBox.classList.remove("hidden");
+      return;
+    }
+
+    // Keep the legacy database field in sync for existing admin-management screens.
     const { error: updateErr } = await sb.from("admin_users")
       .update({ password: newPass })
       .eq("username", targetUsername);
 
     if (updateErr) {
-      errBox.textContent = "Failed to update password: " + updateErr.message;
+      console.error("Auth password changed, but legacy admin_users password field did not update:", updateErr);
+      errBox.textContent = "Your Supabase Auth password changed, but the legacy admin record could not be synchronized. Please contact the Super Admin before signing out.";
       errBox.classList.remove("hidden");
       return;
     }
 
-    if (isTargetSelf) {
-      admin.password = newPass;
-      adminPasswordForFeatureControl = newPass;
-    }
+    admin.password = newPass;
+    adminPasswordForFeatureControl = newPass;
 
     closePasswordModal();
     alert(`Password for @${targetUsername} updated successfully in the database. Only this new password will work for login from now on.`);
