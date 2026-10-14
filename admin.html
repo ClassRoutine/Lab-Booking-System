@@ -617,7 +617,7 @@ async function doLogin() {
   try {
     // Strict Database verification - absolutely no client-side bypasses or arbitrary fallbacks
     const { data: dbUser, error: dbErr } = await sb.from("admin_users")
-      .select("id, username, display_name, role, email, password, assigned_lab_ids, can_manage_bookings, is_active")
+      .select("id, username, display_name, role, email, password, assigned_lab_ids, lab_id, can_manage_bookings, is_active")
       .ilike("username", u)
       .maybeSingle();
 
@@ -644,15 +644,6 @@ async function doLogin() {
     }
 
     // Authentication verified strictly from Supabase Database
-    // Normalize assigned_lab_ids because Supabase data may be returned as
-    // a JSON array or as a JSON-encoded string, depending on the column type.
-    let assignedLabIds = dbUser.assigned_lab_ids;
-    if (typeof assignedLabIds === "string") {
-      try { assignedLabIds = JSON.parse(assignedLabIds); } catch (_) { assignedLabIds = [assignedLabIds]; }
-    }
-    if (!Array.isArray(assignedLabIds)) assignedLabIds = dbUser.lab_id ? [dbUser.lab_id] : [];
-    assignedLabIds = assignedLabIds.map(id => String(id).trim()).filter(Boolean);
-
     admin = {
       id: dbUser.id,
       username: dbUser.username,
@@ -660,7 +651,14 @@ async function doLogin() {
       role: dbUser.role || "lab_incharge",
       email: dbUser.email || "",
       password: dbUser.password,
-      assigned_lab_ids: assignedLabIds,
+      assigned_lab_ids: (() => {
+        let ids = dbUser.assigned_lab_ids;
+        if (typeof ids === "string") {
+          try { ids = JSON.parse(ids); } catch (_) { ids = ids.trim() ? [ids.trim()] : []; }
+        }
+        if (!Array.isArray(ids)) ids = dbUser.lab_id !== null && dbUser.lab_id !== undefined ? [dbUser.lab_id] : [];
+        return ids.map(id => String(id).trim()).filter(Boolean);
+      })(),
       can_manage_bookings: dbUser.can_manage_bookings !== false && String(dbUser.can_manage_bookings).toLowerCase() !== "false",
       is_active: dbUser.is_active !== false
     };
@@ -742,7 +740,7 @@ async function loadLabsDropdown() {
 
   // Use database names/codes when available, but retain LAB_MAP as a fallback.
   try {
-    const { data, error } = await sb.from("labs").select("id, name, code").order("id");
+    const { data, error } = await sb.from("labs").select("id, name").order("id");
     if (!error && Array.isArray(data) && data.length) {
       const dbById = new Map(data.map(l => [String(l.id), l]));
       sourceLabs = sourceLabs.map(l => ({ ...l, ...(dbById.get(String(l.id)) || {}) }));
@@ -766,22 +764,25 @@ async function loadLabsDropdown() {
 
 // Bookings filtered according to Full Lab Access or Assigned Labs
 async function loadBookings() {
-  const query = sb.from("bookings").select("*,labs(id,name),semesters(name)");
-  const { data, error } = await query.order("booking_date", { ascending: true }).order("start_time", { ascending: true });
+  const rows = document.getElementById("bookingRows");
+  if (rows) rows.innerHTML = '<tr><td colspan="12" class="empty">Loading bookings...</td></tr>';
+  // Avoid embedded relationship joins here: they can fail with HTTP 400 when
+  // Supabase foreign-key relationships differ between project schema versions.
+  const { data, error } = await sb.from("bookings").select("*")
+    .order("booking_date", { ascending: true }).order("start_time", { ascending: true });
   if (error) {
-    document.getElementById("bookingRows").innerHTML = `<tr><td colspan="12" class="empty">Error loading bookings: ${esc(error.message)}</td></tr>`;
+    console.error("Booking query failed:", error);
+    if (rows) rows.innerHTML = `<tr><td colspan="12" class="empty">Unable to load bookings: ${esc(error.message)}. Please contact the Super Admin.</td></tr>`;
     return;
   }
   const isSuper = admin?.role === "super_admin";
   const hasFull = isSuper || admin?.can_manage_bookings === true;
-  // Compare IDs as strings so 1 and "1" are treated as the same lab ID.
-  const assigned = (Array.isArray(admin?.assigned_lab_ids) ? admin.assigned_lab_ids : [])
-    .map(id => String(id).trim());
-
+  const assigned = (Array.isArray(admin?.assigned_lab_ids) ? admin.assigned_lab_ids : []).map(id => String(id).trim());
+  const allRows = Array.isArray(data) ? data : [];
   if (hasFull) {
-    bookings = data || [];
+    bookings = allRows;
   } else {
-    bookings = (data || []).filter(b => assigned.includes(String(b.lab_id).trim()));
+    bookings = allRows.filter(b => assigned.includes(String(b.lab_id ?? "").trim()));
   }
   render();
 }
