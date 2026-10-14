@@ -644,6 +644,15 @@ async function doLogin() {
     }
 
     // Authentication verified strictly from Supabase Database
+    // Normalize assigned_lab_ids because Supabase data may be returned as
+    // a JSON array or as a JSON-encoded string, depending on the column type.
+    let assignedLabIds = dbUser.assigned_lab_ids;
+    if (typeof assignedLabIds === "string") {
+      try { assignedLabIds = JSON.parse(assignedLabIds); } catch (_) { assignedLabIds = [assignedLabIds]; }
+    }
+    if (!Array.isArray(assignedLabIds)) assignedLabIds = dbUser.lab_id ? [dbUser.lab_id] : [];
+    assignedLabIds = assignedLabIds.map(id => String(id).trim()).filter(Boolean);
+
     admin = {
       id: dbUser.id,
       username: dbUser.username,
@@ -651,8 +660,8 @@ async function doLogin() {
       role: dbUser.role || "lab_incharge",
       email: dbUser.email || "",
       password: dbUser.password,
-      assigned_lab_ids: Array.isArray(dbUser.assigned_lab_ids) ? dbUser.assigned_lab_ids : (dbUser.lab_id ? [dbUser.lab_id] : []),
-      can_manage_bookings: dbUser.can_manage_bookings !== false,
+      assigned_lab_ids: assignedLabIds,
+      can_manage_bookings: dbUser.can_manage_bookings !== false && String(dbUser.can_manage_bookings).toLowerCase() !== "false",
       is_active: dbUser.is_active !== false
     };
 
@@ -765,12 +774,14 @@ async function loadBookings() {
   }
   const isSuper = admin?.role === "super_admin";
   const hasFull = isSuper || admin?.can_manage_bookings === true;
-  const assigned = admin?.assigned_lab_ids || [];
+  // Compare IDs as strings so 1 and "1" are treated as the same lab ID.
+  const assigned = (Array.isArray(admin?.assigned_lab_ids) ? admin.assigned_lab_ids : [])
+    .map(id => String(id).trim());
 
   if (hasFull) {
     bookings = data || [];
   } else {
-    bookings = (data || []).filter(b => assigned.includes(b.lab_id));
+    bookings = (data || []).filter(b => assigned.includes(String(b.lab_id).trim()));
   }
   render();
 }
